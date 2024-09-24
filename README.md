@@ -1,79 +1,123 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+Este es un proyecto de [**React Native**](https://reactnative.dev), iniciado usando [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
-# Getting Started
+# Comenzando
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+>**Nota**: Asegurate de tener las siguientes dependencies instaladas en tu computador local antes de proceder:
+> * Java Development Kit (JDK) versión 17.
+> * Configurar la variable de entorno `JAVA_HOME` en el computador local con la ubicación del JDK recién instalado.
+>   ### For Windows
+>   Crear la variable de entorno siguiendo [este tutorial en inglés.](https://medium.com/@hawkdive26/how-to-create-new-environment-variables-in-windows-11-575c66f21381)
+>   ### For Mac
+>   Crear la variable de entorno siguiendo estos pasos:  
+>   1. Lanzar la app Terminal de macOS.
+>   3. Validar la ruta del JDK recién instalado al ejecutar el comando:
+>   ```bash
+>   /usr/libexec/java_home -V
+>   ```
+>   4. Con resultado del comando anterior se debe extraer la URL que está al final de cada línea, por ejemplo, al encontrar una la línea como esta: 
+`17.0.11 (arm64) "Oracle Corporation" - "Java SE 17.0.11" /Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home`, se debe extraer la ruta `/Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home` para un uso posterior.
+>   5. Editar archivo .zshrc usando el editor de texto nano. 
+>   ```bash
+>   nano ~./zshrc
+>   ```
+>   6. Al inicio del archivo separar unas lineas para agregar el siguiente contenido, donde se debe reemplazar la `<Ruta>` por la ruta extraída en el punto 4: `/Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home`:
+>   ```bash
+>   #Java home para proyecto de grado
+>   JAVA_HOME="<Ruta>"
+>   PATH="${JAVA_HOME}/bin:${PATH}"
+>   ```
+>   7. Guardar los cambios al presionar `control`+`x`, luego la tecla `Y`, y luego la tecla `Enter`
+>   8. Guardar los cambios para todas las sesiones.
+>   ```bash
+>   source ~./zshrc
+>   ```
+>   
+> * Android Studio. [Ver aquí pasos de instalación.](https://developer.android.com/codelabs/basic-android-kotlin-compose-install-android-studio?hl=es-419#0)
+> * Android Emulator. [Ver aquí pasos en inglés de cómo configurar el emulador de android.](https://medium.com/@abdalqader27.najjar/how-to-install-emulator-on-android-studio-95eb101e604b)
+> * Configurar la variable de entorno `ANDROID_HOME` en el computador local con la ubicación del SDK de Android recién instalado.
+>   ### For Windows
+>   Crear la variable de entorno siguiendo [este tutorial en inglés.](https://medium.com/@hawkdive26/how-to-create-new-environment-variables-in-windows-11-575c66f21381)
+>   ### For Mac
+>   Crear la variable de entorno siguiendo estos pasos:  
+>   1. Lanzar la app Terminal de macOS.
+>   3. Validar la ruta de Android SDK recién instalado (Generalmente se encuentra en la ruta `/Users/<nombre de usuario del computador local>/Library/Android/sdk`).
+>   4. Editar archivo .zshrc usando el editor de texto nano. 
+>   ```bash
+>   nano ~./zshrc
+>   ```
+>   5. Al inicio del archivo separar unas lineas para agregar el siguiente contenido, donde se debe reemplazar la `<Ruta>` por la ruta extraída en el punto 4: `/Users/<nombre de usuario del computador local>/Library/Android/sdk`:
+>   ```bash
+>   #Java home para proyecto de grado
+>   ANDROID_HOME="<Ruta>"
+>   PATH="$ANDROID_HOME/platform-tools:$PATH"
+>   PATH="$ANDROID_HOME/tools:$PATH"
+>   PATH="$ANDROID_HOME/tools/bin:$PATH"   
+>   PATH="$ANDROID_HOME/emulator:$PATH"
+>   ```
+>   6. Guardar los cambios al presionar `control`+`x`, luego la tecla `Y`, y luego la tecla `Enter`
+>   7. Guardar los cambios para todas las sesiones.
+>   ```bash
+>   source ~./zshrc
+>   ```
+>
+> * Configurar el archivo `local.properties` que se encuentra en el directorio `android/` y cambiar el valor del atributo `sdk.dir` por la ruta del SDK Android extraída en el punto 5.
+>
+## Paso 1: Iniciar el servidor Metro
 
-## Step 1: Start the Metro Server
+Primero, necesitarás iniciar **Metro**, que es el JavaScript _bundler_ que viene _con_ React Native.
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
-
-To start Metro, run the following command from the _root_ of your React Native project:
+Para iniciar Metro, ejecuta el siguiente comando desde el directorio _root_ del proyecto:
 
 ```bash
-# using npm
+# usando npm
 npm start
 
-# OR using Yarn
+# O usando Yarn
 yarn start
 ```
 
-## Step 2: Start your Application
+## Paso 2: Iniciar la aplicación
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+Primero deja que el servidor Metro Bundler se ejecute en su _propio_ terminal. Abre una _nueva_ terminal desde el directorio _root_ del proyecto. Ejecuta el siguiente comando para iniciar la aplicación en Android o iOS:
 
 ### For Android
 
 ```bash
-# using npm
+# usando npm
 npm run android
 
-# OR using Yarn
+# O usando Yarn
 yarn android
 ```
 
 ### For iOS
 
 ```bash
-# using npm
+# usando npm
 npm run ios
 
-# OR using Yarn
+# O usando Yarn
 yarn ios
 ```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+Si todo está configurado _correctamente_, deberías ver la nueva app ejecutandose en  tu _Android Emulator_ o _iOS Simulator_ siempre que en breve hayas configurado tu emulator/simulator correctamente.
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+Esa es una manera para correr la aplicación — tu también la puedes correr directamente desde adentro de Android Studio y Xcode respectivamente.
 
-## Step 3: Modifying your App
+### Ahora qué?
 
-Now that you have successfully run the app, let's modify it.
-
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
-
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+- Si estás cuioso para aprender más sobre React Native, chequea este link [Introduction to React Native](https://reactnative.dev/docs/getting-started).
 
 # Troubleshooting
 
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+Si no puedes hacer que funcione, mira este link [Troubleshooting](https://reactnative.dev/docs/troubleshooting).
 
 # Learn More
 
-To learn more about React Native, take a look at the following resources:
+Para aprender más sobre React Native, dale una mirada a los siguiente recursos:
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+- [React Native Website](https://reactnative.dev) - aprender más sobre React Native.
+- [Comenzando](https://reactnative.dev/docs/environment-setup) - un **resumen** de React Native y como congifurar tu ambiente.
+- [Aprender lo básico](https://reactnative.dev/docs/getting-started) - un **tour guiado** de las **bases** de React Native .
+- [Blog](https://reactnative.dev/blog) - Leer lo más último de publicaciones oficiales de React Native.
+- [`@facebook/react-native`](https://github.com/facebook/react-native) - El Open Source; **repositorio** de GitHub para React Native.
