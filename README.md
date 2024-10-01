@@ -104,6 +104,39 @@ Si todo está configurado _correctamente_, deberías ver la nueva app ejecutando
 
 Esa es una manera para correr la aplicación — tu también la puedes correr directamente desde adentro de Android Studio y Xcode respectivamente.
 
+### Generación de APK
+
+### Cómo usar el APK
+
+### Estructura de directorios
+/src
+  /components
+    /Header
+      ├── AuthHeader.tsx        # Header para pantallas de autenticación (login, registro, confirmación de correo)
+      ├── MainHeader.tsx        # Header para pantallas post-login
+      └── Header.styles.tsx     # Estilos compartidos entre headers (si aplican)
+  /screens
+    /Auth                      # Pantallas de autenticación
+      ├── LoginScreen.tsx
+      ├── RegisterScreen.tsx
+      ├── EmailConfirmationScreen.tsx
+    /Main                      # Pantallas post-login
+      ├── HomeScreen.tsx
+      ├── ProfileScreen.tsx
+      ├── SettingsScreen.tsx
+  /navigation
+    ├── AuthNavigator.tsx        # Navegación para login, registro y confirmación de correo
+    ├── MainNavigator.tsx        # Navegación para la aplicación después de loguearse
+    └── RootNavigator.tsx        # Contiene la lógica para cambiar entre AuthNavigator y MainNavigator
+  /context
+    └── AuthContext.tsx          # Maneja el estado de autenticación del usuario
+  /test
+    ├── components              # Test unitarios para componentes
+    ├── screens                 # Test unitarios para pantallas
+    └── navigation              # Test de integración para la navegación
+  Theme.tsx                     # Archivo de temas globales
+App.tsx                         # Archivo principal de la aplicación
+
 ### Ahora qué?
 
 - Si estás cuioso para aprender más sobre React Native, chequea este link [Introduction to React Native](https://reactnative.dev/docs/getting-started).
@@ -112,7 +145,7 @@ Esa es una manera para correr la aplicación — tu también la puedes correr di
 
 Si no puedes hacer que funcione, mira este link [Troubleshooting](https://reactnative.dev/docs/troubleshooting).
 
-# Learn More
+# Aprender más
 
 Para aprender más sobre React Native, dale una mirada a los siguiente recursos:
 
