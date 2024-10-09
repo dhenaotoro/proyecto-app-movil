@@ -1,0 +1,40 @@
+# .github/workflows/run-tests.yml
+name: Ejecuta las pruebas usando el framework de ejecución Jest sobre los Pull Requests
+
+# Se ejecuta en eventos de pull request
+on:
+  pull_request:
+    branches:
+      - '**/feature/HU*'
+      - '**/hotfix/HU*'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Verifica el código desde el repositorio
+      - name: Revisión de repositorio
+        uses: actions/checkout@v3
+
+      # Configurar Node.js
+      - name: Configuración de Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '21'  # Usa la versión de Node.js que tu proyecto necesita
+
+      # Instalar dependencias con npm
+      - name: Instalación de dependencias
+        run: npm install
+
+      # Correr las pruebas con Jest
+      - name: Ejecutar pruebas usando Jest
+        run: npm run test
+
+      # Opción para guardar los resultados de las pruebas como artefacto (opcional)
+      - name: Actualizar resultado de pruebas como artefacto
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: jest-results
+          path: ./jest-results.txt
