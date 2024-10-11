@@ -1,15 +1,15 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
 import MainHeader from '../components/Header/MainHeader';
-import { PQRList } from '../screens/Main/PQRList';
+import ListarPQRs from '../screens/ListarPQRs/ListarPQRs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-
-const Stack = createStackNavigator();
+export type RootStackParamList = { ListarPQRs: undefined };
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function MainNavigator() {
   return (
     <Stack.Navigator screenOptions={{ header: MainHeader }}>
-      <Stack.Screen name="Home" component={PQRList} />
+      <Stack.Screen name="ListarPQRs" component={ListarPQRs} />
     </Stack.Navigator>
   );
 }
