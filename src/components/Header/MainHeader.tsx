@@ -1,5 +1,6 @@
-import { View } from "react-native";
+import React from 'react';
+import { View } from 'react-native';
 
 export default function MainHeader(): React.JSX.Element  {
-    return (<View />)
+    return (<View />);
 }
