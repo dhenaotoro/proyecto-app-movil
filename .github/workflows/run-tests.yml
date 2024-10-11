@@ -28,13 +28,13 @@ jobs:
         run: npm install
 
       # Correr las pruebas con Jest
-      - name: Ejecutar pruebas usando Jest
-        run: npm run test
+      - name: Ejecutar pruebas usando Jest y generando los reportes finales
+        run: npm run test-report
 
       # Opción para guardar los resultados de las pruebas como artefacto (opcional)
       - name: Actualizar resultado de pruebas como artefacto
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: jest-results
-          path: ./jest-results.txt
+          name: junit
+          path: coverage/
