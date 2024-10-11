@@ -60,7 +60,7 @@ Este es un proyecto de [**React Native**](https://reactnative.dev), iniciado usa
 >   source ~./zshrc
 >   ```
 >
-> * Configurar el archivo `local.properties` que se encuentra en el directorio `android/` y cambiar el valor del atributo `sdk.dir` por la ruta del SDK Android extraída en el punto 5.
+> * En caso de no existir, crear el archivo `local.properties` (o modificarlo) en el directorio `android/` y cambiar el valor del atributo `sdk.dir` por la ruta del SDK Android extraída en el punto 5.
 >
 ## Paso 1: Iniciar el servidor Metro
 
