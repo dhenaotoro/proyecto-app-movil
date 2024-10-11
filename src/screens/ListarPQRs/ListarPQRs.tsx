@@ -1,10 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import MainHeader from '../../components/Header/MainHeader';
+
 
 const ListarPQRs = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>ABCall</Text>
+      <MainHeader></MainHeader>
       <Text style={styles.welcomeText}>Bienvenido</Text>
       <Text style={styles.username}>IVAN</Text>
       <Text style={styles.pqrText}>PQRs</Text>
