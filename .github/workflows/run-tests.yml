@@ -5,8 +5,9 @@ name: Ejecuta las pruebas usando el framework de ejecución Jest sobre los Pull 
 on:
   pull_request:
     branches:
-      - 'feature/HU*'
-      - 'hotfix/HU*'
+      - 'feature/*'
+      - 'hotfix/*'
+    workflow_dispatch:
 
 jobs:
   test:
