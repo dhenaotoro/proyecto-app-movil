@@ -34,9 +34,6 @@ jobs:
       # Opción para guardar los resultados de las pruebas como artefacto (opcional)
       - name: Actualizar resultado de pruebas como artefacto
         if: always()
-        reports:
-          junit:
-            - junit.xml
         uses: actions/upload-artifact@v3
         with:
           name: junit
