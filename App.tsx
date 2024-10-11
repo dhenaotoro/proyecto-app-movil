@@ -9,13 +9,14 @@ import RootNavigator from './src/navigation/RootNavigator';
 
 function App(): React.JSX.Element {
   return (
-  <SafeAreaProvider>
-    {/* Proveedor del contexto de autenticación */}
-    <AuthProvider>
-      {/* Navegación dinámica dependiendo del estado de autenticación */}
-      <RootNavigator />
-    </AuthProvider>
-  </SafeAreaProvider>);
+    <SafeAreaProvider>
+      {/* Proveedor del contexto de autenticación */}
+      <AuthProvider>
+        {/* Navegación dinámica dependiendo del estado de autenticación */}
+        <RootNavigator />
+      </AuthProvider>
+    </SafeAreaProvider>
+  );
 }
 
 const styles = StyleSheet.create({

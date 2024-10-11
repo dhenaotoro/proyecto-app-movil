@@ -1,4 +1,5 @@
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import React from 'react';
+import { StyleSheet, Text, View } from "react-native";
 import colors from "../../styles/colors";
 import typography from "../../styles/typography";
 

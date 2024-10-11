@@ -1,21 +1,35 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import colors from "../../styles/colors";
 import React, { useState } from "react";
 import typography from "../../styles/typography";
 import { InputText } from "../FormFields/InputText";
+import Auth from 'aws-amplify/auth';
 
 //, borderStyle: 'solid', borderWidth: 1, borderColor: 'blue'
 
 export function Login(): React.JSX.Element  {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false); // Para manejar el estado de carga
 
-    const handlePress = () => {
-        console.log('Quiere hacer login');
+    const handlePress = async () => {
+        setLoading(true); // Mostrar el estado de carga
+
+        try {
+            // Llamada al método de AWS Cognito para iniciar sesión
+            const user = await Auth.signIn({ username: email, password });
+            console.log('Inicio de sesión exitoso:', user);
+            // Aquí puedes redirigir al usuario a la pantalla principal
+        } catch (error) {
+            console.error('Error al iniciar sesión:', error);
+            Alert.alert('Error', 'Correo o contraseña incorrectos');
+        } finally {
+            setLoading(false); // Detener el estado de carga
+        }
     };
     
     return (
-    <View style={{...styles.container}}>
+    <View style={{...styles.container}} testID='screen.Login'>
         <View style={styles.innerContainer}>
             <View style={{height: 64}}>
                 <Text style={styles.messageTitle}>Bienvenido(a), inicia sesión con tu correo y contraseña.</Text>
@@ -26,13 +40,13 @@ export function Login(): React.JSX.Element  {
                 <Text style={styles.link}>Olvidaste tu contraseña?</Text>
             </View>
             <View style={{height: 92}}>
-                <TouchableOpacity style={styles.button} onPress={handlePress}>
-                    <Text style={styles.buttonText}>Ingresar</Text>
+                <TouchableOpacity style={styles.button} onPress={handlePress} aria-label='loginButton' testID='Login.loginButton'>
+                    <Text style={styles.buttonText}>{loading ? 'Cargando...' : 'Ingresar'}</Text>
                 </TouchableOpacity>
             </View>
         </View>
         <View style={{height: 189, paddingTop: 48}}>
-            <Text style={{...styles.link}}>No tienes cuenta? <Text style={{...styles.link, fontFamily: typography.nunitoSanzBold, textDecorationLine: 'underline'}}>Registrate</Text></Text>
+            <Text style={{...styles.link}}>No tienes cuenta? <Text style={{...styles.link, fontFamily: typography.nunitoSanzBold, textDecorationLine: 'underline'}}>Regístrate</Text></Text>
         </View>
     </View>
     );

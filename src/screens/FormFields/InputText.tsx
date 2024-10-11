@@ -1,9 +1,10 @@
+import React, { PropsWithRef } from 'react';
 import { View, Text, TextInput, StyleSheet } from "react-native";
 import colors from "../../styles/colors";
 import typography from "../../styles/typography";
 import { PropsWithoutRef } from "react";
 
-type InputTextProps = PropsWithoutRef<{
+type InputTextProps = PropsWithRef<{
     label: string,
     required: boolean,
     value: string,
@@ -21,6 +22,8 @@ export function InputText({label, required, value, onInputChange}: InputTextProp
             <TextInput style={styles.textInput}
                 value={value}
                 onChangeText={nexText => onInputChange(nexText)}
+                testID={`TextInput.${label}`}
+                aria-label={label}
             />
         </View>
     );
