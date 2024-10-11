@@ -2,20 +2,20 @@ import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import colors from "../../styles/colors";
 import React, { useState } from "react";
 import typography from "../../styles/typography";
-import { InputText } from "../FormFields/InputText";
+import { InputText } from "../../components/FormFields/InputText";
 import Auth from 'aws-amplify/auth';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/MainNavigator";
 
 //, borderStyle: 'solid', borderWidth: 1, borderColor: 'blue'
-type ListarPQRsScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'ListarPQRs'>;
+type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'ListarPQRs'>;
 
 export function Login(): React.JSX.Element  {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false); // Para manejar el estado de carga
-    const navigation = useNavigation<ListarPQRsScreenNavigationProp>();
+    const navigation = useNavigation<NavigationProps>();
 
     const handlePress = async () => {
         setLoading(true); // Mostrar el estado de carga

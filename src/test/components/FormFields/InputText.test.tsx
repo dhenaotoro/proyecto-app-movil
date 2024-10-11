@@ -2,7 +2,7 @@ import { render, screen, userEvent } from '@testing-library/react-native';
 import 'react-native';
 import React from 'react';
 import {it, describe} from '@jest/globals';
-import { InputText } from '../../../screens/FormFields/InputText';
+import { InputText } from '../../../components/FormFields/InputText';
 import { UserEventInstance } from '@testing-library/react-native/build/user-event/setup';
 
 describe('InputText', () => {
