@@ -6,6 +6,7 @@ import { UserEventInstance } from '@testing-library/react-native/build/user-even
 import { Login } from '../../../screens/Auth/Login';
 
 jest.mock('@aws-amplify/auth');
+jest.mock('@react-navigation/native');
 
 describe('InputText', () => {
     let user: UserEventInstance;
