@@ -32,6 +32,7 @@ build/
 .cxx/
 *.keystore
 !debug.keystore
+local.properties
 
 # node.js
 #
