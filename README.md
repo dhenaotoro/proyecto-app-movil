@@ -33,7 +33,7 @@ Este es un proyecto de [**React Native**](https://reactnative.dev), iniciado usa
 >   ```
 >   
 > * Android Studio. [Ver aquí pasos de instalación.](https://developer.android.com/codelabs/basic-android-kotlin-compose-install-android-studio?hl=es-419#0)
-> * Android Emulator. [Ver aquí pasos en inglés de cómo configurar el emulador de android.](https://medium.com/@abdalqader27.najjar/how-to-install-emulator-on-android-studio-95eb101e604b)
+> * Android Emulator. [Ver aquí los pasos para configurar un emulador de android.](https://developer.android.com/studio/run/managing-avds?hl=es-419#createavd)
 > * Configurar la variable de entorno `ANDROID_HOME` en el computador local con la ubicación del SDK de Android recién instalado.
 >   ### For Windows
 >   Crear la variable de entorno siguiendo [este tutorial en inglés.](https://medium.com/@hawkdive26/how-to-create-new-environment-variables-in-windows-11-575c66f21381)
@@ -49,6 +49,8 @@ Este es un proyecto de [**React Native**](https://reactnative.dev), iniciado usa
 >   ```bash
 >   #Java home para proyecto de grado
 >   ANDROID_HOME="<Ruta>"
+>   export ANDROID_SDK_ROOT="$ANDROID_HOME"
+>   export ANDROID_AVD_HOME=/Users/${USER}/.android/avd
 >   PATH="$ANDROID_HOME/platform-tools:$PATH"
 >   PATH="$ANDROID_HOME/tools:$PATH"
 >   PATH="$ANDROID_HOME/tools/bin:$PATH"   
@@ -59,7 +61,25 @@ Este es un proyecto de [**React Native**](https://reactnative.dev), iniciado usa
 >   ```bash
 >   source ~./zshrc
 >   ```
->
+>   8. Instalar Detox CLI en la máquina local:
+>   ```bash
+>   npm install detox-cli --global
+>   ```
+>   9. Instalar utilitarios en Mac:
+>   ```bash
+>   brew tap wix/brew
+>   brew install applesimutils
+>   ```
+>   10. Iniciar Detox en la máquina local:
+>   ```bash
+>   detox init 
+>   ```
+>   11. Listar los emuladores disponibles al ejecutar el comando:
+>   ```bash
+>   emulator -list-avds
+>   ```
+>   12. Cambiar el nombre del emulador en la propiedad `avdName` del `.detoxrc.js`.
+>   
 > * En caso de no existir, crear el archivo `local.properties` (o modificarlo) en el directorio `android/` y cambiar el valor del atributo `sdk.dir` por la ruta del SDK Android extraída en el punto 5.
 >
 ## Paso 1: Iniciar el servidor Metro
@@ -103,6 +123,28 @@ yarn ios
 Si todo está configurado _correctamente_, deberías ver la nueva app ejecutandose en  tu _Android Emulator_ o _iOS Simulator_ siempre que en breve hayas configurado tu emulator/simulator correctamente.
 
 Esa es una manera para correr la aplicación — tu también la puedes correr directamente desde adentro de Android Studio y Xcode respectivamente.
+
+### Ejecución de pruebas E2E en local
+
+> 1. Ejecutar el servidor Metro con el siguiente comando:
+>   ```bash
+>   npm run start
+>   ```
+> 2. Generar el apk en modo debug al ejecutar el siguiente comando:
+>   ```bash
+>   npm run e2e:build-android-debug
+>   ```
+> 3. Ejecutar las pruebas end-to-end con el siguiente comando:
+>   ```bash
+>   npm run e2e:test-android-debug
+>   ```
+
+### Ejecución de pruebas unitarias en local
+
+> Ejecutar las pruebas unitarias con el siguiente comando para visualizar el reporte respectivo:
+>   ```bash
+>   npm run test-report
+>   ```
 
 ### Generación de APK
 

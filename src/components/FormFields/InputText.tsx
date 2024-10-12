@@ -2,16 +2,16 @@ import React, { PropsWithRef } from 'react';
 import { View, Text, TextInput, StyleSheet } from "react-native";
 import colors from "../../styles/colors";
 import typography from "../../styles/typography";
-import { PropsWithoutRef } from "react";
 
 type InputTextProps = PropsWithRef<{
     label: string,
     required: boolean,
     value: string,
-    onInputChange: Function
+    onInputChange: Function,
+    testID: string
 }>;
 
-export function InputText({label, required, value, onInputChange}: InputTextProps): React.JSX.Element  {
+export function InputText({label, required, value, onInputChange, testID}: InputTextProps): React.JSX.Element  {
     const defineLabel = () => {
         return `${label}${required ? '*': ''}`
     };
@@ -22,7 +22,7 @@ export function InputText({label, required, value, onInputChange}: InputTextProp
             <TextInput style={styles.textInput}
                 value={value}
                 onChangeText={nexText => onInputChange(nexText)}
-                testID={`TextInput.${label}`}
+                testID={testID}
                 aria-label={label}
             />
         </View>
