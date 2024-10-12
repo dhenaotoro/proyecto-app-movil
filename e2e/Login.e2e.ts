@@ -1,24 +1,26 @@
 import { isScreenShown } from "./utils/isScreenShown";
 import {by, element, expect} from 'detox';
-
-const SCREEN_TEST_ID = 'screen.Login';
-const EMAIL_INPUT_TEST_ID = 'TextInput.Correo';
-const PASSWORD_INPUT_TEST_ID = 'TextInput.Contraseña';
-const LOGIN_BUTTON_TEST_ID = 'Login.loginButton';
+import { USER_LOGIN } from "./utils/mockedData";
 
 describe('Login Component', () => {
+  beforeAll(async () => {
+    await device.launchApp();
+  });
+
   beforeEach(async () => {
     await device.reloadReactNative();
   });
+
   it('should filter properties based on input (positive case)', async () => {
-    isScreenShown(SCREEN_TEST_ID);
+    await isScreenShown('Login');
 
-    await element(by.id(EMAIL_INPUT_TEST_ID)).typeText(USER_LOGIN.email);
-    await element(by.id(PASSWORD_INPUT_TEST_ID)).typeText(USER_LOGIN.password);
+    await element(by.id('Login.Correo')).typeText(USER_LOGIN.email);
+    await element(by.id('Login.Password')).typeText(USER_LOGIN.password);
 
-    await element(by.id(LOGIN_BUTTON_TEST_ID)).tap();
+    await element(by.id('Login.Button')).tap();
 
-    // at least one elements has the word office on it
-    await expect(element(by.text('Listar PQR'))).toBeVisible();
+    await isScreenShown('ListarPQRs');
+    
+    await expect(element(by.id('ListarPQRs.MainTitle'))).toBeVisible(100);
   });
 });

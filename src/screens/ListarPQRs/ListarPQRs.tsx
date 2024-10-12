@@ -4,12 +4,14 @@ import MainHeader from '../../components/Header/MainHeader';
 
 
 const ListarPQRs = () => {
+  const screen = 'ListarPQRs';
+
   return (
-    <View style={styles.container}>
+    <View style={styles.container} testID={screen}>
       <MainHeader></MainHeader>
       <Text style={styles.welcomeText}>Bienvenido</Text>
       <Text style={styles.username}>IVAN</Text>
-      <Text style={styles.pqrText}>PQRs</Text>
+      <Text style={styles.pqrText} testID={`${screen}.MainTitle`}>PQRs</Text>
 
       {/* Tabla */}
       <View style={styles.table}>
