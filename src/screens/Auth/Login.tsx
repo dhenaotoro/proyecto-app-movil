@@ -27,6 +27,8 @@ export function Login(): React.JSX.Element  {
 
         try {
             // Llamada al método de AWS Cognito para iniciar sesión
+            console.log(email)
+            console.log(password)
             const user = await signIn({ username: email, password });
             console.log('Inicio de sesión exitoso:', user);
             // Aquí puedes redirigir al usuario a la pantalla principal
