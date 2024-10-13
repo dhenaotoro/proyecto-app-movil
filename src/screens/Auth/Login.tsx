@@ -4,18 +4,17 @@ import React, { useState } from "react";
 import typography from "../../styles/typography";
 import { InputText } from "../../components/FormFields/InputText";
 import { Amplify } from 'aws-amplify';
-import { signIn } from 'aws-amplify/auth';
+import { AuthError, signIn, type SignInInput } from 'aws-amplify/auth';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/RootNavigator";
 import awsconfig from "../../aws-exports";
 
-Amplify.configure(awsconfig);
-
 //, borderStyle: 'solid', borderWidth: 1, borderColor: 'blue'
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'ListarPQRs'>;
 
 export function Login(): React.JSX.Element  {
+    Amplify.configure(awsconfig);
     const screen = 'Login';
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -27,14 +26,13 @@ export function Login(): React.JSX.Element  {
 
         try {
             // Llamada al método de AWS Cognito para iniciar sesión
-            console.log(email)
-            console.log(password)
-            const user = await signIn({ username: email, password });
-            console.log('Inicio de sesión exitoso:', user);
+            const { isSignedIn, nextStep }  = await signIn({ username: email, password} as SignInInput, );
+            console.log('Inicio de sesión exitoso:', isSignedIn);
+            console.log('El siguiente paso es', nextStep);
             // Aquí puedes redirigir al usuario a la pantalla principal
             navigation.navigate('ListarPQRs');
         } catch (error) {
-            console.error('Error al iniciar sesión:', error);
+            console.error('Error al iniciar sesión:', (error as AuthError).underlyingError);
             Alert.alert('Error', 'Correo o contraseña incorrectos');
         } finally {
             setLoading(false); // Detener el estado de carga
