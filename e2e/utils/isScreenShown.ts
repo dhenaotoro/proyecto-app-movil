@@ -1,7 +1,5 @@
-import {by, element, expect} from 'detox';
-// to check that the screen with screenId is visible, used for //navigation
+import {by, element, waitFor} from 'detox';
+// check to see if the screen with screenId is visible at least 75% of the emulator screen
 export const isScreenShown = async (screenId: string) => {
-    const myScreen = element(by.id(`screen.${screenId}`));
-  
-    await expect(myScreen).toBeVisible();
+    await waitFor(element(by.id(screenId))).toBeVisible().withTimeout(2000);
 };

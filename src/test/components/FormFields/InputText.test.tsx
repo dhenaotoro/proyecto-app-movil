@@ -13,26 +13,26 @@ describe('InputText', () => {
     });
 
     it('should show a required label', () => {
-        render(<InputText label='Text' value='' onInputChange={jest.fn()} required/>);
+        render(<InputText label='Text' value='' onInputChange={jest.fn()} required testID='TextInput.Text'/>);
     
         expect(screen.getByRole('text', { name: 'Text*'})).toBeDefined();
     });
 
     it('should show a non-required label', () => {
-        render(<InputText label='Text' value='' onInputChange={jest.fn()} required={false}/>);
+        render(<InputText label='Text' value='' onInputChange={jest.fn()} required={false} testID='TextInput.Text'/>);
     
         expect(screen.getByLabelText('Text')).toBeDefined();
     });
 
     it('should load a value defined', () => {
-        render(<InputText label='Text' value='Loaded value' onInputChange={jest.fn()} required={false}/>);
+        render(<InputText label='Text' value='Loaded value' onInputChange={jest.fn()} required={false} testID='TextInput.Text'/>);
     
         expect(screen.getByLabelText('Text').props.value).toEqual('Loaded value');
     });
 
     it('should call the onInputChange when typing on the input text field', async () => {
         const onInputChange = jest.fn();
-        render(<InputText label='Text' value='' onInputChange={onInputChange} required={true}/>);
+        render(<InputText label='Text' value='' onInputChange={onInputChange} required={true} testID='TextInput.Text'/>);
     
         await user.type(screen.getByTestId('TextInput.Text'), 'Text');
 
