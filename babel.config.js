@@ -7,12 +7,13 @@ module.exports = function(api){
       '@babel/preset-typescript'                // Procesa TypeScript
     ],
     plugins: [
-      "react-native-reanimated/plugin",
-      "@babel/plugin-transform-named-capturing-groups-regex",
+      'react-native-reanimated/plugin',
+      '@babel/plugin-transform-modules-commonjs',
+      '@babel/plugin-transform-named-capturing-groups-regex',
       ['@babel/plugin-proposal-decorators', { legacy: true }],
-      ["@babel/plugin-transform-private-methods", { "loose": true }],
-      ["@babel/plugin-transform-class-properties", { "loose": true }],
-      ["@babel/plugin-transform-private-property-in-object", { "loose": true }]
+      ['@babel/plugin-transform-private-methods', { "loose": true }],
+      ['@babel/plugin-transform-class-properties', { "loose": true }],
+      ['@babel/plugin-transform-private-property-in-object', { "loose": true }]
     ]
   }
 };

@@ -6,12 +6,10 @@ on:
   pull_request:
     branches:
       - 'main'
-    workflow_dispatch:
 
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
       # Verifica el código desde el repositorio
       - name: Revisión de repositorio
@@ -21,7 +19,7 @@ jobs:
       - name: Configuración de Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '21'  # Usa la versión de Node.js que tu proyecto necesita
+          node-version: '21'
 
       # Instalar dependencias con npm
       - name: Instalación de dependencias
