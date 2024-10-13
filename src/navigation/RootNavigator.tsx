@@ -7,6 +7,7 @@ import AuthHeader from '../components/Header/AuthHeader';
 import { Login } from '../screens/Auth/Login';
 import { Register } from '../screens/Auth/Register';
 import ListarPQRs from '../screens/ListarPQRs/ListarPQRs';
+import CrearPQRs from '../screens/CrearPQRs/CrearPQRs';
 
 export type RootStackParamList = { Login: undefined, Register: undefined, ListarPQRs: undefined };
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -20,6 +21,7 @@ export default function RootNavigator(): React.JSX.Element {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="ListarPQRs" component={ListarPQRs} />
+        <Stack.Screen name="CrearPQRs" component={CrearPQRs} />
       </Stack.Navigator>
     </NavigationContainer>
   );

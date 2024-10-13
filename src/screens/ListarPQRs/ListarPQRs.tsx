@@ -1,10 +1,20 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import MainHeader from '../../components/Header/MainHeader';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../navigation/RootNavigator";
 
 
+
+type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'CrearPQRs'>;
 const ListarPQRs = () => {
   const screen = 'ListarPQRs';
+  const navigation = useNavigation<NavigationProps>();
+
+  const handlePress = async () => {
+    navigation.navigate('CrearPQRs');
+  };
 
   return (
     <View style={styles.container} testID={screen}>
@@ -60,7 +70,7 @@ const ListarPQRs = () => {
       </View>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.registerButton} onPress={() => {}}>
+        <TouchableOpacity style={styles.registerButton} onPress={handlePress}>
           <Text style={styles.registerButtonText}>Registra tu PQR</Text>
         </TouchableOpacity>
       </View>
