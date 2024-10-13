@@ -5,7 +5,7 @@ import {it, describe} from '@jest/globals';
 import { UserEventInstance } from '@testing-library/react-native/build/user-event/setup';
 import { Login } from '../../../screens/Auth/Login';
 
-jest.mock('@aws-amplify/auth');
+jest.mock('../../../services/api');
 jest.mock('@react-navigation/native');
 
 describe('InputText', () => {

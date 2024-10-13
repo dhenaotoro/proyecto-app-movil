@@ -3,10 +3,10 @@ import colors from "../../styles/colors";
 import React, { useState } from "react";
 import typography from "../../styles/typography";
 import { InputText } from "../../components/FormFields/InputText";
-import Auth from 'aws-amplify/auth';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/RootNavigator";
+import api from "../../services/api";
 
 //, borderStyle: 'solid', borderWidth: 1, borderColor: 'blue'
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'ListarPQRs'>;
@@ -20,20 +20,19 @@ export function Login(): React.JSX.Element  {
 
     const handlePress = async () => {
         setLoading(true); // Mostrar el estado de carga
-        navigation.navigate('ListarPQRs');
+        //navigation.navigate('ListarPQRs');
 
-       /* try {
-            // Llamada al método de AWS Cognito para iniciar sesión
-            const user = await Auth.signIn({ username: email, password });
-            console.log('Inicio de sesión exitoso:', user);
+        try {
+            console.log('Inicia sesion', email,  password);
+            const token = api.login(email, password);
             // Aquí puedes redirigir al usuario a la pantalla principal
-            
+            navigation.navigate('ListarPQRs');
         } catch (error) {
             console.error('Error al iniciar sesión:', error);
             Alert.alert('Error', 'Correo o contraseña incorrectos');
         } finally {
             setLoading(false); // Detener el estado de carga
-        }*/
+        }
     };
     
     return (
