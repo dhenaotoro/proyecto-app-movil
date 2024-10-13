@@ -1,12 +1,12 @@
 import { render, screen, userEvent } from '@testing-library/react-native';
 import 'react-native';
 import React from 'react';
-import {it, describe} from '@jest/globals';
+import { it, describe } from '@jest/globals';
 import { UserEventInstance } from '@testing-library/react-native/build/user-event/setup';
 import { Login } from '../../../screens/Auth/Login';
 
-jest.mock('../../../services/api');
 jest.mock('@react-navigation/native');
+jest.mock('aws-amplify');
 
 describe('InputText', () => {
     let user: UserEventInstance;
