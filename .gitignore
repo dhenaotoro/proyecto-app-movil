@@ -38,6 +38,9 @@ build/
 *.keystore
 !debug.keystore
 local.properties
+apk-release.apk
+output-metadata.json
+app-realease.dm
 
 # node.js
 #
