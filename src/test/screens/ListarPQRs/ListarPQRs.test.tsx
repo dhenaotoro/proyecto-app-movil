@@ -2,29 +2,37 @@ import { render, screen, userEvent } from '@testing-library/react-native';
 import 'react-native';
 import React from 'react';
 import { it, describe, beforeEach } from '@jest/globals';
-import { UserEventInstance } from '@testing-library/react-native/build/user-event/setup';
+import { NavigationContainer } from '@react-navigation/native'; // Import NavigationContainer
 import ListarPQRs from '../../../screens/ListarPQRs/ListarPQRs';
 
 describe('ListarPQRs', () => {
-    let user: UserEventInstance;
+    let user;
 
     beforeEach(() => {
         user = userEvent.setup();
     });
 
+    const renderComponent = () => {
+        return render(
+            <NavigationContainer>
+                <ListarPQRs />
+            </NavigationContainer>
+        );
+    };
+
     it('should show the welcome message and username', () => {
-        render(<ListarPQRs />);
+        renderComponent(); // Use the new render function
         expect(screen.getByText('Bienvenido')).toBeDefined();
         expect(screen.getByText('IVAN')).toBeDefined();
     });
 
     it('should show the PQRs header', () => {
-        render(<ListarPQRs />);
+        renderComponent(); // Use the new render function
         expect(screen.getByText('PQRs')).toBeDefined();
     });
 
     it('should display the PQRs table with statuses and codes', () => {
-        render(<ListarPQRs />);
+        renderComponent(); // Use the new render function
         expect(screen.getByText('Abierto')).toBeDefined();
         expect(screen.getByText('000000001')).toBeDefined();
         const closedTexts = screen.getAllByText('Cerrado');
@@ -33,12 +41,12 @@ describe('ListarPQRs', () => {
     });
 
     it('should show the register PQR button', () => {
-        render(<ListarPQRs />);
+        renderComponent(); // Use the new render function
         expect(screen.getByText('Registra tu PQR')).toBeDefined();
     });
 
     it('should trigger an action when register button is pressed', async () => {
-        render(<ListarPQRs />);
+        renderComponent(); // Use the new render function
         const registerButton = screen.getByText('Registra tu PQR');
         await user.press(registerButton);
     });
