@@ -10,7 +10,7 @@ import { RootStackParamList } from "../../navigation/RootNavigator";
 
 type ActivactionCodeRouteProp = RouteProp<RootStackParamList, 'ActivactionCode'>;
 
-export function ActivactionCode(): React.JSX.Element  {
+export function ActivationCode(): React.JSX.Element  {
     const screen = 'ActivationCode';
     const [codigoActivacion, setCodigoActivacion] = useState('');
     const [loading, setLoading] = useState(false); // Para manejar el estado de carga
@@ -48,7 +48,7 @@ export function ActivactionCode(): React.JSX.Element  {
                 <InputText label='Correo' required value={codigoActivacion} onInputChange={(text: string) => setCodigoActivacion(text)} testID={`${screen}.CodigoActivacion`}/>
             </View>
             <View style={{height: 92}}>
-                <TouchableOpacity style={styles.button} onPress={handlePress} aria-label='loginButton' testID={`${screen}.Button`}>
+                <TouchableOpacity style={styles.button} onPress={handlePress} aria-label='activationCodeButton' testID={`${screen}.Button`}>
                     <Text style={styles.buttonText}>{loading ? 'Cargando...' : 'Continuar'}</Text>
                 </TouchableOpacity>
             </View>

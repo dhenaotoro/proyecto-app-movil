@@ -3,10 +3,10 @@ import 'react-native';
 import React from 'react';
 import { it, describe } from '@jest/globals';
 import { UserEventInstance } from '@testing-library/react-native/build/user-event/setup';
-import { Login } from '../../../screens/Auth/Login';
 import { confirmSignUp } from 'aws-amplify/auth';
 import { useNavigation } from '@react-navigation/native';
 import { Alert } from "react-native";
+import { ActivationCode } from '../../../screens/Auth/ActivationCode';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'), // Esto mantiene el resto del módulo intacto
@@ -24,37 +24,24 @@ describe('Activation Code', () => {
     });
 
     it('should show an introductory text', () => {
-        render(<Login />);
+        render(<ActivationCode />);
     
-        expect(screen.getByRole('text', { name: 'Bienvenido(a), inicia sesión con tu correo y contraseña.'})).toBeDefined();
+        expect(screen.getByRole('text', { name: 'Se envió correo de confirmación al correo ** con el código de activación. Por favor regístralo a continuación'})).toBeDefined();
     });
 
-    it('should show input texts for email and password', () => {
-        render(<Login />);
+    it('should show input text for activation code', () => {
+        render(<ActivationCode />);
     
-        expect(screen.getByLabelText('Correo')).toBeDefined();
-        expect(screen.getByLabelText('Contraseña')).toBeDefined();
+        expect(screen.getByTestId('ActivationCode.CodigoActivacion')).toBeDefined();
     });
 
-    it('should show a text link to change password', () => {
-        render(<Login />);
+    it('should show a button to ActivationCode', () => {
+        render(<ActivationCode />);
     
-        expect(screen.getByRole('text', { name: 'Olvidaste tu contraseña?'})).toBeDefined();
+        expect(screen.getByTestId('ActivationCode.Button')).toBeDefined();
     });
 
-    it('should show a button to login', () => {
-        render(<Login />);
-    
-        expect(screen.getByLabelText('loginButton')).toBeDefined();
-    });
-
-    it('should show a text link to register a new user', () => {
-        render(<Login />);
-    
-        expect(screen.getByRole('text', { name: 'No tienes cuenta? Regístrate'})).toBeDefined();
-    });
-
-    it('should call the handlePress method when clicking the Ingresar button', async () => {
+    it('should call the handlePress method when clicking the Continuar button', async () => {
         const mockNavigate = jest.fn();
         (useNavigation as jest.Mock).mockReturnValue({
             navigate: mockNavigate,
@@ -64,15 +51,13 @@ describe('Activation Code', () => {
             isSignedIn: true,
             nextStep: 'COMPLETED'
         });
-        render(<Login />);
+        render(<ActivationCode />);
     
-        await user.type(screen.getByLabelText('Correo'), 'test@email.com');
-        await user.type(screen.getByLabelText('Contraseña'), 'T345sdad');
-
-        await user.press(screen.getByLabelText('loginButton'));
+        await user.type(screen.getByTestId('ActivationCode.CodigoActivacion'), '12456900');
+        await user.press(screen.getByLabelText('ActivationCode.Button'));
 
         expect(confirmSignUp).toHaveBeenCalledWith({ username: 'test@email.com', password: 'T345sdad'});
-        expect(mockNavigate).toHaveBeenCalledWith('ListarPQRs');
+        expect(mockNavigate).toHaveBeenCalledWith('Login');
     });
 
     it('should show an Alert when signIn fails', async () => {
@@ -84,12 +69,10 @@ describe('Activation Code', () => {
         (confirmSignUp as jest.Mock).mockRejectedValue({});
         const alertFn = jest.spyOn(Alert, 'alert');
 
-        render(<Login />);
+        render(<ActivationCode />);
     
-        await user.type(screen.getByLabelText('Correo'), 'test@email.com');
-        await user.type(screen.getByLabelText('Contraseña'), 'T345sdad');
-
-        await user.press(screen.getByLabelText('loginButton'));
+        await user.type(screen.getByTestId('ActivationCode.CodigoActivacion'), '12456900');
+        await user.press(screen.getByLabelText('ActivationCode.Button'));
 
         expect(confirmSignUp).toHaveBeenCalledWith({ username: 'test@email.com', password: 'T345sdad'});
         expect(alertFn).toHaveBeenCalled();

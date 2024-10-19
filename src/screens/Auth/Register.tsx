@@ -82,7 +82,7 @@ export function Register(): React.JSX.Element  {
                 const response = await registerUser(userData);
                 if (response.code === 201 && response.message === "Usuario creado correctamente") {
                     // Aquí puedes redirigir al usuario a la pantalla principal
-                    navigation.navigate('ActivactionCode', { email: correo }); 
+                    navigation.navigate('ActivationCode', { email: correo }); 
                 }
             } catch (error) {
                 console.debug('Error al iniciar sesión:', (error as AuthError).underlyingError);
@@ -118,7 +118,7 @@ export function Register(): React.JSX.Element  {
                 </View>
             </View>
             <View style={{height: 92}}>
-                <TouchableOpacity style={styles.button} onPress={handlePress} aria-label='loginButton' testID={`${screen}.Button`}>
+                <TouchableOpacity style={styles.button} onPress={handlePress} aria-label='registerButton' testID={`${screen}.Button`}>
                     <Text style={styles.buttonText}>{loading ? 'Cargando...' : 'Confirmar'}</Text>
                 </TouchableOpacity>
             </View>
