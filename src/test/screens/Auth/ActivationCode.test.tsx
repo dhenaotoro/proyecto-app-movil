@@ -1,47 +1,85 @@
-import { render, screen, userEvent } from '@testing-library/react-native';
+import { cleanup, waitFor, render, screen, userEvent } from '@testing-library/react-native';
 import 'react-native';
 import React from 'react';
 import { it, describe } from '@jest/globals';
-import { UserEventInstance } from '@testing-library/react-native/build/user-event/setup';
 import { confirmSignUp } from 'aws-amplify/auth';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationContainer, useNavigation, useRoute } from '@react-navigation/native';
 import { Alert } from "react-native";
 import { ActivationCode } from '../../../screens/Auth/ActivationCode';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../../navigation/RootNavigator';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'), // Esto mantiene el resto del módulo intacto
-    useNavigation: jest.fn()
+    useNavigation: jest.fn(),
+    useRoute: jest.fn()
 }));
 jest.mock('aws-amplify/auth', () => ({
     confirmSignUp: jest.fn()
 }));
 
 describe('Activation Code', () => {
-    let user: UserEventInstance;
+    const Stack = createNativeStackNavigator<RootStackParamList>();
 
     beforeEach(() => {
-        user = userEvent.setup();
+        // Mock de useRoute para proporcionar el parámetro `email`
+        const mockRouteParams = {
+            params: {
+                email: 'test@email.com'
+            }
+        };
+        (useRoute as jest.Mock).mockReturnValue(mockRouteParams);
     });
 
-    it('should show an introductory text', () => {
-        render(<ActivationCode />);
+    afterEach(() => {
+        cleanup();
+        jest.clearAllMocks();
+    });
+
+    const renderComponent = () => {
+        return render(
+            <NavigationContainer>
+                <Stack.Navigator initialRouteName="ActivationCode">
+                    <Stack.Screen name="ActivationCode" component={ActivationCode} />
+                </Stack.Navigator>
+            </NavigationContainer>
+        )
+    };
+
+    it('should show an introductory text has more than 3 characters', () => {
+        renderComponent();
     
-        expect(screen.getByRole('text', { name: 'Se envió correo de confirmación al correo ** con el código de activación. Por favor regístralo a continuación'})).toBeDefined();
+        expect(screen.getByRole('text', { name: 'Se envió correo de confirmación al correo t**t@email.com con el código de activación. Por favor regístralo a continuación'})).toBeDefined();
+    });
+
+    it('should show an introductory text when email has less than 3 characters', () => {
+        // Mock de useRoute para proporcionar el parámetro `email`
+        const mockRouteParams = {
+            params: {
+                email: 'fe@email.com'
+            }
+        };
+        (useRoute as jest.Mock).mockReturnValue(mockRouteParams);
+
+        renderComponent();
+    
+        expect(screen.getByRole('text', { name: 'Se envió correo de confirmación al correo f***@email.com con el código de activación. Por favor regístralo a continuación'})).toBeDefined();
     });
 
     it('should show input text for activation code', () => {
-        render(<ActivationCode />);
+        renderComponent();
     
         expect(screen.getByTestId('ActivationCode.CodigoActivacion')).toBeDefined();
     });
 
     it('should show a button to ActivationCode', () => {
-        render(<ActivationCode />);
+        renderComponent();
     
         expect(screen.getByTestId('ActivationCode.Button')).toBeDefined();
     });
 
     it('should call the handlePress method when clicking the Continuar button', async () => {
+        const user = userEvent.setup();
         const mockNavigate = jest.fn();
         (useNavigation as jest.Mock).mockReturnValue({
             navigate: mockNavigate,
@@ -51,30 +89,32 @@ describe('Activation Code', () => {
             isSignedIn: true,
             nextStep: 'COMPLETED'
         });
-        render(<ActivationCode />);
+        renderComponent();
     
         await user.type(screen.getByTestId('ActivationCode.CodigoActivacion'), '12456900');
-        await user.press(screen.getByLabelText('ActivationCode.Button'));
+        await user.press(screen.getByTestId('ActivationCode.Button'));
 
-        expect(confirmSignUp).toHaveBeenCalledWith({ username: 'test@email.com', password: 'T345sdad'});
-        expect(mockNavigate).toHaveBeenCalledWith('Login');
+        await waitFor(() => {
+            expect(confirmSignUp).toHaveBeenCalledWith({ username: 'test@email.com', confirmationCode: '12456900'});
+            expect(mockNavigate).toHaveBeenCalledWith('Login');
+        });
     });
 
     it('should show an Alert when signIn fails', async () => {
-        const mockNavigate = jest.fn();
-        (useNavigation as jest.Mock).mockReturnValue({
-            navigate: mockNavigate,
-            goBack: jest.fn()
-        });
+        const user = userEvent.setup();
         (confirmSignUp as jest.Mock).mockRejectedValue({});
         const alertFn = jest.spyOn(Alert, 'alert');
 
-        render(<ActivationCode />);
+        renderComponent();
     
-        await user.type(screen.getByTestId('ActivationCode.CodigoActivacion'), '12456900');
-        await user.press(screen.getByLabelText('ActivationCode.Button'));
+        await user.type(screen.getByTestId('ActivationCode.CodigoActivacion'), '12456910');
+        await waitFor(() => {
+            user.press(screen.getByTestId('ActivationCode.Button'));
+        });
 
-        expect(confirmSignUp).toHaveBeenCalledWith({ username: 'test@email.com', password: 'T345sdad'});
-        expect(alertFn).toHaveBeenCalled();
+        await waitFor(() => {
+            expect(confirmSignUp).toHaveBeenCalledWith({ username: 'test@email.com', confirmationCode: '12456910'});
+            expect(alertFn).toHaveBeenCalled();
+        });
     });
 });

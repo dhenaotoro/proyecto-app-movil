@@ -1,8 +1,7 @@
-import { render, screen, userEvent } from '@testing-library/react-native';
+import { cleanup, waitFor, render, screen, userEvent } from '@testing-library/react-native';
 import 'react-native';
 import React from 'react';
 import { it, describe } from '@jest/globals';
-import { UserEventInstance } from '@testing-library/react-native/build/user-event/setup';
 import { Login } from '../../../screens/Auth/Login';
 import { signIn } from 'aws-amplify/auth';
 import { useNavigation } from '@react-navigation/native';
@@ -20,10 +19,9 @@ jest.mock('aws-amplify/auth', () => ({
 }));
 
 describe('Login', () => {
-    let user: UserEventInstance;
-
-    beforeEach(() => {
-        user = userEvent.setup();
+    afterEach(() => {
+        cleanup();
+        jest.clearAllMocks();
     });
 
     it('should show an introductory text', () => {
@@ -58,6 +56,8 @@ describe('Login', () => {
     });
 
     it('should call the handlePress method when clicking the Ingresar button', async () => {
+        const user = userEvent.setup();
+
         const mockNavigate = jest.fn();
         (useNavigation as jest.Mock).mockReturnValue({
             navigate: mockNavigate,
@@ -74,16 +74,15 @@ describe('Login', () => {
 
         await user.press(screen.getByLabelText('loginButton'));
 
-        expect(signIn).toHaveBeenCalledWith({ username: 'test@email.com', password: 'T345sdad'});
-        expect(mockNavigate).toHaveBeenCalledWith('ListarPQRs');
+        await waitFor(() => {
+            expect(signIn).toHaveBeenCalledWith({ username: 'test@email.com', password: 'T345sdad'});
+            expect(mockNavigate).toHaveBeenCalledWith('ListarPQRs');
+        });
     });
 
     it('should show an Alert when signIn fails', async () => {
-        const mockNavigate = jest.fn();
-        (useNavigation as jest.Mock).mockReturnValue({
-            navigate: mockNavigate,
-            goBack: jest.fn()
-        });
+        const user = userEvent.setup();
+
         (signIn as jest.Mock).mockRejectedValue({});
         const alertFn = jest.spyOn(Alert, 'alert');
 
@@ -92,9 +91,11 @@ describe('Login', () => {
         await user.type(screen.getByLabelText('Correo'), 'test@email.com');
         await user.type(screen.getByLabelText('Contraseña'), 'T345sdad');
 
-        await user.press(screen.getByLabelText('loginButton'));
+        await waitFor(() => {user.press(screen.getByLabelText('loginButton'))});
 
-        expect(signIn).toHaveBeenCalledWith({ username: 'test@email.com', password: 'T345sdad'});
-        expect(alertFn).toHaveBeenCalled();
+        await waitFor(() => {
+            expect(signIn).toHaveBeenCalledWith({ username: 'test@email.com', password: 'T345sdad'});
+            expect(alertFn).toHaveBeenCalled();
+        });
     });
 });

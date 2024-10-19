@@ -8,7 +8,7 @@ import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/RootNavigator";
 
-type ActivactionCodeRouteProp = RouteProp<RootStackParamList, 'ActivactionCode'>;
+type ActivactionCodeRouteProp = RouteProp<RootStackParamList, 'ActivationCode'>;
 
 export function ActivationCode(): React.JSX.Element  {
     const screen = 'ActivationCode';
@@ -18,7 +18,16 @@ export function ActivationCode(): React.JSX.Element  {
     const route = useRoute<ActivactionCodeRouteProp>();
     const { email } = route.params;
 
-    const maskEmail = () => "**";
+    const maskEmail = () => {
+        const [name, domain] = email.split('@');
+        if (name.length < 3) {
+            // Si el nombre es muy corto, solo muestra el primer carácter
+            return `${name[0]}***@${domain}`;
+        }
+        // Mostrar las dos primeras letras, luego asteriscos y después el último carácter antes del @
+        const maskedName = `${name[0]}${'*'.repeat(name.length - 2)}${name[name.length - 1]}`;
+        return `${maskedName}@${domain}`;
+    };
 
     const handlePress = async () => {
         try {
@@ -31,7 +40,7 @@ export function ActivationCode(): React.JSX.Element  {
             
             navigation.navigate("Login");
         } catch (error) {
-            console.error("Error confirmando el código:", error);
+            console.debug("Error confirmando el código:", error);
             Alert.alert("Error", "Error confirmando el código");
         } finally {
             setLoading(false);
