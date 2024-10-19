@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import MainHeader from '../../components/Header/MainHeader';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/RootNavigator";
+import { fetchUserData } from './mockBackend'; 
 
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'ListarPQRs'>;
 
@@ -11,61 +12,74 @@ const ListarPQRs = () => {
   const screen = 'ListarPQRs';
   const navigation = useNavigation<NavigationProps>();
 
+  // Use a constant for username since it's hardcoded
+  const username = "IVAN";
+  const [pqrData, setPqrData] = useState(null); // null indicates loading state
+
+  console.log("Rendering ListarPQRs");
+
+  // Memoize the fetchData function to prevent unnecessary recreation
+  const fetchData = useCallback(async () => {
+    try {
+      const data = await fetchUserData(username);
+      console.log("Fetched PQR data:", data);
+      setPqrData(data);
+    } catch (error) {
+      console.error("Error fetching PQR data:", error);
+    }
+  }, [username]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  // Memoized function for navigation to prevent re-renders
+  const handleRegisterPress = useCallback(() => {
+    navigation.navigate('CrearPQRs');
+  }, [navigation]);
+
+  // Memoized PQR row component to optimize re-renders
+  const PQRRow = React.memo(({ pqr }) => (
+    <View style={styles.row}>
+      <View style={styles.cell}>
+        <TouchableOpacity style={styles.openButton} onPress={() => {}}>
+          <View style={styles.rowContainer}>
+            <Text style={pqr.status === 'Abierto' ? styles.openBulletPoint : styles.closedBulletPoint}>•</Text>
+            <Text style={pqr.status === 'Abierto' ? styles.openButtonText : styles.closedButtonText}>
+              {pqr.status}
+            </Text>
+          </View>
+          <Text style={styles.openCode}>{pqr.id}</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.cell}>
+        <Text style={styles.appText}>{pqr.channel}</Text>
+      </View>
+    </View>
+  ));
+
   return (
     <View style={styles.container} testID={screen}>
-      <MainHeader></MainHeader>
+      <MainHeader />
       <Text style={styles.welcomeText}>Bienvenido</Text>
-      <Text style={styles.username}>IVAN</Text>
+      <Text style={styles.username}>{username}</Text>
       <Text style={styles.pqrText} testID={`${screen}.MainTitle`}>PQRs</Text>
 
-      {/* Tabla */}
-      <View style={styles.table}>
-        <View style={styles.row}>
-          <View style={styles.cell}>
-          <TouchableOpacity style={styles.openButton} onPress={() => {}}>
-           <View style={styles.rowContainer}>
-             <Text style={styles.openBulletPoint}>•</Text>
-             <Text style={styles.openButtonText}>Abierto</Text>
-           </View>
-           <Text style={styles.openCode}>000000001</Text>
-        </TouchableOpacity>
-          </View>
-          <View style={styles.cell}>
-            <Text style={styles.appText}>App móvil</Text>
-          </View>
+      {/* Conditionally render based on the state of pqrData */}
+      {pqrData === null ? (
+        <Text>Cargando PQRs...</Text>
+      ) : pqrData.length === 0 ? (
+        <Text>No hay PQR solicitados, por favor crear tu primer PQR usando la opción de Registra tu PQR</Text>
+      ) : (
+        <View style={styles.table}>     
+          {pqrData.map((pqr, index) => (
+            <PQRRow key={index} pqr={pqr} />
+          ))}
         </View>
-        <View style={styles.row}>
-          <View style={styles.cell}>
-          <TouchableOpacity style={styles.openButton} onPress={() => {}}>
-           <View style={styles.rowContainer}>
-             <Text style={styles.closedBulletPoint}>•</Text>
-             <Text style={styles.closedButtonText}>Cerrado</Text>
-           </View>
-           <Text style={styles.openCode}>000000002</Text>
-        </TouchableOpacity>
-          </View>
-          <View style={styles.cell}>
-            <Text style={styles.appText}>Chatbot</Text>
-          </View>
-        </View>
-        <View style={styles.row}>
-          <View style={styles.cell}>
-          <TouchableOpacity style={styles.openButton} onPress={() => {}}>
-           <View style={styles.rowContainer}>
-             <Text style={styles.closedBulletPoint}>•</Text>
-             <Text style={styles.closedButtonText}>Cerrado</Text>
-           </View>
-           <Text style={styles.openCode}>000000003</Text>
-        </TouchableOpacity>
-          </View>
-          <View style={styles.cell}>
-            <Text style={styles.appText}>Llamada</Text>
-          </View>
-        </View>
-      </View>
+      )}
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.registerButton} onPress={() => navigation.navigate('CrearPQRs')}>
+        <TouchableOpacity style={styles.registerButton} onPress={handleRegisterPress} testID="CrearPQRs.Button">
           <Text style={styles.registerButtonText}>Registra tu PQR</Text>
         </TouchableOpacity>
       </View>
