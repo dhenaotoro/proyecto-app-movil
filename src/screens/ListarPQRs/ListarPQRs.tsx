@@ -6,9 +6,9 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/RootNavigator";
 import { fetchUserData } from './mockBackend'; 
 
-type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'ListarPQRs'>;
+type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'CrearPQRs'>;
 
-const ListarPQRs = () => {
+export default function ListarPQRs(): React.JSX.Element{
   const screen = 'ListarPQRs';
   const navigation = useNavigation<NavigationProps>();
 
@@ -189,5 +189,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
-export default ListarPQRs;

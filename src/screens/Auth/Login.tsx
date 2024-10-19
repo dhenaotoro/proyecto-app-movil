@@ -12,9 +12,9 @@ import awsconfig from "../../aws-exports";
 
 //, borderStyle: 'solid', borderWidth: 1, borderColor: 'blue'
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'ListarPQRs'>;
+Amplify.configure(awsconfig);
 
 export function Login(): React.JSX.Element  {
-    Amplify.configure(awsconfig);
     const screen = 'Login';
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -26,13 +26,13 @@ export function Login(): React.JSX.Element  {
 
         try {
             // Llamada al método de AWS Cognito para iniciar sesión
-            const { isSignedIn, nextStep }  = await signIn({ username: email, password} as SignInInput, );
+            const { isSignedIn, nextStep }  = await signIn({ username: email, password} as SignInInput);
             console.log('Inicio de sesión exitoso:', isSignedIn);
             console.log('El siguiente paso es', nextStep);
             // Aquí puedes redirigir al usuario a la pantalla principal
             navigation.navigate('ListarPQRs');
         } catch (error) {
-            console.error('Error al iniciar sesión:', (error as AuthError).underlyingError);
+            console.debug('Error al iniciar sesión:', (error as AuthError).underlyingError);
             Alert.alert('Error', 'Correo o contraseña incorrectos');
         } finally {
             setLoading(false); // Detener el estado de carga

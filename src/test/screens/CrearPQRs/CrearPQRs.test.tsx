@@ -3,9 +3,10 @@ import 'react-native';
 import React from 'react';
 import { it, describe, beforeEach } from '@jest/globals';
 import CrearPQRs from '../../../screens/CrearPQRs/CrearPQRs';
+import { UserEventInstance } from '@testing-library/react-native/build/user-event/setup';
 
 describe('CrearPQRs', () => {
-    let user;
+    let user: UserEventInstance;
 
     beforeEach(() => {
         user = userEvent.setup();

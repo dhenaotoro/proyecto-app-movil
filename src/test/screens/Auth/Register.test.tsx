@@ -4,7 +4,7 @@ import React from 'react';
 import { it, describe } from '@jest/globals';
 import { UserEventInstance } from '@testing-library/react-native/build/user-event/setup';
 import { Login } from '../../../screens/Auth/Login';
-import { signIn } from 'aws-amplify/auth';
+import { signUp } from 'aws-amplify/auth';
 import { useNavigation } from '@react-navigation/native';
 import { Alert } from "react-native";
 
@@ -13,13 +13,10 @@ jest.mock('@react-navigation/native', () => ({
     useNavigation: jest.fn()
 }));
 jest.mock('aws-amplify/auth', () => ({
-    Amplify: {
-        configure: jest.fn()
-    },
-    signIn: jest.fn()
+    signUp: jest.fn()
 }));
 
-describe('Login', () => {
+describe('Register', () => {
     let user: UserEventInstance;
 
     beforeEach(() => {
@@ -63,7 +60,7 @@ describe('Login', () => {
             navigate: mockNavigate,
             goBack: jest.fn()
         });
-        (signIn as jest.Mock).mockReturnValue({
+        (signUp as jest.Mock).mockReturnValue({
             isSignedIn: true,
             nextStep: 'COMPLETED'
         });
@@ -74,7 +71,7 @@ describe('Login', () => {
 
         await user.press(screen.getByLabelText('loginButton'));
 
-        expect(signIn).toHaveBeenCalledWith({ username: 'test@email.com', password: 'T345sdad'});
+        expect(signUp).toHaveBeenCalledWith({ username: 'test@email.com', password: 'T345sdad'});
         expect(mockNavigate).toHaveBeenCalledWith('ListarPQRs');
     });
 
@@ -84,7 +81,7 @@ describe('Login', () => {
             navigate: mockNavigate,
             goBack: jest.fn()
         });
-        (signIn as jest.Mock).mockRejectedValue({});
+        (signUp as jest.Mock).mockRejectedValue({});
         const alertFn = jest.spyOn(Alert, 'alert');
 
         render(<Login />);
@@ -94,7 +91,7 @@ describe('Login', () => {
 
         await user.press(screen.getByLabelText('loginButton'));
 
-        expect(signIn).toHaveBeenCalledWith({ username: 'test@email.com', password: 'T345sdad'});
+        expect(signUp).toHaveBeenCalledWith({ username: 'test@email.com', password: 'T345sdad'});
         expect(alertFn).toHaveBeenCalled();
     });
 });
