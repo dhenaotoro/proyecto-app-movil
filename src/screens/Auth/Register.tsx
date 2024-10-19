@@ -19,7 +19,7 @@ export function Register(): React.JSX.Element  {
         'Tarjeta Identidad': 'Tarjeta de identidad',
         'Cedula Extranjeria': 'Cédula de extranjería'
     };
-    const [tipoDocumento, setTipoDocumento] = useState('');
+    const [tipoDocumento, setTipoDocumento] = useState('Cedula Ciudadania');
     const [documento, setDocumento] = useState('');
     const [nombres, setNombres] = useState('');
     const [apellidos, setApellido] = useState('');
@@ -39,6 +39,7 @@ export function Register(): React.JSX.Element  {
         const hasUpperCase = /[A-Z]/.test(password);
         const hasLowerCase = /[a-z]/.test(password);
 
+        if (password !== repeatedPassword) return { status: false, message: "Las contraseñas deben ser iguales." }; 
         if (password.length < minLength) return { status: false, message: "Debe tener al menos 8 caracteres." };
         if (!hasNumber) return { status: false, message: "Debe contener al menos un número." };
         if (!hasSpecialChar) return { status: false, message: "Debe contener al menos un carácter especial." };
@@ -48,9 +49,9 @@ export function Register(): React.JSX.Element  {
     }
 
     const handlePress = async () => {
-        if(getStatusPassword().status) {
+        const passwordStatus = getStatusPassword();
+        if(passwordStatus.status) {
             setLoading(true); // Mostrar el estado de carga
-
             try {
                 // Llamada al método de AWS Cognito para crear usuario
                 const { isSignUpComplete, userId, nextStep }  = await signUp({
@@ -73,7 +74,7 @@ export function Register(): React.JSX.Element  {
                     nombre: nombres,
                     apellido: apellidos,
                     email: correo,
-                    telefono: telefono,
+                    telefono: "+57" + telefono,
                     front: 'cliente',
                     address: direccion,
                     identification: documento,
@@ -91,8 +92,8 @@ export function Register(): React.JSX.Element  {
                 setLoading(false); // Detener el estado de carga
             }
         } else {
-            console.debug('Las contraseñas definidas no son iguales');
-            Alert.alert('Error', 'Las contraseñas definidas no son iguales.');
+            console.debug(passwordStatus.message);
+            Alert.alert('Error', passwordStatus.message);
         }
     };
 
