@@ -1,5 +1,5 @@
 import { isScreenShown } from "./utils/isScreenShown";
-import {by, element, expect} from 'detox';
+import { by, element, expect } from 'detox';
 import { USER_LOGIN } from "./utils/mockedData";
 
 describe('Login Component', () => {
@@ -11,7 +11,7 @@ describe('Login Component', () => {
     await device.reloadReactNative();
   });
 
-  it('should filter properties based on input (positive case)', async () => {
+  it('should successfully log in and navigate to CrearPQRs when valid user credentials are provided', async () => {
     await isScreenShown('Login');
 
     await element(by.id('Login.Correo')).typeText(USER_LOGIN.email);
@@ -20,8 +20,13 @@ describe('Login Component', () => {
     await element(by.id('Login.Button')).tap();
 
     await isScreenShown('ListarPQRs');
-    
-    await expect(element(by.id('ListarPQRs.MainTitle'))).toBeVisible(100);
-  });
-});
+    await element(by.id('CrearPQRs.Button')).tap();
 
+    await isScreenShown('CrearPQRs');
+
+    // Optionally, you can check if a specific element in CrearPQRs is visible
+    await expect(element(by.id('CrearPQRs.MainTitle'))).toBeVisible(100);
+
+  });
+  
+});

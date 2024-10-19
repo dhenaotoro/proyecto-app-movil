@@ -3,8 +3,10 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ScrollView 
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import CheckBox from '@react-native-community/checkbox';
+import { sendPQRData } from './apiService';
 
 const CrearPQRs = () => {
+  const screen = 'CrearPQRs';
   const [tipoSolicitud, setTipoSolicitud] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [fechaAdquisicion, setFechaAdquisicion] = useState(new Date());
@@ -14,19 +16,34 @@ const CrearPQRs = () => {
   const [impactoSolucion, setImpactoSolucion] = useState('');
   const [aceptoDatos, setAceptoDatos] = useState(false);
 
-  const handleGuardar = () => {
-    // Validación de campos obligatorios
+  const handleGuardar = async () => {
     if (!tipoSolicitud || !descripcion || !numeroTransaccion || !impactoProblema || !aceptoDatos) {
       Alert.alert('Error', 'Por favor, completa todos los campos obligatorios marcados con *');
       return;
     }
-    Alert.alert('Guardado', 'El PQR ha sido guardado exitosamente');
+  
+    const pqrData = {
+      tipoSolicitud,
+      descripcion,
+      fechaAdquisicion: fechaAdquisicion.toISOString(),
+      numeroTransaccion,
+      impactoProblema,
+      impactoSolucion,
+      aceptoDatos,
+    };
+  
+    try {
+      const response = await sendPQRData(pqrData);
+      Alert.alert('Guardado', response.message);
+    } catch (error) {
+      Alert.alert('Error', 'Hubo un problema al guardar el PQR');
+    }
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={styles.container} testID={screen}>
       <Text style={styles.title}>ABCall</Text>
-      <Text style={styles.subtitle}>Gestiona tus PQRs rápidamente, regístrate ya!</Text>
+      <Text style={styles.subtitle} testID={`${screen}.MainTitle`}>Gestiona tus PQRs rápidamente, regístrate ya!</Text>
 
       <Text style={styles.label}>Tipo de solicitud *</Text>
       <Picker testID="request-type-dropdown"
@@ -49,11 +66,12 @@ const CrearPQRs = () => {
       />
 
       <Text style={styles.label}>Fecha de adquisición *</Text>
-      <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.datePickerButton}>
+      <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.datePickerButton} testID="date-picker-button">
         <Text style={styles.dateText}>{fechaAdquisicion.toISOString().split('T')[0]}</Text>
       </TouchableOpacity>
       {showDatePicker && (
         <DateTimePicker
+          testID="date-picker"
           value={fechaAdquisicion}
           mode="date"
           display="default"
