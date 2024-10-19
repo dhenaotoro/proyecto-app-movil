@@ -10,12 +10,13 @@ import { signUp, AuthError } from "aws-amplify/auth";
 import { RootStackParamList } from "../../navigation/RootNavigator";
 import { useNavigation } from "@react-navigation/native";
 import { registerUser } from "../../services/api";
+import AuthHeader from "../../components/Header/AuthHeader";
 
 export function Register(): React.JSX.Element  {
     const screen = 'Register';
     const tiposDocumentos: { [key: string]: string } = {
         'Cedula Ciudadania': 'Cedula de ciudadanía',
-        'Carnet Diplomatico': 'Carnet diplomatico',
+        'Carnet Diplomatico': 'Carnet diplomático',
         'Tarjeta Identidad': 'Tarjeta de identidad',
         'Cedula Extranjeria': 'Cédula de extranjería'
     };
@@ -76,17 +77,18 @@ export function Register(): React.JSX.Element  {
                     email: correo,
                     telefono: "+57" + telefono,
                     front: 'cliente',
-                    address: direccion,
-                    identification: documento,
-                    identificationType: tipoDocumento
+                    direccion,
+                    numero_documento: documento,
+                    tipo_documento: tipoDocumento,
+                    aceptada_politica_privacidad_datos: aceptadaPoliticaYAvisoPrivacidad
                 };
                 const response = await registerUser(userData);
                 if (response.code === 201 && response.message === "Usuario creado correctamente") {
                     // Aquí puedes redirigir al usuario a la pantalla principal
-                    navigation.navigate('ActivationCode', { email: correo }); 
+                    navigation.navigate('ActivationCode', { email: correo || '' }); 
                 }
             } catch (error) {
-                console.debug('Error al iniciar sesión:', (error as AuthError).underlyingError);
+                console.debug('Error al registrar el usuario:', error);
                 Alert.alert('Error', 'Correo o contraseña incorrectos');
             } finally {
                 setLoading(false); // Detener el estado de carga
@@ -98,53 +100,59 @@ export function Register(): React.JSX.Element  {
     };
 
     return (
-    <View style={{...styles.container}} testID={screen}>
-        <ScrollView contentContainerStyle={styles.innerContainer}>
-            <View style={{height: 64}}>
-                <Text style={styles.messageTitle}>Gestiona tus PQRs rápidamente, registrate ya!</Text>
+        <View>
+            <AuthHeader />
+            <View style={{...styles.container}} testID={screen}>
+                <ScrollView showsVerticalScrollIndicator={true} style={styles.scrollContainer}>
+                    <View style={{...styles.innerContainer}}>
+                        <View style={{height: 64}}>
+                            <Text style={styles.messageTitle}>Gestiona tus PQRs rápidamente, registrate ya!</Text>
+                        </View>
+                        <View style={{height: 821}}>
+                            <DropdownText label='Tipo documento' required value={tipoDocumento} valuesToShow={tiposDocumentos} onChange={(selectedValue: string) => setTipoDocumento(selectedValue)} testID={`${screen}.TipoDocumento`}/>
+                            <InputText label='Documento' required value={documento} onInputChange={(text: string) => setDocumento(text)} testID={`${screen}.Documento`}/>
+                            <InputText label='Nombres' required value={nombres} onInputChange={(text: string) => setNombres(text)} testID={`${screen}.Nombres`}/>
+                            <InputText label='Apellidos' required value={apellidos} onInputChange={(text: string) => setApellido(text)} testID={`${screen}.Apellidos`}/>
+                            <InputText label='Teléfono' required value={telefono} onInputChange={(text: string) => setTelefono(text)} testID={`${screen}.Telefono`}/>
+                            <InputText label='Dirección' required value={direccion} onInputChange={(text: string) => setDireccion(text)} testID={`${screen}.Direccion`}/>
+                            <InputText label='Correo' required value={correo} onInputChange={(text: string) => setCorreo(text)} testID={`${screen}.Correo`}/>
+                            <InputText label='Contraseña' required value={password} onInputChange={(text: string) => setPassword(text)} testID={`${screen}.Password`}/>
+                            <InputText label='Repite tu contraseña' required value={repeatedPassword} onInputChange={(text: string) => setRepeatedPassword(text)} testID={`${screen}.PasswordRepeated`}/>
+                            <View style={styles.avisoPrivacidadContainer}>
+                                <CheckBox testID={`${screen}.PoliticaPrivacidad`} style={styles.checkbox} value={aceptadaPoliticaYAvisoPrivacidad} onValueChange={setAceptadaPoliticaYAvisoPrivacidad}/>
+                                <Text style={styles.avisoPrivacidadTexto}>Acepto la <Text style={styles.avisoPrivacidadTextoNegrita}>política de privacidad</Text> y <Text style={styles.avisoPrivacidadTextoNegrita}>aviso de privacidad de datos</Text></Text>
+                            </View>
+                        </View>
+                        <View style={{height: 92, paddingTop: 16}}>
+                            <TouchableOpacity style={styles.button} onPress={handlePress} aria-label='registerButton' testID={`${screen}.Button`}>
+                                <Text style={styles.buttonText}>{loading ? 'Cargando...' : 'Confirmar'}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <View style={{height: 182, alignItems: 'center'}}>
+                        <Text style={{...styles.link}} onPress={() => navigation.navigate('Login')}>Cancelar</Text>
+                    </View>
+                </ScrollView>
             </View>
-            <View style={{height: 311}}>
-                <DropdownText label='Tipo documento' required value={tipoDocumento} valuesToShow={tiposDocumentos} onChange={(selectedValue: string) => setTipoDocumento(selectedValue)} testID={`${screen}.TipoDocumento`}/>
-                <InputText label='Documento' required value={documento} onInputChange={(text: string) => setDocumento(text)} testID={`${screen}.Documento`}/>
-                <InputText label='Nombres' required value={nombres} onInputChange={(text: string) => setNombres(text)} testID={`${screen}.Nombres`}/>
-                <InputText label='Apellidos' required value={apellidos} onInputChange={(text: string) => setApellido(text)} testID={`${screen}.Apellidos`}/>
-                <InputText label='Teléfono' required value={telefono} onInputChange={(text: string) => setTelefono(text)} testID={`${screen}.Telefono`}/>
-                <InputText label='Dirección' required value={direccion} onInputChange={(text: string) => setDireccion(text)} testID={`${screen}.Direccion`}/>
-                <InputText label='Correo' required value={correo} onInputChange={(text: string) => setCorreo(text)} testID={`${screen}.Correo`}/>
-                <InputText label='Contraseña' required value={password} onInputChange={(text: string) => setPassword(text)} testID={`${screen}.Password`}/>
-                <InputText label='Repite tu contraseña' required value={repeatedPassword} onInputChange={(text: string) => setRepeatedPassword(text)} testID={`${screen}.PasswordRepeated`}/>
-                <View style={styles.avisoPrivacidad}>
-                    <CheckBox style={styles.checkbox} value={aceptadaPoliticaYAvisoPrivacidad} onValueChange={setAceptadaPoliticaYAvisoPrivacidad}/>
-                    <Text style={styles.avisoPrivacidadTexto}>Acepto la <Text style={styles.avisoPrivacidadTextoNegrita}>política de privacidad</Text> y <Text style={styles.avisoPrivacidadTextoNegrita}>aviso de privacidad de datos</Text></Text>
-                </View>
-            </View>
-            <View style={{height: 92}}>
-                <TouchableOpacity style={styles.button} onPress={handlePress} aria-label='registerButton' testID={`${screen}.Button`}>
-                    <Text style={styles.buttonText}>{loading ? 'Cargando...' : 'Confirmar'}</Text>
-                </TouchableOpacity>
-            </View>
-        </ScrollView>
-        <View style={{height: 189, paddingTop: 48}}>
-            <Text style={{...styles.link}} onPress={() => navigation.navigate('Login')}>Cancelar</Text>
-        </View>
-    </View>
-        
+        </View>    
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: colors.white,
         paddingTop: 0,
         paddingHorizontal: 15,
-        height: 'auto'
+        height: 'auto',
+        flexGrow: 1
+    },
+    scrollContainer: {
+        paddingVertical: 0,
     },
     innerContainer: {
         backgroundColor: colors.white,
-        paddingTop: 28,
         paddingHorizontal: 15,
         height: 'auto',
-        elevation: 2,
+        elevation: 1,
         borderColor: colors.white,
         borderWidth: 1,
         borderRadius: 4,
@@ -157,7 +165,16 @@ const styles = StyleSheet.create({
         lineHeight: typography.lineHeightMedium,
         color: colors.black,
     },
-    avisoPrivacidad: {
+    avisoPrivacidadContainer: {
+        paddingTop: 18,
+        width: 280,
+        flexDirection: 'row',
+        marginBottom: 20
+    },
+    checkbox: {
+        alignSelf: 'center'
+    },
+    avisoPrivacidadTexto: {
         marginTop: 19,
         fontFamily: typography.nunitoSanzRegular,
         fontSize: typography.fontSizeSmall,
@@ -165,14 +182,8 @@ const styles = StyleSheet.create({
         lineHeight: typography.lineHeightXYSmall,
         color: colors.black,
     },
-    checkbox: {
-
-    },
-    avisoPrivacidadTexto: {
-
-    },
     avisoPrivacidadTextoNegrita: {
-        
+        fontWeight: typography.fontWeightBold as any,
     },
     button: {
         marginTop: 29,
@@ -192,11 +203,12 @@ const styles = StyleSheet.create({
         color: colors.black,
     },
     link: {
-        marginTop: 19,
-        fontFamily: typography.nunitoSanzRegular,
+        marginTop: 10,
+        fontFamily: typography.nunitoSanzBold,
         fontSize: typography.fontSizeSmall,
         letterSpacing: typography.letterSpacingMedium,
         lineHeight: typography.lineHeightXYSmall,
         color: colors.black,
+        textDecorationLine: 'underline'
     },
 });

@@ -1,9 +1,11 @@
 import axios from 'axios';
+import { REACT_NATIVE_APP_BACKEND_URL} from '@env';
 
-const urlUserBase = `${process.env.REACT_NATIVE_APP_BACKEND_URL}/api/user`;
+//const urlUserBase = `${REACT_NATIVE_APP_BACKEND_URL}/api/user`;
+const urlUserBase = 'https://hkslfdwjt2.execute-api.us-east-1.amazonaws.com/dev/api/user';
 
-export async function registerUser(userData: { uuid: string | undefined; nombre: string; apellido: string; email: string; telefono: string; front: string; address: string; identification: string; identificationType: string; }) {
-    const url = `${urlUserBase}/create`;
+export async function registerUser(userData: { uuid: string | undefined; nombre: string; apellido: string; email: string; telefono: string; front: string; direccion: string;  numero_documento: string; tipo_documento: string; aceptada_politica_privacidad_datos: boolean}) {
+  const url = `${urlUserBase}/create`;
 
   try {
     const response = await fetch(url, {

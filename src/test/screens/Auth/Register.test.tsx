@@ -123,9 +123,10 @@ describe('Register', () => {
                 email: 'test@email.com',
                 telefono: '+573105679034',
                 front: 'cliente',
-                address: 'Casa 5 Manzana 54',
-                identification: '1088245679',
-                identificationType: 'Cedula Ciudadania'
+                direccion: 'Casa 5 Manzana 54',
+                numero_documento: '1088245679',
+                tipo_documento: 'Cedula Ciudadania',
+                aceptada_politica_privacidad_datos: false
             });
 
             expect(mockNavigate).toHaveBeenCalledWith('ActivationCode', { email: 'test@email.com'});

@@ -20,20 +20,23 @@ export function DropdownText({label, required, valuesToShow, value, onChange, te
     return (
         <View style={styles.containerInput}>
             <Text style={styles.inputLabel}>{defineLabel()}</Text>
-            <Picker
-                testID={testID}
-                selectedValue={value}
-                onValueChange={(selectedValue) => onChange(selectedValue)}
-                style={styles.picker}>
-                    {Object.keys(valuesToShow).map((k: string, i, _) => (<Picker.Item testID={`DropdownText.Picker.Item-${i}`} key={i} label={k} value={valuesToShow[k]} />))}
-            </Picker>
+            <View style={{height: 60, justifyContent: 'center', borderColor: colors.brand_violet, borderWidth: 1, borderRadius: 5, marginBottom: 10}}>
+                <Picker
+                    testID={testID}
+                    selectedValue={value}
+                    onValueChange={(selectedValue) => onChange(selectedValue)}
+                    mode="dropdown"
+                    style={styles.picker}>
+                        {Object.keys(valuesToShow).map((k: string, i, _) => (<Picker.Item testID={`DropdownText.Picker.Item-${i}`} key={i} label={valuesToShow[k]} value={k} />))}
+                </Picker>
+            </View>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     containerInput: {
-        marginTop: 19
+        marginTop: 19,
     },
     inputLabel: {
         fontFamily: typography.nunitoSanzRegular,
@@ -45,10 +48,6 @@ const styles = StyleSheet.create({
     },
     picker: {
         height: 41,
-        backgroundColor: 'white',
-        borderColor: colors.brand_violet,
-        borderWidth: 1,
-        borderRadius: 5,
-        marginBottom: 10,
+        backgroundColor: 'white'
     }
 });

@@ -9,6 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/RootNavigator";
 import awsconfig from "../../aws-exports";
+import AuthHeader from "../../components/Header/AuthHeader";
 
 //, borderStyle: 'solid', borderWidth: 1, borderColor: 'blue'
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'ListarPQRs'>;
@@ -32,7 +33,7 @@ export function Login(): React.JSX.Element  {
             // Aquí puedes redirigir al usuario a la pantalla principal
             navigation.navigate('ListarPQRs');
         } catch (error) {
-            console.debug('Error al iniciar sesión:', (error as AuthError).underlyingError);
+            console.debug('Error al iniciar sesión:', error);
             Alert.alert('Error', 'Correo o contraseña incorrectos');
         } finally {
             setLoading(false); // Detener el estado de carga
@@ -40,26 +41,29 @@ export function Login(): React.JSX.Element  {
     };
     
     return (
-    <View style={{...styles.container}} testID={screen}>
-        <View style={styles.innerContainer}>
-            <View style={{height: 64}}>
-                <Text style={styles.messageTitle}>Bienvenido(a), inicia sesión con tu correo y contraseña.</Text>
+        <View>
+        <AuthHeader />
+        <View style={{...styles.container}} testID={screen}>
+            <View style={styles.innerContainer}>
+                <View style={{height: 64}}>
+                    <Text style={styles.messageTitle}>Bienvenido(a), inicia sesión con tu correo y contraseña.</Text>
+                </View>
+                <View style={{height: 311}}>
+                    <InputText label='Correo' required value={email} onInputChange={(text: string) => setEmail(text)} testID={`${screen}.Correo`}/>
+                    <InputText label='Contraseña' required value={password} onInputChange={(text: string) => setPassword(text)} testID={`${screen}.Password`}/>
+                    <Text style={styles.link}>Olvidaste tu contraseña?</Text>
+                </View>
+                <View style={{height: 92}}>
+                    <TouchableOpacity style={styles.button} onPress={handlePress} aria-label='loginButton' testID={`${screen}.Button`}>
+                        <Text style={styles.buttonText}>{loading ? 'Cargando...' : 'Ingresar'}</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-            <View style={{height: 311}}>
-                <InputText label='Correo' required value={email} onInputChange={(text: string) => setEmail(text)} testID={`${screen}.Correo`}/>
-                <InputText label='Contraseña' required value={password} onInputChange={(text: string) => setPassword(text)} testID={`${screen}.Password`}/>
-                <Text style={styles.link}>Olvidaste tu contraseña?</Text>
-            </View>
-            <View style={{height: 92}}>
-                <TouchableOpacity style={styles.button} onPress={handlePress} aria-label='loginButton' testID={`${screen}.Button`}>
-                    <Text style={styles.buttonText}>{loading ? 'Cargando...' : 'Ingresar'}</Text>
-                </TouchableOpacity>
+            <View style={{height: 189, paddingTop: 48}}>
+                <Text style={{...styles.link}} onPress={() => navigation.navigate('Register')}>No tienes cuenta? <Text style={{...styles.link, fontFamily: typography.nunitoSanzBold, textDecorationLine: 'underline'}}>Regístrate</Text></Text>
             </View>
         </View>
-        <View style={{height: 189, paddingTop: 48}}>
-            <Text style={{...styles.link}}>No tienes cuenta? <Text style={{...styles.link, fontFamily: typography.nunitoSanzBold, textDecorationLine: 'underline'}}>Regístrate</Text></Text>
         </View>
-    </View>
     );
 }
 

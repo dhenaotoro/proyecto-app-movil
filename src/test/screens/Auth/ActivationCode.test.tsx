@@ -49,7 +49,7 @@ describe('Activation Code', () => {
     it('should show an introductory text has more than 3 characters', () => {
         renderComponent();
     
-        expect(screen.getByRole('text', { name: 'Se envió correo de confirmación al correo t**t@email.com con el código de activación. Por favor regístralo a continuación'})).toBeDefined();
+        expect(screen.getByRole('text', { name: 'Se envió correo de confirmación al correo t**t@email.com con el código de activación. Por favor verificalo en tu bandeja de entrada y registralo aquí abajo.'})).toBeDefined();
     });
 
     it('should show an introductory text when email has less than 3 characters', () => {
@@ -63,7 +63,21 @@ describe('Activation Code', () => {
 
         renderComponent();
     
-        expect(screen.getByRole('text', { name: 'Se envió correo de confirmación al correo f***@email.com con el código de activación. Por favor regístralo a continuación'})).toBeDefined();
+        expect(screen.getByRole('text', { name: 'Se envió correo de confirmación al correo f***@email.com con el código de activación. Por favor verificalo en tu bandeja de entrada y registralo aquí abajo.'})).toBeDefined();
+    });
+
+    it('should show an introductory text when email is empty', () => {
+        // Mock de useRoute para proporcionar el parámetro `email`
+        const mockRouteParams = {
+            params: {
+                email: ''
+            }
+        };
+        (useRoute as jest.Mock).mockReturnValue(mockRouteParams);
+
+        renderComponent();
+    
+        expect(screen.getByRole('text', { name: 'Se envió correo de confirmación al correo ***@***.com con el código de activación. Por favor verificalo en tu bandeja de entrada y registralo aquí abajo.'})).toBeDefined();
     });
 
     it('should show input text for activation code', () => {

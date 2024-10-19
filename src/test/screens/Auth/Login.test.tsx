@@ -55,6 +55,23 @@ describe('Login', () => {
         expect(screen.getByRole('text', { name: 'No tienes cuenta? Regístrate'})).toBeDefined();
     });
 
+    it('should navigate to the Register screen when clicking on the Register text link', async () => {
+        const user = userEvent.setup();
+
+        const mockNavigate = jest.fn();
+        (useNavigation as jest.Mock).mockReturnValue({
+            navigate: mockNavigate,
+            goBack: jest.fn()
+        });
+        render(<Login />);
+    
+        await user.press(screen.getByRole('text', { name: 'No tienes cuenta? Regístrate'}));
+
+        await waitFor(() => {
+            expect(mockNavigate).toHaveBeenCalledWith('Register');
+        });
+    });
+
     it('should call the handlePress method when clicking the Ingresar button', async () => {
         const user = userEvent.setup();
 

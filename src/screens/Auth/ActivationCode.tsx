@@ -7,6 +7,7 @@ import { confirmSignUp } from "aws-amplify/auth";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/RootNavigator";
+import AuthHeader from "../../components/Header/AuthHeader";
 
 type ActivactionCodeRouteProp = RouteProp<RootStackParamList, 'ActivationCode'>;
 
@@ -19,14 +20,17 @@ export function ActivationCode(): React.JSX.Element  {
     const { email } = route.params;
 
     const maskEmail = () => {
-        const [name, domain] = email.split('@');
-        if (name.length < 3) {
-            // Si el nombre es muy corto, solo muestra el primer carácter
-            return `${name[0]}***@${domain}`;
+        if(email) {
+            const [name, domain] = email.split('@');
+            if (name.length < 3) {
+                // Si el nombre es muy corto, solo muestra el primer carácter
+                return `${name[0]}***@${domain}`;
+            }
+            // Mostrar las dos primeras letras, luego asteriscos y después el último carácter antes del @
+            const maskedName = `${name[0]}${'*'.repeat(name.length - 2)}${name[name.length - 1]}`;
+            return `${maskedName}@${domain}`;
         }
-        // Mostrar las dos primeras letras, luego asteriscos y después el último carácter antes del @
-        const maskedName = `${name[0]}${'*'.repeat(name.length - 2)}${name[name.length - 1]}`;
-        return `${maskedName}@${domain}`;
+        return '***@***.com';
     };
 
     const handlePress = async () => {
@@ -48,21 +52,24 @@ export function ActivationCode(): React.JSX.Element  {
     }
 
     return (
-        <View style={{...styles.container}} testID={screen}>
-        <View style={styles.innerContainer}>
-            <View style={{height: 64}}>
-                <Text style={styles.messageTitle}>Se envió correo de confirmación al correo {maskEmail()} con el código de activación. Por favor regístralo a continuación</Text>
-            </View>
-            <View style={{height: 311}}>
-                <InputText label='Correo' required value={codigoActivacion} onInputChange={(text: string) => setCodigoActivacion(text)} testID={`${screen}.CodigoActivacion`}/>
-            </View>
-            <View style={{height: 92}}>
-                <TouchableOpacity style={styles.button} onPress={handlePress} aria-label='activationCodeButton' testID={`${screen}.Button`}>
-                    <Text style={styles.buttonText}>{loading ? 'Cargando...' : 'Continuar'}</Text>
-                </TouchableOpacity>
+        <View>
+            <AuthHeader />
+            <View style={{...styles.container}} testID={screen}>
+                <View style={styles.innerContainer}>
+                    <View style={{height: 244}}>
+                        <Text style={styles.messageTitle}>Se envió correo de confirmación al correo {maskEmail()} con el código de activación. Por favor verificalo en tu bandeja de entrada y registralo aquí abajo.</Text>
+                    </View>
+                    <View style={{height: 161}}>
+                        <InputText label='Código de Activación' required value={codigoActivacion} onInputChange={(text: string) => setCodigoActivacion(text)} testID={`${screen}.CodigoActivacion`}/>
+                    </View>
+                    <View style={{height: 92}}>
+                        <TouchableOpacity style={styles.button} onPress={handlePress} aria-label='activationCodeButton' testID={`${screen}.Button`}>
+                            <Text style={styles.buttonText}>{loading ? 'Cargando...' : 'Continuar'}</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
             </View>
         </View>
-    </View>
     )
 }
 
@@ -91,23 +98,6 @@ const styles = StyleSheet.create({
         lineHeight: typography.lineHeightMedium,
         color: colors.black,
     },
-    avisoPrivacidad: {
-        marginTop: 19,
-        fontFamily: typography.nunitoSanzRegular,
-        fontSize: typography.fontSizeSmall,
-        letterSpacing: typography.letterSpacingMedium,
-        lineHeight: typography.lineHeightXYSmall,
-        color: colors.black,
-    },
-    checkbox: {
-
-    },
-    avisoPrivacidadTexto: {
-
-    },
-    avisoPrivacidadTextoNegrita: {
-        
-    },
     button: {
         marginTop: 29,
         height: 36,
@@ -124,13 +114,5 @@ const styles = StyleSheet.create({
         fontSize: typography.fontSizeLarge,
         letterSpacing: typography.letterSpacingMedium,
         color: colors.black,
-    },
-    link: {
-        marginTop: 19,
-        fontFamily: typography.nunitoSanzRegular,
-        fontSize: typography.fontSizeSmall,
-        letterSpacing: typography.letterSpacingMedium,
-        lineHeight: typography.lineHeightXYSmall,
-        color: colors.black,
-    },
+    }
 });
