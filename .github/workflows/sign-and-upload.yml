@@ -41,7 +41,7 @@ jobs:
             source $GITHUB_ENV
       
       - name: Check Android SDK directory
-        run: ls -lth $HOME/android-sdk/cmdline-tools/tools/bin
+        run: ls -ltha $HOME/android-sdk/ & ls -ltha $HOME/android-sdk/cmdline-tools & ls -ltha $HOME/android-sdk/cmdline-tools/tools/ & ls -ltha $HOME/android-sdk/cmdline-tools/tools/bin
 
       - name: Install Android SDK Build Tools
         run: |
