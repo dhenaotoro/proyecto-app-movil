@@ -70,8 +70,8 @@ jobs:
       # Usar la versión en el build.gradle
       - name: Set version in Gradle
         run: |
-          pwd
           VERSION=$(grep VERSION version.properties | cut -d'=' -f2)
+          echo '$VERSION' >> $GITHUB_ENV
           sed -i "s/versionName \".*\"/versionName \"$VERSION\"/" android/app/build.gradle
 
       - name: Build release APK
