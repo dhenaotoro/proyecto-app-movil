@@ -120,7 +120,16 @@ export function Register(): React.JSX.Element  {
                             <InputText label='Repite tu contraseña' required value={repeatedPassword} onInputChange={(text: string) => setRepeatedPassword(text)} testID={`${screen}.PasswordRepeated`}/>
                             <View style={styles.avisoPrivacidadContainer}>
                                 <CheckBox testID={`${screen}.PoliticaPrivacidad`} style={styles.checkbox} value={aceptadaPoliticaYAvisoPrivacidad} onValueChange={setAceptadaPoliticaYAvisoPrivacidad}/>
-                                <Text style={styles.avisoPrivacidadTexto}>Acepto la <Text style={styles.avisoPrivacidadTextoNegrita}>política de privacidad</Text> y <Text style={styles.avisoPrivacidadTextoNegrita}>aviso de privacidad de datos</Text></Text>
+                                <Text style={styles.avisoPrivacidadTexto}>
+                                    Acepto la{' '}
+                                    <TouchableOpacity onPress={() => navigation.navigate('Politicas')}>
+                                    <Text style={styles.avisoPrivacidadTextoNegrita}>política de privacidad</Text>
+                                    </TouchableOpacity>{' '} 
+                                    y{' '}
+                                    <TouchableOpacity onPress={() => navigation.navigate('Politicas')}>
+                                    <Text style={styles.avisoPrivacidadTextoNegrita}>aviso de privacidad de datos</Text>
+                                    </TouchableOpacity>
+                                </Text>
                             </View>
                         </View>
                         <View style={{height: 92, paddingTop: 16}}>

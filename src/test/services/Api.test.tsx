@@ -85,7 +85,7 @@ describe('Api', () => {
 
   describe('fetchPqrs', () => {
     it('should return PQR data for the given username', async () => {
-      const username = 'IVAN';
+      const username = '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45';
       const expectedData = [
         { id: '000000001', status: 'Abierto', channel: 'App móvil' },
         { id: '000000002', status: 'Cerrado', channel: 'Chatbot' },

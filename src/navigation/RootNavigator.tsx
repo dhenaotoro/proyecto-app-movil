@@ -9,13 +9,15 @@ import { Register } from '../screens/Auth/Register';
 import ListarPQRs from '../screens/ListarPQRs/ListarPQRs';
 import CrearPQRs from '../screens/CrearPQRs/CrearPQRs';
 import { ActivationCode } from '../screens/Auth/ActivationCode';
+import { Politicas } from '../screens/Auth/Politicas';
 
 export type RootStackParamList = { 
   Login: { userId: string },
   Register: undefined,
   ActivationCode: { email: string },
   ListarPQRs: { userUuid: string },
-  CrearPQRs: undefined
+  CrearPQRs: { userUuid: string },
+  Politicas: undefined
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -30,6 +32,7 @@ export default function RootNavigator(): React.JSX.Element {
         <Stack.Screen name="ActivationCode" component={ActivationCode} />
         <Stack.Screen name="ListarPQRs" component={ListarPQRs} />
         <Stack.Screen name="CrearPQRs" component={CrearPQRs} />
+        <Stack.Screen name="Politicas" component={Politicas} />
       </Stack.Navigator>
     </NavigationContainer>
   );

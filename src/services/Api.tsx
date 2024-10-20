@@ -32,25 +32,9 @@ export async function registerUser(userData: { uuid: string | undefined; nombre:
 };
 
 export const fetchPqrs = async (username: string) : Promise<{ id: string, status: string, channel: string}[]> => {
-  // Simulated backend response
-  console.log("Mock fetchUserData called for:", username);
-  const mockData: { [key: string]: { id: string, status: string, channel: string}[]} = {
-    'IVAN': [
-      { id: '000000001', status: 'Abierto', channel: 'App móvil' },
-      { id: '000000002', status: 'Cerrado', channel: 'Chatbot' },
-      { id: '000000003', status: 'Cerrado', channel: 'Llamada' }
-    ],
-    'DANIEL': [] // No PQRs for this user
-  };
-
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(mockData[username] || []);
-    }, 1000);
-  });
-
-  /*console.log(urlUserBase)
-  const url = `${urlPqrBase}/findAll`;
+ 
+  console.log("URL fetchPQRs", urlPqrBase);
+  const url = `${urlPqrBase}/findAll?uuid=${username}`;
 
   try {
     const response = await fetch(url, {
@@ -69,5 +53,31 @@ export const fetchPqrs = async (username: string) : Promise<{ id: string, status
   } catch (error) {
     console.debug("Error en la solicitud al backend:", error);
     throw error;
-  }*/
+  }
+};
+
+export async function registerPqr(pqrData: { uuidUsuario: string | undefined; tipoSolicitud: string; descripcion: string; numeroTransaccion: string; impactoProblema: string; impactoSolucion: string; canal: string}) {
+  
+  const url = `${urlPqrBase}/create`;
+  console.log(url);
+  console.log(pqrData);
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(pqrData),
+    });
+    
+    if (!response.ok) {
+      throw new Error("Error al crear el pqr en el backend");
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.debug("Error en la solicitud al backend:", error);
+    throw error;
+  }
 };
