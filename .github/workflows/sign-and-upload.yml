@@ -113,8 +113,8 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: Verificacion de directorios
-        run: ls -ltha app/build/outputs/apk/release/
+        run: ls -ltha
 
       - name: Upload to S3 Bucket
         run: |
-          aws s3 cp app/build/outputs/apk/release/app-release.apk s3://${{ vars.S3_BUCKET_NAME }}/app-release.apk
+          aws s3 cp Signed\ app\ bundle/app-release.apk s3://${{ vars.S3_BUCKET_NAME }}/app-release.apk
