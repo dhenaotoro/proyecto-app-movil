@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useState } from 'react';
+import React, { createContext, ReactNode, useMemo, useState } from 'react';
 import { signIn as amplifySignIn, type SignInInput } from 'aws-amplify/auth';
 
 interface AuthContextProps {
@@ -15,6 +15,7 @@ export const AuthContext = createContext<AuthContextProps | undefined>(undefined
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const authProps = useMemo(() => ({ isAuthenticated, signIn, signOut }), []); 
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -34,7 +35,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, signIn, signOut }}>
+    <AuthContext.Provider value={authProps}>
       {children}
     </AuthContext.Provider>
   );
