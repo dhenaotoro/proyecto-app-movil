@@ -29,7 +29,7 @@ jobs:
         with:
           node-version: '21'
 
-      - name: Install Android SDK Build Tools
+      - name: Prepare Android SDK Build Tools
         run: |
             sudo apt-get update
             sudo apt-get install -y wget unzip
@@ -37,9 +37,11 @@ jobs:
             mkdir -p $HOME/android-sdk/cmdline-tools
             unzip commandlinetools.zip -d $HOME/android-sdk/cmdline-tools
             echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
-            echo "PATH=$PATH:$ANDROID_HOME/cmdline-tools/tools/bin" >> $GITHUB_ENV
-            echo "PATH=$PATH:$ANDROID_HOME/platform-tools" >> $GITHUB_ENV
+            echo "PATH=$PATH:$ANDROID_HOME/cmdline-tools/tools/bin:$ANDROID_HOME/platform-tools" >> $GITHUB_ENV
             source $GITHUB_ENV
+      
+      - name: Install Android SDK Build Tools
+        run: |
             yes | sdkmanager --licenses
             sdkmanager "platform-tools" "build-tools;34.0.0"
 
