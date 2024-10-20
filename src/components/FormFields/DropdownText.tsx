@@ -1,5 +1,5 @@
 import React, { PropsWithRef } from 'react';
-import { View, Text, TextInput, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import colors from "../../styles/colors";
 import typography from "../../styles/typography";
 import { Picker } from '@react-native-picker/picker';
@@ -27,7 +27,7 @@ export function DropdownText({label, required, valuesToShow, value, onChange, te
                     onValueChange={(selectedValue) => onChange(selectedValue)}
                     mode="dropdown"
                     style={styles.picker}>
-                        {Object.keys(valuesToShow).map((k: string, i, _) => (<Picker.Item testID={`DropdownText.Picker.Item-${i}`} key={i} label={valuesToShow[k]} value={k} />))}
+                        {Object.keys(valuesToShow).map((k: string, i, _) => (<Picker.Item testID={`DropdownText.Picker.Item-${i}`} key={`${k}-${i}`} label={valuesToShow[k]} value={k} />))}
                 </Picker>
             </View>
         </View>

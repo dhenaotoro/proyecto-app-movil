@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import typography from "../../styles/typography";
 import { InputText } from "../../components/FormFields/InputText";
 import { Amplify } from 'aws-amplify';
-import { AuthError, signIn, type SignInInput } from 'aws-amplify/auth';
+import { signIn, type SignInInput } from 'aws-amplify/auth';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/RootNavigator";
