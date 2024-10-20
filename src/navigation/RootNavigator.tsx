@@ -11,10 +11,10 @@ import CrearPQRs from '../screens/CrearPQRs/CrearPQRs';
 import { ActivationCode } from '../screens/Auth/ActivationCode';
 
 export type RootStackParamList = { 
-  Login: undefined,
+  Login: { userId: string },
   Register: undefined,
   ActivationCode: { email: string },
-  ListarPQRs: undefined,
+  ListarPQRs: { userUuid: string },
   CrearPQRs: undefined
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -25,7 +25,7 @@ export default function RootNavigator(): React.JSX.Element {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login" screenOptions={{ header: isAuthenticated? AuthHeader : MainHeader }}>
-        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Login" component={Login} initialParams={{ userId: '' }} />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="ActivationCode" component={ActivationCode} />
         <Stack.Screen name="ListarPQRs" component={ListarPQRs} />

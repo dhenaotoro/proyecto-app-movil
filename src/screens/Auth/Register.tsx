@@ -130,7 +130,7 @@ export function Register(): React.JSX.Element  {
                         </View>
                     </View>
                     <View style={{height: 182, alignItems: 'center'}}>
-                        <Text style={{...styles.registryLink}} onPress={() => navigation.navigate('Login')}>Cancelar</Text>
+                        <Text style={{...styles.registryLink}} onPress={() => navigation.navigate('Login', { userId: ''})}>Cancelar</Text>
                     </View>
                 </ScrollView>
             </View>

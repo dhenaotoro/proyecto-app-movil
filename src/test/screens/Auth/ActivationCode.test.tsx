@@ -109,7 +109,7 @@ describe('Activation Code', () => {
 
         await waitFor(() => {
             expect(confirmSignUp).toHaveBeenCalledWith({ username: 'test@email.com', confirmationCode: '12456900'});
-            expect(mockNavigate).toHaveBeenCalledWith('Login');
+            expect(mockNavigate).toHaveBeenCalledWith('Login', {'userId': ''});
         });
     });
 
