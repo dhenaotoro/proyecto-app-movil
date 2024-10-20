@@ -25,6 +25,10 @@ jobs:
       - name: Instalación de dependencias
         run: npm install
 
+      # Validar directorio
+      - name: Directorio de Services
+        run: ls -ltha /src/services
+
       # Correr las pruebas con Jest
       - name: Ejecutar pruebas usando Jest y generando los reportes finales
         run: npm run test-report

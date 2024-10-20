@@ -10,6 +10,10 @@ describe('Api', () => {
     fetchMock.resetMocks();
   });
 
+  afterAll(() => {
+    fetchMock.mockRestore();
+  });
+
   describe('registerUser', () => {
     it('should call the correct endpoint and return result on success', async () => {
         const mockUserData = {
