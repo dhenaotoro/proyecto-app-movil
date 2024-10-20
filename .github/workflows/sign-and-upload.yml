@@ -60,26 +60,51 @@ jobs:
       - name: Instalación de dependencias
         run: npm install
 
+      # Actualizar la versión
+      - name: Increment version
+        run: |
+          VERSION_FILE=version.properties
+          if [ -f "$VERSION_FILE" ]; then
+            . $VERSION_FILE
+            PATCH_VERSION=$((PATCH_VERSION+1))
+          else
+            MAJOR_VERSION=1
+            MINOR_VERSION=0
+            PATCH_VERSION=0
+          fi
+          echo "MAJOR_VERSION=$MAJOR_VERSION" > $VERSION_FILE
+          echo "MINOR_VERSION=$MINOR_VERSION" >> $VERSION_FILE
+          echo "PATCH_VERSION=$PATCH_VERSION" >> $VERSION_FILE
+          echo "VERSION=$MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION" >> $VERSION_FILE
+          echo "Updated version to $MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION"
+
       - name: Build release APK
         run: npm run pipeline:build-release
-
-      - name: Sign APK
-        uses: r0adkll/sign-android-release@v1
-        id: sign_app
-        with:
-          releaseDirectory: android/app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.SIGNING_KEY_BASE64 }}
-          alias: ${{ secrets.SIGNING_KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.SIGNING_KEY_PASSWORD }}
-        env:
-          BUILD_TOOLS_VERSION: "34.0.0"
+      
+      # Usar la versión en el build.gradle
+      - name: Set version in Gradle
+        run: |
+          VERSION=$(grep VERSION version.properties | cut -d'=' -f2)
+          sed -i "s/versionName \".*\"/versionName \"$VERSION\"/" android/app/build.gradle
+      
+      #- name: Sign APK
+      #  uses: r0adkll/sign-android-release@v1
+      #  id: sign_app
+      #  with:
+      #    releaseDirectory: android/app/build/outputs/apk/release
+      #    signingKeyBase64: ${{ secrets.SIGNING_KEY_BASE64 }}
+      #    alias: ${{ secrets.SIGNING_KEY_ALIAS }}
+      #    keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+      #    keyPassword: ${{ secrets.SIGNING_KEY_PASSWORD }}
+      #  env:
+      #    BUILD_TOOLS_VERSION: "34.0.0"
       
       - name: Upload APK artifact
         uses: actions/upload-artifact@v3
         with:
           name: Signed app bundle
-          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+          #path: ${{steps.sign_app.outputs.signedReleaseFile}}
+          path: android/app/build/outputs/apk/release
   upload:
     needs: build
     runs-on: ubuntu-latest

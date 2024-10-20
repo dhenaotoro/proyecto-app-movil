@@ -66,7 +66,7 @@ describe('Register', () => {
         await userEvent.press(screen.getByRole('text', { name: 'Cancelar'}));
 
         await waitFor(() => {
-            expect(mockNavigate).toHaveBeenCalledWith('Login');
+            expect(mockNavigate).toHaveBeenCalledWith('Login', { userId: '' });
         });
     });
 
