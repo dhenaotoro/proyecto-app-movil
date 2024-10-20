@@ -1,12 +1,11 @@
 import React from 'react';
 import { waitFor, render, screen, userEvent } from '@testing-library/react-native';
 import { it, describe, beforeEach } from '@jest/globals';
-import { NavigationContainer } from '@react-navigation/native'; // Import NavigationContainer
 import ListarPQRs from '../../../screens/ListarPQRs/ListarPQRs';
 import { UserEventInstance } from '@testing-library/react-native/build/user-event/setup';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigation/RootNavigator';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, NavigationContainer } from '@react-navigation/native';
 
 jest.mock('@react-navigation/native', () => ({
   ...jest.requireActual('@react-navigation/native'), // Esto mantiene el resto del módulo intacto

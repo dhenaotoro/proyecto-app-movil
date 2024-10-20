@@ -1,5 +1,4 @@
 import { cleanup, waitFor, render, screen, userEvent } from '@testing-library/react-native';
-import 'react-native';
 import React from 'react';
 import { it, describe } from '@jest/globals';
 import { Register } from '../../../screens/Auth/Register';

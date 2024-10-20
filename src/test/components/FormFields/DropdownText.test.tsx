@@ -1,20 +1,14 @@
-import { render, screen, userEvent } from '@testing-library/react-native';
+import { render, screen } from '@testing-library/react-native';
 import 'react-native';
 import React from 'react';
 import {it, describe} from '@jest/globals';
-import { UserEventInstance } from '@testing-library/react-native/build/user-event/setup';
 import { DropdownText } from '../../../components/FormFields/DropdownText';
 
 describe('DropdownText', () => {
-    let user: UserEventInstance;
     let valuesToShow: {[key: string]: string} = {
         test1: "value1",
         test2: "value2"
     }
-
-    beforeEach(() => {
-        user = userEvent.setup();
-    });
 
     it('should show a required label', () => {
         render(<DropdownText label='Text' value='' valuesToShow={valuesToShow} onChange={jest.fn()} required testID='DropdownText.Picker'/>);

@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { InputText } from "../../components/FormFields/InputText";
 import CheckBox from "@react-native-community/checkbox";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { signUp, AuthError } from "aws-amplify/auth";
+import { signUp } from "aws-amplify/auth";
 import { RootStackParamList } from "../../navigation/RootNavigator";
 import { useNavigation } from "@react-navigation/native";
 import { registerUser } from "../../services/api";
@@ -23,7 +23,7 @@ export function Register(): React.JSX.Element  {
     const [tipoDocumento, setTipoDocumento] = useState('Cedula Ciudadania');
     const [documento, setDocumento] = useState('');
     const [nombres, setNombres] = useState('');
-    const [apellidos, setApellido] = useState('');
+    const [apellidos, setApellidos] = useState('');
     const [telefono, setTelefono] = useState('');
     const [direccion, setDireccion] = useState('');
     const [correo, setCorreo] = useState('');
@@ -35,7 +35,7 @@ export function Register(): React.JSX.Element  {
 
     const getStatusPassword = () => {
         const minLength = 8;
-        const hasNumber = /[0-9]/.test(password);
+        const hasNumber = /\d/.test(password);
         const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
         const hasUpperCase = /[A-Z]/.test(password);
         const hasLowerCase = /[a-z]/.test(password);
@@ -55,7 +55,7 @@ export function Register(): React.JSX.Element  {
             setLoading(true); // Mostrar el estado de carga
             try {
                 // Llamada al método de AWS Cognito para crear usuario
-                const { isSignUpComplete, userId, nextStep }  = await signUp({
+                const { userId, nextStep }  = await signUp({
                     username: correo,
                     password: password,
                     options: {
@@ -112,7 +112,7 @@ export function Register(): React.JSX.Element  {
                             <DropdownText label='Tipo documento' required value={tipoDocumento} valuesToShow={tiposDocumentos} onChange={(selectedValue: string) => setTipoDocumento(selectedValue)} testID={`${screen}.TipoDocumento`}/>
                             <InputText label='Documento' required value={documento} onInputChange={(text: string) => setDocumento(text)} testID={`${screen}.Documento`}/>
                             <InputText label='Nombres' required value={nombres} onInputChange={(text: string) => setNombres(text)} testID={`${screen}.Nombres`}/>
-                            <InputText label='Apellidos' required value={apellidos} onInputChange={(text: string) => setApellido(text)} testID={`${screen}.Apellidos`}/>
+                            <InputText label='Apellidos' required value={apellidos} onInputChange={(text: string) => setApellidos(text)} testID={`${screen}.Apellidos`}/>
                             <InputText label='Teléfono' required value={telefono} onInputChange={(text: string) => setTelefono(text)} testID={`${screen}.Telefono`}/>
                             <InputText label='Dirección' required value={direccion} onInputChange={(text: string) => setDireccion(text)} testID={`${screen}.Direccion`}/>
                             <InputText label='Correo' required value={correo} onInputChange={(text: string) => setCorreo(text)} testID={`${screen}.Correo`}/>
