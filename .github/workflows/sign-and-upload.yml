@@ -34,10 +34,13 @@ jobs:
       - name: Build release APK
         run: npm run pipeline:build-release
 
+      - name: Folders structures
+        run: ls -lth android/app/build/outputs/apk/release
+
       - name: Sign APK
         uses: r0adkll/sign-android-release@v1
         with:
-          releaseDirectory: /android/app/build/outputs/apk/release
+          releaseDirectory: android/app/build/outputs/apk/release
           signingKeyBase64: ${{ secrets.SIGNING_KEY_BASE64 }}
           alias: ${{ secrets.SIGNING_KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
