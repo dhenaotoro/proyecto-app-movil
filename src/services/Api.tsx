@@ -17,8 +17,7 @@ export async function registerUser(userData: { uuid: string | undefined; nombre:
       },
       body: JSON.stringify(userData),
     });
-    console.log('AQUI PASO 2')
-    console.log(response)
+    
     if (!response.ok) {
       throw new Error("Error al crear el usuario en el backend");
     }

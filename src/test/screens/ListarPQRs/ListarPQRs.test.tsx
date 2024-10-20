@@ -12,7 +12,7 @@ jest.mock('@react-navigation/native', () => ({
   useNavigation: jest.fn()
 }));
 
-jest.mock('../../../services/api', () => ({
+jest.mock('../../../services/Api', () => ({
   fetchPqrs: jest
     .fn()
     .mockImplementationOnce(() => new Promise(() => {})) // Simulates a pending promise for loading state
