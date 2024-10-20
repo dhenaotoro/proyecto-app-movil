@@ -99,6 +99,11 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Download APK artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: Signed app bundle
+      
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
