@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
         borderColor: colors.brand_violet,
         borderWidth: 1,
         borderRadius: 5,
-        borderStyle: 'solid'
+        borderStyle: 'solid',
+        color: 'black'
     }
 });

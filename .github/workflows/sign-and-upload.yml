@@ -6,7 +6,7 @@ on:
       - main # Trigger on pushes to the main branch
   pull_request:
     branches:
-      - 'main'
+      - 'deployed'
 
 jobs:
   build:
@@ -37,22 +37,14 @@ jobs:
             mkdir -p $HOME/android-sdk/
             unzip commandlinetools.zip -d $HOME/android-sdk/
             echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+            echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
             echo "PATH=$PATH:$ANDROID_HOME/cmdline-tools/bin:$ANDROID_HOME/platform-tools" >> $GITHUB_ENV
             source $GITHUB_ENV
-      
-      - name: Check Android SDK directory
-        run: ls -ltha $HOME/android-sdk/ & ls -ltha $HOME/android-sdk/cmdline-tools & ls -ltha $HOME/android-sdk/cmdline-tools/bin
 
       - name: Install Android SDK Build Tools
         run: |
-            yes | sdkmanager --licenses
-            sdkmanager "platform-tools" "build-tools;34.0.0"
-
-      - name: Folders structures
-        run: ls -ltha /home/runner/ & ls -ltha /home/runner/android-sdk/ & ls -ltha /home/runner/android-sdk/build-tools/ && ls -ltha /usr/local/lib/android/ & ls -ltha /usr/local/lib/android/sdk/ & ls -ltha /usr/local/lib/android/sdk/build-tools/
-
-      - name: Set ANDROID_HOME environment variable
-        run: echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+            yes | $ANDROID_HOME/cmdline-tools/bin/sdkmanager --licenses --sdk_root=$ANDROID_HOME
+            $ANDROID_HOME/cmdline-tools/bin/sdkmanager "platform-tools" "build-tools;34.0.0" --sdk_root=$ANDROID_HOME
 
       # Instalar dependencias con npm
       - name: Instalación de dependencias
@@ -76,14 +68,14 @@ jobs:
           echo "VERSION=$MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION" >> $VERSION_FILE
           echo "Updated version to $MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION"
 
-      - name: Build release APK
-        run: npm run pipeline:build-release
-      
       # Usar la versión en el build.gradle
       - name: Set version in Gradle
         run: |
-          VERSION=$(grep VERSION version.properties | cut -d'=' -f2)
+          VERSION=$(awk -F'=' '/^VERSION=/{print $2}' version.properties | xargs)
           sed -i "s/versionName \".*\"/versionName \"$VERSION\"/" android/app/build.gradle
+
+      - name: Build release APK
+        run: npm run pipeline:build-release
       
       #- name: Sign APK
       #  uses: r0adkll/sign-android-release@v1
@@ -107,13 +99,21 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Download APK artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: Signed app bundle
+      
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Verificacion de directorios
+        run: ls -ltha
 
       - name: Upload to S3 Bucket
         run: |
-          aws s3 cp app/build/outputs/apk/release/app-release.apk s3://${{ secrets.S3_BUCKET_NAME }}/app-release.apk
+          aws s3 cp app-release.apk s3://${{ vars.S3_BUCKET_NAME }}/app-release.apk
