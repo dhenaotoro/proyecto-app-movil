@@ -37,6 +37,7 @@ jobs:
             mkdir -p $HOME/android-sdk/
             unzip commandlinetools.zip -d $HOME/android-sdk/
             echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+            echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
             echo "PATH=$PATH:$ANDROID_HOME/cmdline-tools/bin:$ANDROID_HOME/platform-tools" >> $GITHUB_ENV
             source $GITHUB_ENV
 
@@ -71,11 +72,7 @@ jobs:
       - name: Set version in Gradle
         run: |
           VERSION=$(awk -F'=' '/^VERSION=/{print $2}' version.properties | xargs)
-          echo "Esta es la version: $VERSION"
           sed -i "s/versionName \".*\"/versionName \"$VERSION\"/" android/app/build.gradle
-      
-      - name: Content of Gradle file
-        run: cat android/app/build.gradle
 
       - name: Build release APK
         run: npm run pipeline:build-release
