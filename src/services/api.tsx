@@ -1,10 +1,14 @@
 //import axios from 'axios';
-//import { REACT_NATIVE_APP_BACKEND_URL} from '@env';
+import { REACT_NATIVE_APP_BACKEND_URL } from '@env';
 
-//const urlUserBase = `${REACT_NATIVE_APP_BACKEND_URL}/api/user`;
-const urlUserBase = 'https://hkslfdwjt2.execute-api.us-east-1.amazonaws.com/dev/api/user';
+//The env var is remapped to another const or let variable in order to properly load the value from .env file when launching unit tests with Jest and they are transformed by Babel-jest
+const expectedEnv = REACT_NATIVE_APP_BACKEND_URL;
+const urlUserBase = `${expectedEnv}/api/user`;
+//const urlUserBase = 'https://hkslfdwjt2.execute-api.us-east-1.amazonaws.com/dev/api/user';
+//const urlUserBase = 'https://127.0.0.1:5000';
 
-export async function registerUser(userData: { uuid: string | undefined; nombre: string; apellido: string; email: string; telefono: string; front: string; direccion: string;  numero_documento: string; tipo_documento: string; aceptada_politica_privacidad_datos: boolean}) {
+export async function registerUser(userData: { uuid: string | undefined; nombre: string; apellido: string; email: string; telefono: string; front: string; direccion: string;  numero_documento: string; tipo_documento: string; aceptada_politica_aviso_privacidad: boolean}) {
+  console.log(urlUserBase)
   const url = `${urlUserBase}/create`;
 
   try {

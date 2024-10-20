@@ -80,7 +80,7 @@ export function Register(): React.JSX.Element  {
                     direccion,
                     numero_documento: documento,
                     tipo_documento: tipoDocumento,
-                    aceptada_politica_privacidad_datos: aceptadaPoliticaYAvisoPrivacidad
+                    aceptada_politica_aviso_privacidad: aceptadaPoliticaYAvisoPrivacidad
                 };
                 const response = await registerUser(userData);
                 if (response.code === 201 && response.message === "Usuario creado correctamente") {

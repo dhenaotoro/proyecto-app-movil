@@ -125,7 +125,7 @@ describe('Register', () => {
                 direccion: 'Casa 5 Manzana 54',
                 numero_documento: '1088245679',
                 tipo_documento: 'Cedula Ciudadania',
-                aceptada_politica_privacidad_datos: false
+                aceptada_politica_aviso_privacidad: false
             });
 
             expect(mockNavigate).toHaveBeenCalledWith('ActivationCode', { email: 'test@email.com'});
