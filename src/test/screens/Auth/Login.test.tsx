@@ -107,11 +107,33 @@ describe('Login', () => {
         await user.type(screen.getByLabelText('Correo'), 'test@email.com');
         await user.type(screen.getByLabelText('Contraseña'), 'T345sdad');
 
-        await waitFor(() => {user.press(screen.getByLabelText('loginButton'))});
+        await user.press(screen.getByLabelText('loginButton'));
 
         await waitFor(() => {
             expect(signIn).toHaveBeenCalledWith({ username: 'test@email.com', password: 'T345sdad'});
             expect(alertFn).toHaveBeenCalled();
+        });
+    });
+
+    it('should show navigate to the list of PQRs when user is already signed', async () => {
+        const user = userEvent.setup();
+
+        (signIn as jest.Mock).mockRejectedValue(Object.assign(new Error("There is already a signed in user."), { name: "UserAlreadyAuthenticatedException" }));
+        const mockNavigate = jest.fn();
+        (useNavigation as jest.Mock).mockReturnValue({
+            navigate: mockNavigate,
+            goBack: jest.fn()
+        });
+        render(<Login />);
+    
+        await user.type(screen.getByLabelText('Correo'), 'test@email.com');
+        await user.type(screen.getByLabelText('Contraseña'), 'T345sdad');
+
+        await waitFor(() => {user.press(screen.getByLabelText('loginButton'))});
+
+        await waitFor(() => {
+            expect(signIn).toHaveBeenCalledWith({ username: 'test@email.com', password: 'T345sdad'});
+            expect(mockNavigate).toHaveBeenCalledWith('ListarPQRs');
         });
     });
 });

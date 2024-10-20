@@ -34,6 +34,11 @@ export function Login(): React.JSX.Element  {
             navigation.navigate('ListarPQRs');
         } catch (error) {
             console.debug('Error al iniciar sesión:', error);
+            if (error instanceof Error) {
+                if (error.name === "UserAlreadyAuthenticatedException") {
+                    navigation.navigate("ListarPQRs");
+                }
+            }
             Alert.alert('Error', 'Correo o contraseña incorrectos');
         } finally {
             setLoading(false); // Detener el estado de carga
