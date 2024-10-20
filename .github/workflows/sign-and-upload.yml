@@ -37,7 +37,7 @@ jobs:
             mkdir -p $HOME/android-sdk/
             unzip commandlinetools.zip -d $HOME/android-sdk/
             echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
-            echo "PATH=$PATH:$ANDROID_HOME/cmdline-tools/tools/bin:$ANDROID_HOME/platform-tools" >> $GITHUB_ENV
+            echo "PATH=$PATH:$ANDROID_HOME/cmdline-tools/bin:$ANDROID_HOME/platform-tools" >> $GITHUB_ENV
             source $GITHUB_ENV
       
       - name: Check Android SDK directory
