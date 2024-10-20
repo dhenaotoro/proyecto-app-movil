@@ -39,20 +39,14 @@ jobs:
             echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
             echo "PATH=$PATH:$ANDROID_HOME/cmdline-tools/bin:$ANDROID_HOME/platform-tools" >> $GITHUB_ENV
             source $GITHUB_ENV
-      
-      - name: Check Android SDK directory
-        run: ls -ltha $HOME/android-sdk/ & ls -ltha $HOME/android-sdk/cmdline-tools & ls -ltha $HOME/android-sdk/cmdline-tools/bin
 
       - name: Install Android SDK Build Tools
         run: |
             yes | $ANDROID_HOME/cmdline-tools/bin/sdkmanager --licenses --sdk_root=$ANDROID_HOME
             $ANDROID_HOME/cmdline-tools/bin/sdkmanager "platform-tools" "build-tools;34.0.0" --sdk_root=$ANDROID_HOME
 
-      - name: Folders structures
-        run: ls -ltha /home/runner/ & ls -ltha /home/runner/android-sdk/ & ls -ltha /home/runner/android-sdk/build-tools/ && ls -ltha /usr/local/lib/android/ & ls -ltha /usr/local/lib/android/sdk/ & ls -ltha /usr/local/lib/android/sdk/build-tools/
-
-      - name: Set ANDROID_HOME environment variable
-        run: echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+      #- name: Folders structures
+        #run: ls -ltha /home/runner/ & ls -ltha /home/runner/android-sdk/ & ls -ltha /home/runner/android-sdk/build-tools/ && ls -ltha /usr/local/lib/android/ & ls -ltha /usr/local/lib/android/sdk/ & ls -ltha /usr/local/lib/android/sdk/build-tools/
 
       # Instalar dependencias con npm
       - name: Instalación de dependencias
@@ -76,14 +70,14 @@ jobs:
           echo "VERSION=$MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION" >> $VERSION_FILE
           echo "Updated version to $MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION"
 
-      - name: Build release APK
-        run: npm run pipeline:build-release
-      
       # Usar la versión en el build.gradle
       - name: Set version in Gradle
         run: |
           VERSION=$(grep VERSION version.properties | cut -d'=' -f2)
           sed -i "s/versionName \".*\"/versionName \"$VERSION\"/" android/app/build.gradle
+
+      - name: Build release APK
+        run: npm run pipeline:build-release
       
       #- name: Sign APK
       #  uses: r0adkll/sign-android-release@v1
