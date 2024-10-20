@@ -6,7 +6,6 @@ on:
       - main # Trigger on pushes to the main branch
   pull_request:
     branches:
-      - 'main'
       - 'deployed'
 
 jobs:

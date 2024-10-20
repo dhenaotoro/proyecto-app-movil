@@ -16,6 +16,7 @@ describe('Login Component', () => {
 
     await element(by.id('Login.Correo')).typeText(USER_LOGIN.email);
     await element(by.id('Login.Password')).typeText(USER_LOGIN.password);
+    await element(by.id('Login.Password')).tapReturnKey();
 
     await element(by.id('Login.Button')).tap();
 
