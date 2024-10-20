@@ -102,11 +102,11 @@ export function Register(): React.JSX.Element  {
     return (
         <View>
             <AuthHeader />
-            <View style={{...styles.container}} testID={screen}>
+            <View style={{...styles.registerContainer}} testID={screen}>
                 <ScrollView showsVerticalScrollIndicator={true} style={styles.scrollContainer}>
-                    <View style={{...styles.innerContainer}}>
+                    <View style={{...styles.registerInnerContainer}}>
                         <View style={{height: 64}}>
-                            <Text style={styles.messageTitle}>Gestiona tus PQRs rápidamente, registrate ya!</Text>
+                            <Text style={styles.registerMessageTitle}>Gestiona tus PQRs rápidamente, registrate ya!</Text>
                         </View>
                         <View style={{height: 821}}>
                             <DropdownText label='Tipo documento' required value={tipoDocumento} valuesToShow={tiposDocumentos} onChange={(selectedValue: string) => setTipoDocumento(selectedValue)} testID={`${screen}.TipoDocumento`}/>
@@ -124,13 +124,13 @@ export function Register(): React.JSX.Element  {
                             </View>
                         </View>
                         <View style={{height: 92, paddingTop: 16}}>
-                            <TouchableOpacity style={styles.button} onPress={handlePress} aria-label='registerButton' testID={`${screen}.Button`}>
-                                <Text style={styles.buttonText}>{loading ? 'Cargando...' : 'Confirmar'}</Text>
+                            <TouchableOpacity style={styles.registryButton} onPress={handlePress} aria-label='registerButton' testID={`${screen}.Button`}>
+                                <Text style={styles.registryButtonText}>{loading ? 'Cargando...' : 'Confirmar'}</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
                     <View style={{height: 182, alignItems: 'center'}}>
-                        <Text style={{...styles.link}} onPress={() => navigation.navigate('Login')}>Cancelar</Text>
+                        <Text style={{...styles.registryLink}} onPress={() => navigation.navigate('Login')}>Cancelar</Text>
                     </View>
                 </ScrollView>
             </View>
@@ -139,7 +139,7 @@ export function Register(): React.JSX.Element  {
 }
 
 const styles = StyleSheet.create({
-    container: {
+    registerContainer: {
         paddingTop: 0,
         paddingHorizontal: 15,
         height: 'auto',
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     scrollContainer: {
         paddingVertical: 0,
     },
-    innerContainer: {
+    registerInnerContainer: {
         backgroundColor: colors.white,
         paddingHorizontal: 15,
         height: 'auto',
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         borderStyle: 'solid',
     },
-    messageTitle: {
+    registerMessageTitle: {
         fontFamily: typography.nunitoSanzBold,
         fontSize: typography.fontSizeMedium,
         letterSpacing: typography.letterSpacingMedium,
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     avisoPrivacidadTextoNegrita: {
         fontWeight: typography.fontWeightBold as any,
     },
-    button: {
+    registryButton: {
         marginTop: 29,
         height: 36,
         backgroundColor: colors.white,
@@ -195,14 +195,14 @@ const styles = StyleSheet.create({
         borderStyle: 'solid',
         alignItems: 'center',
     },
-    buttonText: {
+    registryButtonText: {
         marginTop: -5,
         fontFamily: typography.nunitoSanzBold,
         fontSize: typography.fontSizeLarge,
         letterSpacing: typography.letterSpacingMedium,
         color: colors.black,
     },
-    link: {
+    registryLink: {
         marginTop: 10,
         fontFamily: typography.nunitoSanzBold,
         fontSize: typography.fontSizeSmall,
