@@ -1,18 +1,26 @@
-import { render, screen, userEvent } from '@testing-library/react-native';
-import 'react-native';
+import { cleanup, waitFor, render, screen, userEvent } from '@testing-library/react-native';
 import React from 'react';
 import { it, describe } from '@jest/globals';
-import { UserEventInstance } from '@testing-library/react-native/build/user-event/setup';
 import { Login } from '../../../screens/Auth/Login';
+import { signIn } from 'aws-amplify/auth';
+import { useNavigation } from '@react-navigation/native';
+import { Alert } from "react-native";
 
-jest.mock('@react-navigation/native');
-jest.mock('aws-amplify');
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'), // Esto mantiene el resto del módulo intacto
+    useNavigation: jest.fn()
+}));
+jest.mock('aws-amplify/auth', () => ({
+    Amplify: {
+        configure: jest.fn()
+    },
+    signIn: jest.fn()
+}));
 
-describe('InputText', () => {
-    let user: UserEventInstance;
-
-    beforeEach(() => {
-        user = userEvent.setup();
+describe('Login', () => {
+    afterEach(() => {
+        cleanup();
+        jest.clearAllMocks();
     });
 
     it('should show an introductory text', () => {
@@ -44,5 +52,88 @@ describe('InputText', () => {
         render(<Login />);
     
         expect(screen.getByRole('text', { name: 'No tienes cuenta? Regístrate'})).toBeDefined();
+    });
+
+    it('should navigate to the Register screen when clicking on the Register text link', async () => {
+        const user = userEvent.setup();
+
+        const mockNavigate = jest.fn();
+        (useNavigation as jest.Mock).mockReturnValue({
+            navigate: mockNavigate,
+            goBack: jest.fn()
+        });
+        render(<Login />);
+    
+        await user.press(screen.getByRole('text', { name: 'No tienes cuenta? Regístrate'}));
+
+        await waitFor(() => {
+            expect(mockNavigate).toHaveBeenCalledWith('Register');
+        });
+    });
+
+    it('should call the handlePress method when clicking the Ingresar button', async () => {
+        const user = userEvent.setup();
+
+        const mockNavigate = jest.fn();
+        (useNavigation as jest.Mock).mockReturnValue({
+            navigate: mockNavigate,
+            goBack: jest.fn()
+        });
+        (signIn as jest.Mock).mockReturnValue({
+            isSignedIn: true,
+            nextStep: 'COMPLETED'
+        });
+        render(<Login />);
+    
+        await user.type(screen.getByLabelText('Correo'), 'test@email.com');
+        await user.type(screen.getByLabelText('Contraseña'), 'T345sdad');
+
+        await user.press(screen.getByLabelText('loginButton'));
+
+        await waitFor(() => {
+            expect(signIn).toHaveBeenCalled();
+            expect(mockNavigate).toHaveBeenCalledWith('ListarPQRs');
+        });
+    });
+
+    it('should show an Alert when signIn fails', async () => {
+        const user = userEvent.setup();
+
+        (signIn as jest.Mock).mockRejectedValue({});
+        const alertFn = jest.spyOn(Alert, 'alert');
+
+        render(<Login />);
+    
+        await user.type(screen.getByLabelText('Correo'), 'test@email.com');
+        await user.type(screen.getByLabelText('Contraseña'), 'T345sdad');
+
+        await user.press(screen.getByLabelText('loginButton'));
+
+        await waitFor(() => {
+            expect(signIn).toHaveBeenCalled();
+            expect(alertFn).toHaveBeenCalled();
+        });
+    });
+
+    it('should show navigate to the list of PQRs when user is already signed', async () => {
+        const user = userEvent.setup();
+
+        (signIn as jest.Mock).mockRejectedValue(Object.assign(new Error("There is already a signed in user."), { name: "UserAlreadyAuthenticatedException" }));
+        const mockNavigate = jest.fn();
+        (useNavigation as jest.Mock).mockReturnValue({
+            navigate: mockNavigate,
+            goBack: jest.fn()
+        });
+        render(<Login />);
+    
+        await user.type(screen.getByLabelText('Correo'), 'test@email.com');
+        await user.type(screen.getByLabelText('Contraseña'), 'T345sdad');
+
+        await waitFor(() => {user.press(screen.getByLabelText('loginButton'))});
+
+        await waitFor(() => {
+            expect(signIn).toHaveBeenCalled();
+            expect(mockNavigate).toHaveBeenCalledWith('ListarPQRs');
+        });
     });
 });

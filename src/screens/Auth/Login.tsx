@@ -4,17 +4,18 @@ import React, { useState } from "react";
 import typography from "../../styles/typography";
 import { InputText } from "../../components/FormFields/InputText";
 import { Amplify } from 'aws-amplify';
-import { AuthError, signIn, type SignInInput } from 'aws-amplify/auth';
+import { signIn, type SignInInput } from 'aws-amplify/auth';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/RootNavigator";
 import awsconfig from "../../aws-exports";
+import AuthHeader from "../../components/Header/AuthHeader";
 
 //, borderStyle: 'solid', borderWidth: 1, borderColor: 'blue'
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'ListarPQRs'>;
+Amplify.configure(awsconfig);
 
 export function Login(): React.JSX.Element  {
-    Amplify.configure(awsconfig);
     const screen = 'Login';
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -26,13 +27,18 @@ export function Login(): React.JSX.Element  {
 
         try {
             // Llamada al método de AWS Cognito para iniciar sesión
-            const { isSignedIn, nextStep }  = await signIn({ username: email, password} as SignInInput, );
+            const { isSignedIn, nextStep }  = await signIn({ username: email, password} as SignInInput);
             console.log('Inicio de sesión exitoso:', isSignedIn);
             console.log('El siguiente paso es', nextStep);
             // Aquí puedes redirigir al usuario a la pantalla principal
             navigation.navigate('ListarPQRs');
         } catch (error) {
-            console.error('Error al iniciar sesión:', (error as AuthError).underlyingError);
+            console.debug('Error al iniciar sesión:', error);
+            if (error instanceof Error) {
+                if (error.name === "UserAlreadyAuthenticatedException") {
+                    navigation.navigate("ListarPQRs");
+                }
+            }
             Alert.alert('Error', 'Correo o contraseña incorrectos');
         } finally {
             setLoading(false); // Detener el estado de carga
@@ -40,37 +46,40 @@ export function Login(): React.JSX.Element  {
     };
     
     return (
-    <View style={{...styles.container}} testID={screen}>
-        <View style={styles.innerContainer}>
-            <View style={{height: 64}}>
-                <Text style={styles.messageTitle}>Bienvenido(a), inicia sesión con tu correo y contraseña.</Text>
+        <View>
+        <AuthHeader />
+        <View style={{...styles.loginContainer}} testID={screen}>
+            <View style={styles.loginInnerContainer}>
+                <View style={{height: 64}}>
+                    <Text style={styles.loginMessageTitle}>Bienvenido(a), inicia sesión con tu correo y contraseña.</Text>
+                </View>
+                <View style={{height: 311}}>
+                    <InputText label='Correo' required value={email} onInputChange={(text: string) => setEmail(text)} testID={`${screen}.Correo`}/>
+                    <InputText label='Contraseña' required value={password} onInputChange={(text: string) => setPassword(text)} testID={`${screen}.Password`}/>
+                    <Text style={styles.loginLink}>Olvidaste tu contraseña?</Text>
+                </View>
+                <View style={{height: 92}}>
+                    <TouchableOpacity style={styles.loginButton} onPress={handlePress} aria-label='loginButton' testID={`${screen}.Button`}>
+                        <Text style={styles.loginButtonText}>{loading ? 'Cargando...' : 'Ingresar'}</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-            <View style={{height: 311}}>
-                <InputText label='Correo' required value={email} onInputChange={(text: string) => setEmail(text)} testID={`${screen}.Correo`}/>
-                <InputText label='Contraseña' required value={password} onInputChange={(text: string) => setPassword(text)} testID={`${screen}.Password`}/>
-                <Text style={styles.link}>Olvidaste tu contraseña?</Text>
-            </View>
-            <View style={{height: 92}}>
-                <TouchableOpacity style={styles.button} onPress={handlePress} aria-label='loginButton' testID={`${screen}.Button`}>
-                    <Text style={styles.buttonText}>{loading ? 'Cargando...' : 'Ingresar'}</Text>
-                </TouchableOpacity>
+            <View style={{height: 189, paddingTop: 48}}>
+                <Text style={{...styles.loginLink}} onPress={() => navigation.navigate('Register')}>No tienes cuenta? <Text style={{...styles.loginLink, fontFamily: typography.nunitoSanzBold, textDecorationLine: 'underline'}}>Regístrate</Text></Text>
             </View>
         </View>
-        <View style={{height: 189, paddingTop: 48}}>
-            <Text style={{...styles.link}}>No tienes cuenta? <Text style={{...styles.link, fontFamily: typography.nunitoSanzBold, textDecorationLine: 'underline'}}>Regístrate</Text></Text>
         </View>
-    </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
+    loginContainer: {
         backgroundColor: colors.white,
         paddingTop: 0,
         paddingHorizontal: 15,
         height: 'auto'
     },
-    innerContainer: {
+    loginInnerContainer: {
         backgroundColor: colors.white,
         paddingTop: 28,
         paddingHorizontal: 15,
@@ -81,14 +90,14 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         borderStyle: 'solid',
     },
-    messageTitle: {
+    loginMessageTitle: {
         fontFamily: typography.nunitoSanzBold,
         fontSize: typography.fontSizeMedium,
         letterSpacing: typography.letterSpacingMedium,
         lineHeight: typography.lineHeightMedium,
         color: colors.black,
     },
-    link: {
+    loginLink: {
         marginTop: 19,
         fontFamily: typography.nunitoSanzRegular,
         fontSize: typography.fontSizeSmall,
@@ -96,7 +105,7 @@ const styles = StyleSheet.create({
         lineHeight: typography.lineHeightXYSmall,
         color: colors.black,
     },
-    button: {
+    loginButton: {
         marginTop: 29,
         height: 36,
         backgroundColor: colors.white,
@@ -106,7 +115,7 @@ const styles = StyleSheet.create({
         borderStyle: 'solid',
         alignItems: 'center',
     },
-    buttonText: {
+    loginButtonText: {
         marginTop: -5,
         fontFamily: typography.nunitoSanzBold,
         fontSize: typography.fontSizeLarge,

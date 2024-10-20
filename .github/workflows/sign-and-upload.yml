@@ -4,7 +4,9 @@ on:
   push:
     branches:
       - main # Trigger on pushes to the main branch
-  workflow_dispatch:
+  pull_request:
+    branches:
+      - 'main'
 
 jobs:
   build:
@@ -35,7 +37,7 @@ jobs:
       - name: Sign APK
         uses: r0adkll/sign-android-release@v1
         with:
-          releaseDirectory: app/build/outputs/apk/release
+          releaseDirectory: /android/app/build/outputs/apk/release
           signingKeyBase64: ${{ secrets.SIGNING_KEY_BASE64 }}
           alias: ${{ secrets.SIGNING_KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
@@ -47,6 +49,7 @@ jobs:
           name: release-apk
           path: app/build/outputs/apk/release/app-release.apk
   upload:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Configure AWS Credentials

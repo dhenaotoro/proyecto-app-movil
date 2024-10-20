@@ -1,26 +1,41 @@
-import React, { createContext, PropsWithChildren, useState } from 'react';
+import React, { createContext, ReactNode, useMemo, useState } from 'react';
+import { signIn as amplifySignIn, type SignInInput } from 'aws-amplify/auth';
 
-type AuthProps = PropsWithChildren<{}>;
+interface AuthContextProps {
+  isAuthenticated: boolean;
+  signIn: (email: string, password: string) => Promise<void>;
+  signOut: () => void;
+}
 
-const isAuthenticated: boolean = false;
-const login: Function = () => {};
-const logout: Function = () => {};
+interface AuthProviderProps {
+  children: ReactNode;
+}
 
-export const AuthContext = createContext({ isAuthenticated, login, logout });
+export const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
-export const AuthProvider = ({ children }: AuthProps) => {
+export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const authProps = useMemo(() => ({ isAuthenticated, signIn, signOut }), []); 
 
-  const login = () => {
-    setIsAuthenticated(true);
+  const signIn = async (email: string, password: string) => {
+    try {
+      const { isSignedIn, nextStep }  = await amplifySignIn({ username: email, password} as SignInInput);
+      console.log('Inicio de sesión exitoso:', isSignedIn);
+      console.log('El siguiente paso es', nextStep);
+      if (isSignedIn) {
+        setIsAuthenticated(true);
+      }
+    } catch (error) {
+      console.error('Error al iniciar sesión:', error);
+    }
   };
 
-  const logout = () => {
+  const signOut = () => {
     setIsAuthenticated(false);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={authProps}>
       {children}
     </AuthContext.Provider>
   );

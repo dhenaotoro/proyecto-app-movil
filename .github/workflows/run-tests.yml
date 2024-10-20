@@ -14,6 +14,8 @@ jobs:
       # Verifica el código desde el repositorio
       - name: Revisión de repositorio
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
 
       # Configurar Node.js
       - name: Configuración de Node.js
