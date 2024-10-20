@@ -9,7 +9,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { signUp } from "aws-amplify/auth";
 import { RootStackParamList } from "../../navigation/RootNavigator";
 import { useNavigation } from "@react-navigation/native";
-import { registerUser } from "../../services/api";
+import { registerUser } from "../../services/Api";
 import AuthHeader from "../../components/Header/AuthHeader";
 
 export function Register(): React.JSX.Element  {

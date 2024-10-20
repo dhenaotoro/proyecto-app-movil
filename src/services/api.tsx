@@ -4,8 +4,6 @@ import { REACT_NATIVE_APP_BACKEND_URL } from '@env';
 //The env var is remapped to another const or let variable in order to properly load the value from .env file when launching unit tests with Jest and they are transformed by Babel-jest
 const expectedEnv = REACT_NATIVE_APP_BACKEND_URL;
 const urlUserBase = `${expectedEnv}/api/user`;
-//const urlUserBase = 'https://hkslfdwjt2.execute-api.us-east-1.amazonaws.com/dev/api/user';
-//const urlUserBase = 'https://127.0.0.1:5000';
 
 export async function registerUser(userData: { uuid: string | undefined; nombre: string; apellido: string; email: string; telefono: string; front: string; direccion: string;  numero_documento: string; tipo_documento: string; aceptada_politica_aviso_privacidad: boolean}) {
   console.log(urlUserBase)
@@ -19,7 +17,8 @@ export async function registerUser(userData: { uuid: string | undefined; nombre:
       },
       body: JSON.stringify(userData),
     });
-
+    console.log('AQUI PASO 2')
+    console.log(response)
     if (!response.ok) {
       throw new Error("Error al crear el usuario en el backend");
     }
@@ -27,7 +26,7 @@ export async function registerUser(userData: { uuid: string | undefined; nombre:
     const result = await response.json();
     return result;
   } catch (error) {
-    console.error("Error en la solicitud al backend:", error);
+    console.debug("Error en la solicitud al backend:", error);
     throw error;
   }
 };

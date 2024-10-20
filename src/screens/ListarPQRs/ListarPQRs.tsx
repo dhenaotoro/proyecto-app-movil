@@ -4,7 +4,7 @@ import MainHeader from '../../components/Header/MainHeader';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/RootNavigator";
-import { fetchPqrs } from '../../services/api';
+import { fetchPqrs } from '../../services/Api';
 
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'CrearPQRs'>;
 
