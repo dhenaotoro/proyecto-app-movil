@@ -55,17 +55,17 @@ export function ActivationCode(): React.JSX.Element  {
     return (
         <View>
             <AuthHeader />
-            <View style={{...styles.container}} testID={screen}>
-                <View style={styles.innerContainer}>
+            <View style={{...styles.activationCodeContainer}} testID={screen}>
+                <View style={styles.activationCodeInnerContainer}>
                     <View style={{height: 244}}>
-                        <Text style={styles.messageTitle}>Se envió correo de confirmación al correo {maskEmail()} con el código de activación. Por favor verificalo en tu bandeja de entrada y registralo aquí abajo.</Text>
+                        <Text style={styles.activationCodeMessageTitle}>Se envió correo de confirmación al correo {maskEmail()} con el código de activación. Por favor verificalo en tu bandeja de entrada y registralo aquí abajo.</Text>
                     </View>
                     <View style={{height: 161}}>
                         <InputText label='Código de Activación' required value={codigoActivacion} onInputChange={(text: string) => setCodigoActivacion(text)} testID={`${screen}.CodigoActivacion`}/>
                     </View>
                     <View style={{height: 92}}>
-                        <TouchableOpacity style={styles.button} onPress={handlePress} aria-label='activationCodeButton' testID={`${screen}.Button`}>
-                            <Text style={styles.buttonText}>{loading ? 'Cargando...' : 'Continuar'}</Text>
+                        <TouchableOpacity style={styles.activationCodeButton} onPress={handlePress} aria-label='activationCodeButton' testID={`${screen}.Button`}>
+                            <Text style={styles.activationCodeButtonText}>{loading ? 'Cargando...' : 'Continuar'}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -75,13 +75,13 @@ export function ActivationCode(): React.JSX.Element  {
 }
 
 const styles = StyleSheet.create({
-    container: {
+    activationCodeContainer: {
         backgroundColor: colors.white,
         paddingTop: 0,
         paddingHorizontal: 15,
         height: 'auto'
     },
-    innerContainer: {
+    activationCodeInnerContainer: {
         backgroundColor: colors.white,
         paddingTop: 28,
         paddingHorizontal: 15,
@@ -92,14 +92,14 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         borderStyle: 'solid',
     },
-    messageTitle: {
+    activationCodeMessageTitle: {
         fontFamily: typography.nunitoSanzBold,
         fontSize: typography.fontSizeMedium,
         letterSpacing: typography.letterSpacingMedium,
         lineHeight: typography.lineHeightMedium,
         color: colors.black,
     },
-    button: {
+    activationCodeButton: {
         marginTop: 29,
         height: 36,
         backgroundColor: colors.white,
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
         borderStyle: 'solid',
         alignItems: 'center',
     },
-    buttonText: {
+    activationCodeButtonText: {
         marginTop: -5,
         fontFamily: typography.nunitoSanzBold,
         fontSize: typography.fontSizeLarge,
