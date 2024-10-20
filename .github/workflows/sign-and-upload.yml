@@ -27,6 +27,20 @@ jobs:
         with:
           node-version: '21'
 
+      - name: Install Android SDK
+        uses: android-actions/setup-android@v2
+        with:
+          api-level: 34
+          build-tools: 34.0.0
+          target: default
+          ndk: true
+
+      - name: Folders structures
+        run: ls -ltha /usr/local/lib/android/ & ls -ltha /usr/local/lib/android/sdk/ & ls -ltha /usr/local/lib/android/sdk/build-tools/
+
+      - name: Set ANDROID_HOME environment variable
+        run: echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+
       # Instalar dependencias con npm
       - name: Instalación de dependencias
         run: npm install
@@ -34,11 +48,8 @@ jobs:
       - name: Build release APK
         run: npm run pipeline:build-release
 
-      - name: Folders structures
-        run: ls -lth android/app/build/outputs/apk/release
-
       - name: Sign APK
-        uses: r0adkll/sign-android-release@v1
+        uses: r0adkll/sign-android-release@v1.1.0
         with:
           releaseDirectory: android/app/build/outputs/apk/release
           signingKeyBase64: ${{ secrets.SIGNING_KEY_BASE64 }}
@@ -50,7 +61,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: release-apk
-          path: app/build/outputs/apk/release/app-release.apk
+          path: app/build/outputs/apk/release
   upload:
     needs: build
     runs-on: ubuntu-latest
