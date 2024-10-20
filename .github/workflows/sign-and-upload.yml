@@ -70,8 +70,7 @@ jobs:
       # Usar la versión en el build.gradle
       - name: Set version in Gradle
         run: |
-          ls -lth $ANDROID_HOME/
-          VERSION=$(grep VERSION version.properties | awk -F'=' '{print $2}' | xargs)
+          VERSION=$(awk -F'=' '/^VERSION=/{print $2}' version.properties | xargs)
           echo "Esta es la version: $VERSION"
           sed -i "s/versionName \".*\"/versionName \"$APP_VERSION\"/" android/app/build.gradle
       
