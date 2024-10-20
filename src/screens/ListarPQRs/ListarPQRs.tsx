@@ -4,7 +4,7 @@ import MainHeader from '../../components/Header/MainHeader';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/RootNavigator";
-import { fetchUserData } from './mockBackend'; 
+import { fetchPqrs } from '../../services/api';
 
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'CrearPQRs'>;
 
@@ -14,14 +14,12 @@ export default function ListarPQRs(): React.JSX.Element{
 
   // Use a constant for username since it's hardcoded
   const username = "IVAN";
-  const [pqrData, setPqrData] = useState(null); // null indicates loading state
-
-  console.log("Rendering ListarPQRs");
+  const [pqrData, setPqrData] = useState<{ id: string, status: string, channel: string}[]>([]); // null indicates loading state
 
   // Memoize the fetchData function to prevent unnecessary recreation
   const fetchData = useCallback(async () => {
     try {
-      const data = await fetchUserData(username);
+      const data: { id: string, status: string, channel: string }[] = await fetchPqrs(username);
       console.log("Fetched PQR data:", data);
       setPqrData(data);
     } catch (error) {
@@ -34,9 +32,7 @@ export default function ListarPQRs(): React.JSX.Element{
   }, [fetchData]);
 
   // Memoized function for navigation to prevent re-renders
-  const handleRegisterPress = useCallback(() => {
-    navigation.navigate('CrearPQRs');
-  }, [navigation]);
+  const handleRegisterPress = useCallback(() => navigation.navigate('CrearPQRs'), [navigation]);
 
   // Memoized PQR row component to optimize re-renders
   const PQRRow = React.memo(({ pqr }) => (
