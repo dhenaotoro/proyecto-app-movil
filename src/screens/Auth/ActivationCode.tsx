@@ -37,13 +37,13 @@ export function ActivationCode(): React.JSX.Element  {
         try {
             setLoading(true);
 
-            const { nextStep } = await confirmSignUp({
+            const { nextStep, userId } = await confirmSignUp({
               username: email,
               confirmationCode: codigoActivacion,
             });
             console.log('Estado del usuario: ', nextStep);
             
-            navigation.navigate("Login");
+            navigation.navigate("Login", { userId: userId || '' });
         } catch (error) {
             console.debug("Error confirmando el código:", error);
             Alert.alert("Error", "Error confirmando el código");

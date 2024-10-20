@@ -1,31 +1,34 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import MainHeader from '../../components/Header/MainHeader';
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/RootNavigator";
 import { fetchPqrs } from '../../services/Api';
+import { signOut, type SignOutInput} from "aws-amplify/auth";
 
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'CrearPQRs'>;
+type ListarPQRsRouteProp = RouteProp<RootStackParamList, 'ListarPQRs'>;
 
 export default function ListarPQRs(): React.JSX.Element{
   const screen = 'ListarPQRs';
   const navigation = useNavigation<NavigationProps>();
+  const route = useRoute<ListarPQRsRouteProp>();
+  const { userUuid } = route.params;
 
   // Use a constant for username since it's hardcoded
-  const username = "IVAN";
   const [pqrData, setPqrData] = useState<{ id: string, status: string, channel: string}[]>([]); // null indicates loading state
 
   // Memoize the fetchData function to prevent unnecessary recreation
   const fetchData = useCallback(async () => {
     try {
-      const data: { id: string, status: string, channel: string }[] = await fetchPqrs(username);
+      const data: { id: string, status: string, channel: string }[] = await fetchPqrs(userUuid);
       console.log("Fetched PQR data:", data);
       setPqrData(data);
     } catch (error) {
       console.error("Error fetching PQR data:", error);
     }
-  }, [username]);
+  }, [userUuid]);
 
   useEffect(() => {
     fetchData();
@@ -33,6 +36,16 @@ export default function ListarPQRs(): React.JSX.Element{
 
   // Memoized function for navigation to prevent re-renders
   const handleRegisterPress = useCallback(() => navigation.navigate('CrearPQRs'), [navigation]);
+
+  const handleSignOut = async () => {
+    try {
+      await signOut({ global: true } as SignOutInput);
+      console.log('Se realizó sign out exitosamente');
+      navigation.navigate('Login', { userId: userUuid });
+    } catch (error) {
+      console.log('Error signing out: ', error);
+    }
+  }
 
   // Memoized PQR row component to optimize re-renders
   const PQRRow = React.memo(({ pqr }) => (
@@ -58,7 +71,7 @@ export default function ListarPQRs(): React.JSX.Element{
     <View style={styles.container} testID={screen}>
       <MainHeader />
       <Text style={styles.welcomeText}>Bienvenido</Text>
-      <Text style={styles.username}>{username}</Text>
+      <Text style={styles.username} onPress={() => handleSignOut()}>IVAN</Text>
       <Text style={styles.pqrText} testID={`${screen}.MainTitle`}>PQRs</Text>
 
       {/* Conditionally render based on the state of pqrData */}

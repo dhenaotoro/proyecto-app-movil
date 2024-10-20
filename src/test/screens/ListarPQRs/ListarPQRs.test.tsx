@@ -34,7 +34,7 @@ describe('ListarPQRs', () => {
         return render(
             <NavigationContainer>
                 <Stack.Navigator initialRouteName="ListarPQRs">
-                    <Stack.Screen name="ListarPQRs" component={ListarPQRs} />
+                    <Stack.Screen name="ListarPQRs" component={ListarPQRs} initialParams={{ userUuid: '' }}/>
                 </Stack.Navigator>
             </NavigationContainer>
         );

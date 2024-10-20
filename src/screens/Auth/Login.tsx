@@ -5,7 +5,7 @@ import typography from "../../styles/typography";
 import { InputText } from "../../components/FormFields/InputText";
 import { Amplify } from 'aws-amplify';
 import { signIn, type SignInInput } from 'aws-amplify/auth';
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/RootNavigator";
 import awsconfig from "../../aws-exports";
@@ -13,6 +13,7 @@ import AuthHeader from "../../components/Header/AuthHeader";
 
 //, borderStyle: 'solid', borderWidth: 1, borderColor: 'blue'
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'ListarPQRs'>;
+type LoginRouteProp = RouteProp<RootStackParamList, 'Login'>;
 Amplify.configure(awsconfig);
 
 export function Login(): React.JSX.Element  {
@@ -21,6 +22,8 @@ export function Login(): React.JSX.Element  {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false); // Para manejar el estado de carga
     const navigation = useNavigation<NavigationProps>();
+    const route = useRoute<LoginRouteProp>();
+    const { userId } = route.params;
 
     const handlePress = async () => {
         setLoading(true); // Mostrar el estado de carga
@@ -31,12 +34,12 @@ export function Login(): React.JSX.Element  {
             console.log('Inicio de sesión exitoso:', isSignedIn);
             console.log('El siguiente paso es', nextStep);
             // Aquí puedes redirigir al usuario a la pantalla principal
-            navigation.navigate('ListarPQRs');
+            navigation.navigate('ListarPQRs', { userUuid: userId ? userId : '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45' });
         } catch (error) {
             console.debug('Error al iniciar sesión:', error);
             if (error instanceof Error) {
                 if (error.name === "UserAlreadyAuthenticatedException") {
-                    navigation.navigate("ListarPQRs");
+                    navigation.navigate("ListarPQRs", { userUuid: userId ? userId : '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45' });
                 }
             }
             Alert.alert('Error', 'Correo o contraseña incorrectos');

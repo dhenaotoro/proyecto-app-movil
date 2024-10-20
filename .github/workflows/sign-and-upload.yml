@@ -29,6 +29,19 @@ jobs:
         with:
           node-version: '21'
 
+      - name: Install Android SDK Build Tools
+        run: |
+            sudo apt-get update
+            sudo apt-get install -y wget unzip
+            wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O commandlinetools.zip
+            mkdir -p $HOME/android-sdk/cmdline-tools
+            unzip commandlinetools.zip -d $HOME/android-sdk/cmdline-tools
+            export ANDROID_HOME=$HOME/android-sdk
+            export PATH=$PATH:$ANDROID_HOME/cmdline-tools/tools/bin
+            export PATH=$PATH:$ANDROID_HOME/platform-tools
+            yes | sdkmanager --licenses
+            sdkmanager "platform-tools" "build-tools;34.0.0"
+
       - name: Install Android SDK
         uses: android-actions/setup-android@v2
         with:
