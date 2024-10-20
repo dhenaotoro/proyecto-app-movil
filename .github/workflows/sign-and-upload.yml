@@ -45,7 +45,7 @@ jobs:
 
       - name: Install Android SDK Build Tools
         run: |
-            yes | $ANDROID_HOME/cmdline-tools/bin/sdkmanager --licenses --sdk-root=$ANDROID_HOME
+            yes | $ANDROID_HOME/cmdline-tools/bin/sdkmanager --licenses --sdk_root=$ANDROID_HOME
             $ANDROID_HOME/cmdline-tools/bin/sdkmanager "platform-tools" "build-tools;34.0.0"
 
       - name: Folders structures
