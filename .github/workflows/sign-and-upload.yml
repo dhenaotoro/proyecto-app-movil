@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - 'main'
+      - 'deployed'
 
 jobs:
   build:
@@ -110,6 +111,9 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Verificacion de directorios
+        run: ls -ltha app/build/outputs/apk/release/
 
       - name: Upload to S3 Bucket
         run: |
