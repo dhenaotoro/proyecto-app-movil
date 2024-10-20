@@ -71,10 +71,7 @@ jobs:
       - name: Set version in Gradle
         run: |
           VERSION=$(grep VERSION version.properties | cut -d'=' -f2)
-          echo "Esta es la $VERSION"
-          echo "APP_VERSION=$VERSION" >> $GITHUB_ENV
-          source $GITHUB_ENV
-        #  sed -i "s/versionName \".*\"/versionName \"$APP_VERSION\"/" android/app/build.gradle
+          sed -i "s/versionName \".*\"/versionName \"$APP_VERSION\"/" android/app/build.gradle
 
       - name: Build release APK
         run: npm run pipeline:build-release
