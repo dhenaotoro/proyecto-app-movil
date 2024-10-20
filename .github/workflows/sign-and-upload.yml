@@ -36,17 +36,18 @@ jobs:
             wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O commandlinetools.zip
             mkdir -p $HOME/android-sdk/
             unzip commandlinetools.zip -d $HOME/android-sdk/
+            mv $HOME/android-sdk/cmdline-tools/ $HOME/android-sdk/cmdline-tools/latest
             echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
-            echo "PATH=$PATH:$ANDROID_HOME/cmdline-tools/bin:$ANDROID_HOME/platform-tools" >> $GITHUB_ENV
+            echo "PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools" >> $GITHUB_ENV
             source $GITHUB_ENV
       
       - name: Check Android SDK directory
-        run: ls -ltha $HOME/android-sdk/ & ls -ltha $HOME/android-sdk/cmdline-tools & ls -ltha $HOME/android-sdk/cmdline-tools/bin
+        run: ls -ltha $HOME/android-sdk/ & ls -ltha $HOME/android-sdk/cmdline-tools & ls -ltha $HOME/android-sdk/cmdline-tools/latest/bin
 
       - name: Install Android SDK Build Tools
         run: |
-            yes | $ANDROID_HOME/cmdline-tools/bin/sdkmanager --licenses
-            $ANDROID_HOME/cmdline-tools/bin/sdkmanager "platform-tools" "build-tools;34.0.0"
+            yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
+            $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "build-tools;34.0.0"
 
       - name: Folders structures
         run: ls -ltha /home/runner/ & ls -ltha /home/runner/android-sdk/ & ls -ltha /home/runner/android-sdk/build-tools/ && ls -ltha /usr/local/lib/android/ & ls -ltha /usr/local/lib/android/sdk/ & ls -ltha /usr/local/lib/android/sdk/build-tools/
