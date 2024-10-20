@@ -72,6 +72,9 @@ jobs:
         run: |
           VERSION=$(grep VERSION version.properties | cut -d'=' -f2)
           sed -i "s/versionName \".*\"/versionName \"$APP_VERSION\"/" android/app/build.gradle
+      
+      - name: Content of Gradle file
+        run: cat android/app/build.gradle
 
       - name: Build release APK
         run: npm run pipeline:build-release
