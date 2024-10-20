@@ -27,7 +27,7 @@ jobs:
 
       # Validar directorio
       - name: Directorio de Services
-        run: ls -ltha ./src
+        run: ls -ltha ./src & ls -ltha ./src/services 
 
       # Correr las pruebas con Jest
       - name: Ejecutar pruebas usando Jest y generando los reportes finales
