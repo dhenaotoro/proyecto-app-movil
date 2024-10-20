@@ -72,7 +72,7 @@ jobs:
         run: |
           VERSION=$(grep VERSION version.properties | cut -d'=' -f2)
           echo "APP_VERSION=$VERSION" >> $GITHUB_ENV
-          sed -i "s/versionName \".*\"/versionName \"$APP_VERSION\"/" android/app/build.gradle
+        #  sed -i "s/versionName \".*\"/versionName \"$APP_VERSION\"/" android/app/build.gradle
 
       - name: Build release APK
         run: npm run pipeline:build-release
