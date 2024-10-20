@@ -49,6 +49,7 @@ jobs:
           name: release-apk
           path: app/build/outputs/apk/release/app-release.apk
   upload:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Configure AWS Credentials
