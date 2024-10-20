@@ -1,7 +1,7 @@
 // assuming your file is named userService.ts
 import { REACT_NATIVE_APP_BACKEND_URL } from '@env';
 import fetchMock from 'jest-fetch-mock';
-import { fetchPqrs, registerUser } from '../../services/api';
+import { fetchPqrs, registerUser } from '../../services/Api';
 
 const expectedEnv = REACT_NATIVE_APP_BACKEND_URL;
 fetchMock.enableMocks();

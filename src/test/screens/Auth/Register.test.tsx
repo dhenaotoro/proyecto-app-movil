@@ -5,7 +5,7 @@ import { Register } from '../../../screens/Auth/Register';
 import { signUp } from 'aws-amplify/auth';
 import { useNavigation } from '@react-navigation/native';
 import { Alert } from "react-native";
-import { registerUser } from "../../../services/api";
+import { registerUser } from "../../../services/Api";
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'), // Esto mantiene el resto del módulo intacto
@@ -14,7 +14,7 @@ jest.mock('@react-navigation/native', () => ({
 jest.mock('aws-amplify/auth', () => ({
     signUp: jest.fn()
 }));
-jest.mock('../../../services/api', () => ({
+jest.mock('../../../services/Api', () => ({
     registerUser: jest.fn()
 }));
 
