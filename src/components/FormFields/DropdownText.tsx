@@ -27,7 +27,7 @@ export function DropdownText({label, required, valuesToShow, value, onChange, te
                     onValueChange={(selectedValue) => onChange(selectedValue)}
                     mode="dropdown"
                     style={styles.picker}>
-                        {Object.keys(valuesToShow).map((k: string, i, _) => (<Picker.Item testID={`DropdownText.Picker.Item-${i}`} key={`${k}-${i}`} label={valuesToShow[k]} value={k} />))}
+                        {Object.keys(valuesToShow).map((k: string, i, _) => (<Picker.Item style={{ color: colors.black }} testID={`DropdownText.Picker.Item-${i}`} key={`${k}-${i}`} label={valuesToShow[k]} value={k} />))}
                 </Picker>
             </View>
         </View>
@@ -48,6 +48,6 @@ const styles = StyleSheet.create({
     },
     picker: {
         height: 41,
-        backgroundColor: 'white'
+        backgroundColor: colors.white
     }
 });
