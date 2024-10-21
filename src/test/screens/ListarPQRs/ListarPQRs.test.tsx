@@ -17,7 +17,7 @@ jest.mock('../../../services/Api', () => ({
 describe('ListarPQRs', () => {
   const Stack = createNativeStackNavigator();
 
-  const renderComponent = (initialParams = { userUuid: '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45' }) => {
+  const renderComponent = (initialParams = { userUuid: '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45', name: 'Ivan Dario' }) => {
     return render(
       <NavigationContainer>
         <Stack.Navigator initialRouteName="ListarPQRs">
@@ -37,7 +37,7 @@ describe('ListarPQRs', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Bienvenido')).toBeTruthy();
-      expect(screen.getByText('IVAN')).toBeTruthy();
+      expect(screen.getByText('Ivan Dario')).toBeTruthy();
     });
   });
 
@@ -87,7 +87,7 @@ describe('ListarPQRs', () => {
     fireEvent.press(registerButton);
 
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith('CrearPQRs');
+      expect(mockNavigate).toHaveBeenCalledWith('CrearPQRs', { userUuid: '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45', name: 'Ivan Dario' });
     });
   });
 

@@ -193,6 +193,7 @@ const styles = StyleSheet.create({
     },
     avisoPrivacidadTextoNegrita: {
         fontWeight: typography.fontWeightBold as any,
+        lineHeight: typography.lineHeightXYSmall,
     },
     registryButton: {
         marginTop: 29,

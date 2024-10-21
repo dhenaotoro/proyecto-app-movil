@@ -4,10 +4,12 @@ import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import CheckBox from '@react-native-community/checkbox';
 import { registerPqr } from '../../services/Api';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation/RootNavigator';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 type CrearPQRssRouteProp = RouteProp<RootStackParamList, 'CrearPQRs'>;
+type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'ListarPQRs'>;
 
 const CrearPQRs = () => {
   const screen = 'CrearPQRs';
@@ -20,7 +22,8 @@ const CrearPQRs = () => {
   const [impactoSolucion, setImpactoSolucion] = useState('');
   const [aceptoDatos, setAceptoDatos] = useState(false);
   const route = useRoute<CrearPQRssRouteProp>();
-  const { userUuid } = route.params;
+  const { userUuid, name } = route.params;
+  const navigation = useNavigation<NavigationProps>();
 
   const handleGuardar = async () => {
     if (!tipoSolicitud || !descripcion || !numeroTransaccion || !impactoProblema || !aceptoDatos) {
@@ -41,6 +44,7 @@ const CrearPQRs = () => {
     try {
       const response = await registerPqr(pqrData);
       Alert.alert('Guardado', response.message);
+      navigation.navigate('ListarPQRs', { userUuid, name });
     } catch (error) {
       Alert.alert('Error', 'Hubo un problema al guardar el PQR');
     }

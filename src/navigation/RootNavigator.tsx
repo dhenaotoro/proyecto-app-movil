@@ -15,8 +15,8 @@ export type RootStackParamList = {
   Login: { userId: string },
   Register: undefined,
   ActivationCode: { email: string },
-  ListarPQRs: { userUuid: string },
-  CrearPQRs: { userUuid: string },
+  ListarPQRs: { userUuid: string, name: string},
+  CrearPQRs: { userUuid: string, name: string },
   Politicas: undefined
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
