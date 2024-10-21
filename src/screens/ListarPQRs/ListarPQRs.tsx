@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import MainHeader from '../../components/Header/MainHeader';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -10,32 +10,40 @@ import { signOut, type SignOutInput} from "aws-amplify/auth";
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'CrearPQRs'>;
 type ListarPQRsRouteProp = RouteProp<RootStackParamList, 'ListarPQRs'>;
 
-export default function ListarPQRs(): React.JSX.Element{
+export default function ListarPQRs(): React.JSX.Element {
   const screen = 'ListarPQRs';
   const navigation = useNavigation<NavigationProps>();
   const route = useRoute<ListarPQRsRouteProp>();
-  const { userUuid } = route.params;
+  const { userUuid, name } = route.params;
 
-  // Use a constant for username since it's hardcoded
-  const [pqrData, setPqrData] = useState<{ id: string, status: string, channel: string}[]>([]); // null indicates loading state
+  const [pqrData, setPqrData] = useState<{ id: string, status: string, channel: string }[]>([]);
 
-  // Memoize the fetchData function to prevent unnecessary recreation
-  const fetchData = useCallback(async () => {
+  const fetchData = async () => {
     try {
-      const data: { id: string, status: string, channel: string }[] = await fetchPqrs(userUuid);
-      console.log("Fetched PQR data:", data);
-      setPqrData(data);
+      console.log("UUID", userUuid);
+      const response = await fetchPqrs(userUuid);
+      console.log("Response from fetchPqrs:", response);
+  
+      // Check if response code is 200 and data is an array
+      if (response.code === 200) {
+        if (Array.isArray(response.data) && response.data.length > 0) {
+          console.log("Fetched PQR data:", response.data);
+          setPqrData(response.data);
+        } else {
+          console.warn("No PQR data found for this UUID");
+          setPqrData([]); // Optionally set to an empty array or handle accordingly
+        }
+      } else {
+        console.error("Failed to fetch PQR data:", response.message || "No data available");
+      }
     } catch (error) {
       console.error("Error fetching PQR data:", error);
     }
-  }, [userUuid]);
+  };
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  fetchData(); // Call fetchData when userUuid changes
 
-  // Memoized function for navigation to prevent re-renders
-  const handleRegisterPress = useCallback(() => navigation.navigate('CrearPQRs'), [navigation]);
+  const handleRegisterPress = () => navigation.navigate('CrearPQRs', { userUuid, name });
 
   const handleSignOut = async () => {
     try {
@@ -47,7 +55,6 @@ export default function ListarPQRs(): React.JSX.Element{
     }
   }
 
-  // Memoized PQR row component to optimize re-renders
   const PQRRow = React.memo(({ pqr }) => (
     <View style={styles.row}>
       <View style={styles.cell}>
@@ -71,13 +78,11 @@ export default function ListarPQRs(): React.JSX.Element{
     <View style={styles.container} testID={screen}>
       <MainHeader />
       <Text style={styles.welcomeText}>Bienvenido</Text>
-      <Text style={styles.username} onPress={() => handleSignOut()}>IVAN</Text>
+      <Text style={styles.username} onPress={() => handleSignOut()}>{name}</Text>
       <Text style={styles.pqrText} testID={`${screen}.MainTitle`}>PQRs</Text>
 
-      {/* Conditionally render based on the state of pqrData */}
-      {pqrData === null ? (
-        <Text>Cargando PQRs...</Text>
-      ) : pqrData.length === 0 ? (
+      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+      {pqrData.length === 0 ? (
         <Text>No hay PQR solicitados, por favor crear tu primer PQR usando la opción de Registra tu PQR</Text>
       ) : (
         <View style={styles.table}>     
@@ -92,6 +97,7 @@ export default function ListarPQRs(): React.JSX.Element{
           <Text style={styles.registerButtonText}>Registra tu PQR</Text>
         </TouchableOpacity>
       </View>
+      </ScrollView>
     </View>
   );
 };

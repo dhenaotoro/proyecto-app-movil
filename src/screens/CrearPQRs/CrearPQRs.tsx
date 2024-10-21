@@ -3,7 +3,13 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ScrollView 
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import CheckBox from '@react-native-community/checkbox';
-import { sendPQRData } from './apiService';
+import { registerPqr } from '../../services/Api';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { RootStackParamList } from '../../navigation/RootNavigator';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+type CrearPQRssRouteProp = RouteProp<RootStackParamList, 'CrearPQRs'>;
+type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'ListarPQRs'>;
 
 const CrearPQRs = () => {
   const screen = 'CrearPQRs';
@@ -15,6 +21,9 @@ const CrearPQRs = () => {
   const [impactoProblema, setImpactoProblema] = useState('');
   const [impactoSolucion, setImpactoSolucion] = useState('');
   const [aceptoDatos, setAceptoDatos] = useState(false);
+  const route = useRoute<CrearPQRssRouteProp>();
+  const { userUuid, name } = route.params;
+  const navigation = useNavigation<NavigationProps>();
 
   const handleGuardar = async () => {
     if (!tipoSolicitud || !descripcion || !numeroTransaccion || !impactoProblema || !aceptoDatos) {
@@ -23,18 +32,19 @@ const CrearPQRs = () => {
     }
   
     const pqrData = {
+      uuidUsuario: userUuid,
       tipoSolicitud,
       descripcion,
-      fechaAdquisicion: fechaAdquisicion.toISOString(),
       numeroTransaccion,
       impactoProblema,
       impactoSolucion,
-      aceptoDatos,
+      canal: 'App móvil',
     };
   
     try {
-      const response = await sendPQRData(pqrData);
+      const response = await registerPqr(pqrData);
       Alert.alert('Guardado', response.message);
+      navigation.navigate('ListarPQRs', { userUuid, name });
     } catch (error) {
       Alert.alert('Error', 'Hubo un problema al guardar el PQR');
     }

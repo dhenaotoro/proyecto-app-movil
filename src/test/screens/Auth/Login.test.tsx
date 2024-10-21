@@ -2,7 +2,7 @@ import { cleanup, waitFor, render, screen, userEvent } from '@testing-library/re
 import React from 'react';
 import { it, describe } from '@jest/globals';
 import { Login } from '../../../screens/Auth/Login';
-import { signIn } from 'aws-amplify/auth';
+import { signIn, fetchUserAttributes } from 'aws-amplify/auth';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { Alert } from "react-native";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -16,7 +16,8 @@ jest.mock('aws-amplify/auth', () => ({
     Amplify: {
         configure: jest.fn()
     },
-    signIn: jest.fn()
+    signIn: jest.fn(),
+    fetchUserAttributes: jest.fn()
 }));
 
 describe('Login', () => {
@@ -97,6 +98,10 @@ describe('Login', () => {
             isSignedIn: true,
             nextStep: 'COMPLETED'
         });
+        (fetchUserAttributes as jest.Mock).mockReturnValue({
+            sub: 'ffff-ffff-ffff',
+            given_name: 'User'
+        });
         renderComponent();
     
         await user.type(screen.getByLabelText('Correo'), 'test@email.com');
@@ -106,7 +111,7 @@ describe('Login', () => {
 
         await waitFor(() => {
             expect(signIn).toHaveBeenCalled();
-            expect(mockNavigate).toHaveBeenCalledWith('ListarPQRs', {'userUuid': '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45'});
+            expect(mockNavigate).toHaveBeenCalledWith('ListarPQRs', {'userUuid': 'ffff-ffff-ffff', 'name': 'User'});
         });
     });
 
@@ -138,6 +143,10 @@ describe('Login', () => {
             navigate: mockNavigate,
             goBack: jest.fn()
         });
+        (fetchUserAttributes as jest.Mock).mockReturnValue({
+            sub: 'ffff-ffff-ffff',
+            given_name: 'User'
+        });
         renderComponent();
     
         await user.type(screen.getByLabelText('Correo'), 'test@email.com');
@@ -147,7 +156,7 @@ describe('Login', () => {
 
         await waitFor(() => {
             expect(signIn).toHaveBeenCalled();
-            expect(mockNavigate).toHaveBeenCalledWith('ListarPQRs', {'userUuid': '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45'});
+            expect(mockNavigate).toHaveBeenCalledWith('ListarPQRs', {'userUuid': 'ffff-ffff-ffff', 'name':'User'});
         });
     });
 });

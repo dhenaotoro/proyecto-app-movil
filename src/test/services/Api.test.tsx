@@ -33,7 +33,6 @@ describe('Api', () => {
         const mockResponse = { id: 'ffff-fffff-fffff-ffff', message: 'User created successfully' };
         fetchMock.mockResponseOnce(JSON.stringify(mockResponse));
 
-        console.log('AQUI PASO 1')
         const result = await registerUser(mockUserData);
 
         expect(fetchMock).toHaveBeenCalledWith(`${expectedEnv}/api/user/create`, {
@@ -85,34 +84,23 @@ describe('Api', () => {
 
   describe('fetchPqrs', () => {
     it('should return PQR data for the given username', async () => {
-      const username = 'IVAN';
-      const expectedData = [
-        { id: '000000001', status: 'Abierto', channel: 'App móvil' },
-        { id: '000000002', status: 'Cerrado', channel: 'Chatbot' },
-        { id: '000000003', status: 'Cerrado', channel: 'Llamada' },
-      ];
+        const mockResponse = [{ channel: 'voice', id: 'ffff-fffff-fffff-ffff', status: 'Abierto' }];
+        fetchMock.mockResponseOnce(JSON.stringify(mockResponse));
 
-      const result = await fetchPqrs(username);
+        const result = await fetchPqrs('ffff-fffff-fffff-ffff');
 
-      expect(result).toEqual(expectedData);
+        expect(fetchMock).toHaveBeenCalledWith(`${expectedEnv}/api/pqr/findAll?uuid=ffff-fffff-fffff-ffff`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        });
+        expect(result).toEqual(mockResponse);
     });
 
     it('should return an empty array if no PQRs are found for the user', async () => {
-      const username = 'DANIEL';
-      const expectedData : { id: string, status: string, channel: string } [] = [];
+      fetchMock.mockResponseOnce(JSON.stringify([]));
+      const result = await fetchPqrs('ffff-fffff-fffff-ffff');
 
-      const result = await fetchPqrs(username);
-
-      expect(result).toEqual(expectedData);
-    });
-
-    it('should return an empty array if the username is not in the mock data', async () => {
-      const username = 'UNKNOWN_USER';
-      const expectedData : { id: string, status: string, channel: string } [] = [];
-
-      const result = await fetchPqrs(username);
-
-      expect(result).toEqual(expectedData);
+      expect(result).toEqual([]);
     });
   });
 });
