@@ -39,7 +39,8 @@ describe('Register', () => {
     it('should show a text link to see the privacy politic', () => {
         render(<Register />);
     
-        expect(screen.getByRole('text', { name: 'Acepto la política de privacidad y aviso de privacidad de datos'})).toBeDefined();
+        expect(screen.getByTestId('Register.PoliticsLink')).toBeDefined();
+        expect(screen.getByTestId('Register.PrivacyLink')).toBeDefined();
     });
 
     it('should show a button to Register', () => {
@@ -67,6 +68,38 @@ describe('Register', () => {
 
         await waitFor(() => {
             expect(mockNavigate).toHaveBeenCalledWith('Login', { userId: '' });
+        });
+    });
+
+    it(`should go to the Policits section when clicking on 'política de privacidad' link`, async () => {
+        const mockNavigate = jest.fn();
+        (useNavigation as jest.Mock).mockReturnValue({
+            navigate: mockNavigate,
+            goBack: jest.fn()
+        });
+
+        render(<Register />);
+
+        await userEvent.press(screen.getByTestId('Register.PoliticsLink'));
+
+        await waitFor(() => {
+            expect(mockNavigate).toHaveBeenCalledWith('Politics');
+        });
+    });
+
+    it(`should go to the Policits section when clicking on 'aviso de privacidad de datos' link`, async () => {
+        const mockNavigate = jest.fn();
+        (useNavigation as jest.Mock).mockReturnValue({
+            navigate: mockNavigate,
+            goBack: jest.fn()
+        });
+
+        render(<Register />);
+
+        await userEvent.press(screen.getByTestId('Register.PrivacyLink'));
+
+        await waitFor(() => {
+            expect(mockNavigate).toHaveBeenCalledWith('Politics');
         });
     });
 

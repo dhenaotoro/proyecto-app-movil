@@ -9,15 +9,15 @@ import { Register } from '../screens/Auth/Register';
 import ListarPQRs from '../screens/ListarPQRs/ListarPQRs';
 import CrearPQRs from '../screens/CrearPQRs/CrearPQRs';
 import { ActivationCode } from '../screens/Auth/ActivationCode';
-import { Politicas } from '../screens/Auth/Politicas';
+import { Politics } from '../screens/Auth/Politics';
 
 export type RootStackParamList = { 
-  Login: { userId: string },
+  Login: undefined,
   Register: undefined,
   ActivationCode: { email: string },
-  ListarPQRs: { userUuid: string, name: string},
-  CrearPQRs: { userUuid: string, name: string },
-  Politicas: undefined
+  ListarPQRs: { userUuid: string, userName: string},
+  CrearPQRs: { userUuid: string, userName: string },
+  Politics: undefined
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -27,12 +27,12 @@ export default function RootNavigator(): React.JSX.Element {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login" screenOptions={{ header: isAuthenticated? AuthHeader : MainHeader }}>
-        <Stack.Screen name="Login" component={Login} initialParams={{ userId: '' }} />
+        <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="ActivationCode" component={ActivationCode} />
         <Stack.Screen name="ListarPQRs" component={ListarPQRs} />
         <Stack.Screen name="CrearPQRs" component={CrearPQRs} />
-        <Stack.Screen name="Politicas" component={Politicas} />
+        <Stack.Screen name="Politics" component={Politics} />
       </Stack.Navigator>
     </NavigationContainer>
   );

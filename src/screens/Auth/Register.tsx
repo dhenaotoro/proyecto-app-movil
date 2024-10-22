@@ -2,15 +2,15 @@ import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "rea
 import colors from "../../styles/colors";
 import typography from "../../styles/typography";
 import { DropdownText } from "../../components/FormFields/DropdownText";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { InputText } from "../../components/FormFields/InputText";
 import CheckBox from "@react-native-community/checkbox";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { signUp } from "aws-amplify/auth";
 import { RootStackParamList } from "../../navigation/RootNavigator";
 import { useNavigation } from "@react-navigation/native";
 import { registerUser } from "../../services/Api";
 import AuthHeader from "../../components/Header/AuthHeader";
+import { AuthContext } from "../../context/AuthContext";
 
 export function Register(): React.JSX.Element  {
     const screen = 'Register';
@@ -32,6 +32,7 @@ export function Register(): React.JSX.Element  {
     const [aceptadaPoliticaYAvisoPrivacidad, setAceptadaPoliticaYAvisoPrivacidad] = useState(false);
     const [loading, setLoading] = useState(false); // Para manejar el estado de carga
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    const { signUp } = useContext(AuthContext);
 
     const getStatusPassword = () => {
         const minLength = 8;
@@ -53,23 +54,8 @@ export function Register(): React.JSX.Element  {
         const passwordStatus = getStatusPassword();
         if(passwordStatus.status) {
             setLoading(true); // Mostrar el estado de carga
+            const userId = await signUp({ correo, password, nombres, apellidos, telefono });
             try {
-                // Llamada al método de AWS Cognito para crear usuario
-                const { userId, nextStep }  = await signUp({
-                    username: correo,
-                    password: password,
-                    options: {
-                        userAttributes: {
-                            email: correo,
-                            given_name: nombres,
-                            family_name: apellidos,
-                            phone_number: "+57" + telefono,
-                        }
-                    }
-                });
-                console.log('Se creó el usuario', userId);
-                console.log('El siguiente paso es', nextStep);
-    
                 const userData = {
                     uuid: userId,
                     nombre: nombres,
@@ -89,7 +75,7 @@ export function Register(): React.JSX.Element  {
                 }
             } catch (error) {
                 console.debug('Error al registrar el usuario:', error);
-                Alert.alert('Error', 'Correo o contraseña incorrectos');
+                Alert.alert('Error', 'Registro no exitoso.');
             } finally {
                 setLoading(false); // Detener el estado de carga
             }
@@ -99,51 +85,42 @@ export function Register(): React.JSX.Element  {
         }
     };
 
-    return (
-        <View>
-            <AuthHeader />
-            <View style={{...styles.registerContainer}} testID={screen}>
-                <ScrollView showsVerticalScrollIndicator={true} style={styles.scrollContainer}>
-                    <View style={{...styles.registerInnerContainer}}>
-                        <View style={{height: 64}}>
-                            <Text style={styles.registerMessageTitle}>Gestiona tus PQRs rápidamente, registrate ya!</Text>
-                        </View>
-                        <View style={{height: 821}}>
-                            <DropdownText label='Tipo documento' required value={tipoDocumento} valuesToShow={tiposDocumentos} onChange={(selectedValue: string) => setTipoDocumento(selectedValue)} testID={`${screen}.TipoDocumento`}/>
-                            <InputText label='Documento' required value={documento} onInputChange={(text: string) => setDocumento(text)} testID={`${screen}.Documento`}/>
-                            <InputText label='Nombres' required value={nombres} onInputChange={(text: string) => setNombres(text)} testID={`${screen}.Nombres`}/>
-                            <InputText label='Apellidos' required value={apellidos} onInputChange={(text: string) => setApellidos(text)} testID={`${screen}.Apellidos`}/>
-                            <InputText label='Teléfono' required value={telefono} onInputChange={(text: string) => setTelefono(text)} testID={`${screen}.Telefono`}/>
-                            <InputText label='Dirección' required value={direccion} onInputChange={(text: string) => setDireccion(text)} testID={`${screen}.Direccion`}/>
-                            <InputText label='Correo' required value={correo} onInputChange={(text: string) => setCorreo(text)} testID={`${screen}.Correo`}/>
-                            <InputText label='Contraseña' required value={password} onInputChange={(text: string) => setPassword(text)} testID={`${screen}.Password`}/>
-                            <InputText label='Repite tu contraseña' required value={repeatedPassword} onInputChange={(text: string) => setRepeatedPassword(text)} testID={`${screen}.PasswordRepeated`}/>
-                            <View style={styles.avisoPrivacidadContainer}>
-                                <CheckBox testID={`${screen}.PoliticaPrivacidad`} style={styles.checkbox} value={aceptadaPoliticaYAvisoPrivacidad} onValueChange={setAceptadaPoliticaYAvisoPrivacidad}/>
-                                <Text style={styles.avisoPrivacidadTexto}>
-                                    Acepto la{' '}
-                                    <TouchableOpacity onPress={() => navigation.navigate('Politicas')}>
-                                    <Text style={styles.avisoPrivacidadTextoNegrita}>política de privacidad</Text>
-                                    </TouchableOpacity>{' '} 
-                                    y{' '}
-                                    <TouchableOpacity onPress={() => navigation.navigate('Politicas')}>
-                                    <Text style={styles.avisoPrivacidadTextoNegrita}>aviso de privacidad de datos</Text>
-                                    </TouchableOpacity>
-                                </Text>
-                            </View>
-                        </View>
-                        <View style={{height: 92, paddingTop: 16}}>
-                            <TouchableOpacity style={styles.registryButton} onPress={handlePress} aria-label='registerButton' testID={`${screen}.Button`}>
-                                <Text style={styles.registryButtonText}>{loading ? 'Cargando...' : 'Confirmar'}</Text>
-                            </TouchableOpacity>
+    return ( 
+        <View style={{...styles.registerContainer}} testID={screen}>
+            <ScrollView showsVerticalScrollIndicator={true} style={styles.scrollContainer}>
+                <View style={{...styles.registerInnerContainer}}>
+                    <View style={{height: 64}}>
+                        <Text style={styles.registerMessageTitle}>Gestiona tus PQRs rápidamente, registrate ya!</Text>
+                    </View>
+                    <View style={{height: 821}}>
+                        <DropdownText label='Tipo documento' required value={tipoDocumento} valuesToShow={tiposDocumentos} onChange={(selectedValue: string) => setTipoDocumento(selectedValue)} testID={`${screen}.TipoDocumento`}/>
+                        <InputText label='Documento' required value={documento} onInputChange={(text: string) => setDocumento(text)} testID={`${screen}.Documento`}/>
+                        <InputText label='Nombres' required value={nombres} onInputChange={(text: string) => setNombres(text)} testID={`${screen}.Nombres`}/>
+                        <InputText label='Apellidos' required value={apellidos} onInputChange={(text: string) => setApellidos(text)} testID={`${screen}.Apellidos`}/>
+                        <InputText label='Teléfono' required value={telefono} onInputChange={(text: string) => setTelefono(text)} testID={`${screen}.Telefono`}/>
+                        <InputText label='Dirección' required value={direccion} onInputChange={(text: string) => setDireccion(text)} testID={`${screen}.Direccion`}/>
+                        <InputText label='Correo' required value={correo} onInputChange={(text: string) => setCorreo(text)} testID={`${screen}.Correo`}/>
+                        <InputText label='Contraseña' secureTextEntry required value={password} onInputChange={(text: string) => setPassword(text)} testID={`${screen}.Password`}/>
+                        <InputText label='Repite tu contraseña' secureTextEntry required value={repeatedPassword} onInputChange={(text: string) => setRepeatedPassword(text)} testID={`${screen}.PasswordRepeated`}/>
+                        <View style={styles.avisoPrivacidadContainer}>
+                            <CheckBox testID={`${screen}.PoliticaPrivacidad`} style={styles.checkbox} value={aceptadaPoliticaYAvisoPrivacidad} onValueChange={setAceptadaPoliticaYAvisoPrivacidad}/>
+                            <Text style={styles.avisoPrivacidadTexto}>
+                                Acepto la <Text style={styles.avisoPrivacidadTextoNegrita} testID={`${screen}.PoliticsLink`} onPress={() => navigation.navigate('Politics')}>política de privacidad </Text>y
+                                <Text style={styles.avisoPrivacidadTextoNegrita} testID={`${screen}.PrivacyLink`} onPress={() => navigation.navigate('Politics')}>aviso de privacidad de datos</Text>
+                            </Text>
                         </View>
                     </View>
-                    <View style={{height: 182, alignItems: 'center'}}>
-                        <Text style={{...styles.registryLink}} onPress={() => navigation.navigate('Login', { userId: ''})}>Cancelar</Text>
+                    <View style={{height: 92, paddingTop: 16}}>
+                        <TouchableOpacity style={styles.registryButton} onPress={handlePress} aria-label='registerButton' testID={`${screen}.Button`}>
+                            <Text style={styles.registryButtonText}>{loading ? 'Cargando...' : 'Confirmar'}</Text>
+                        </TouchableOpacity>
                     </View>
-                </ScrollView>
-            </View>
-        </View>    
+                </View>
+                <View style={{height: 182, alignItems: 'center'}}>
+                    <Text style={{...styles.registryLink}} onPress={() => navigation.navigate('Login')}>Cancelar</Text>
+                </View>
+            </ScrollView>
+        </View>
     )
 }
 
@@ -204,6 +181,7 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         borderStyle: 'solid',
         alignItems: 'center',
+        color: colors.black
     },
     registryButtonText: {
         marginTop: -5,

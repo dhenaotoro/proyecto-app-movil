@@ -1,20 +1,15 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import colors from "../../styles/colors";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import typography from "../../styles/typography";
 import { InputText } from "../../components/FormFields/InputText";
-import { Amplify } from 'aws-amplify';
-import { signIn, fetchUserAttributes, type SignInInput } from 'aws-amplify/auth';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/RootNavigator";
-import awsconfig from "../../aws-exports";
-import AuthHeader from "../../components/Header/AuthHeader";
+import { AuthContext } from "../../context/AuthContext";
 
 //, borderStyle: 'solid', borderWidth: 1, borderColor: 'blue'
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'ListarPQRs'>;
-type LoginRouteProp = RouteProp<RootStackParamList, 'Login'>;
-Amplify.configure(awsconfig);
 
 export function Login(): React.JSX.Element  {
     const screen = 'Login';
@@ -22,39 +17,19 @@ export function Login(): React.JSX.Element  {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false); // Para manejar el estado de carga
     const navigation = useNavigation<NavigationProps>();
-    const route = useRoute<LoginRouteProp>();
-    const { userId } = route.params;
+    const { isAuthenticated, signIn, fetchUserAttributes } = useContext(AuthContext);
 
     const handlePress = async () => {
-        setLoading(true); // Mostrar el estado de carga
-
-        try {
-            // Llamada al método de AWS Cognito para iniciar sesión
-            const { isSignedIn, nextStep }  = await signIn({ username: email, password} as SignInInput);
-            console.log('Inicio de sesión exitoso:', isSignedIn);
-            console.log('El siguiente paso es', nextStep);
-            const userAttribute = await fetchUserAttributes();
-            console.log('Los atributos son: ', userAttribute);
-            // Aquí puedes redirigir al usuario a la pantalla principal
-            navigation.navigate('ListarPQRs', { userUuid: userAttribute.sub, name: userAttribute.given_name });
-        } catch (error) {
-            console.debug('Error al iniciar sesión:', error);
-            const userAttribute = await fetchUserAttributes();
-            console.log('Error Los atributos son: ', userAttribute);
-            if (error instanceof Error) {
-                if (error.name === "UserAlreadyAuthenticatedException") {
-                    navigation.navigate("ListarPQRs", { userUuid: userAttribute.sub, name: userAttribute.given_name });
-                }
-            }
-            Alert.alert('Error', 'Correo o contraseña incorrectos');
-        } finally {
-            setLoading(false); // Detener el estado de carga
+        setLoading(true); // Mostrar el estado de carga en el texto del botón
+        await signIn(email, password);
+        if (isAuthenticated) {
+            setLoading(false); // Deja de mostrar el estado de carga en el texto del botón
+            const { userUuid, userName } = await fetchUserAttributes();
+            navigation.navigate("ListarPQRs", { userUuid, userName });
         }
     };
     
     return (
-        <View>
-        <AuthHeader />
         <View style={{...styles.loginContainer}} testID={screen}>
             <View style={styles.loginInnerContainer}>
                 <View style={{height: 64}}>
@@ -62,7 +37,7 @@ export function Login(): React.JSX.Element  {
                 </View>
                 <View style={{height: 311}}>
                     <InputText label='Correo' required value={email} onInputChange={(text: string) => setEmail(text)} testID={`${screen}.Correo`}/>
-                    <InputText label='Contraseña' required value={password} onInputChange={(text: string) => setPassword(text)} testID={`${screen}.Password`}/>
+                    <InputText label='Contraseña' required secureTextEntry value={password} onInputChange={(text: string) => setPassword(text)} testID={`${screen}.Password`}/>
                     <Text style={styles.loginLink}>Olvidaste tu contraseña?</Text>
                 </View>
                 <View style={{height: 92}}>
@@ -74,7 +49,6 @@ export function Login(): React.JSX.Element  {
             <View style={{height: 189, paddingTop: 48}}>
                 <Text style={{...styles.loginLink}} onPress={() => navigation.navigate('Register')}>No tienes cuenta? <Text style={{...styles.loginLink, fontFamily: typography.nunitoSanzBold, textDecorationLine: 'underline'}}>Regístrate</Text></Text>
             </View>
-        </View>
         </View>
     );
 }

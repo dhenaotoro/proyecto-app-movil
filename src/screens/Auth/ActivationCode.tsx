@@ -1,13 +1,13 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { InputText } from "../../components/FormFields/InputText";
 import colors from "../../styles/colors";
 import typography from "../../styles/typography";
-import React, { useState } from "react";
-import { confirmSignUp } from "aws-amplify/auth";
+import React, { useContext, useState } from "react";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/RootNavigator";
 import AuthHeader from "../../components/Header/AuthHeader";
+import { AuthContext } from "../../context/AuthContext";
 
 type ActivactionCodeRouteProp = RouteProp<RootStackParamList, 'ActivationCode'>;
 
@@ -16,6 +16,7 @@ export function ActivationCode(): React.JSX.Element  {
     const [codigoActivacion, setCodigoActivacion] = useState('');
     const [loading, setLoading] = useState(false); // Para manejar el estado de carga
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    const { confirmSignUp } = useContext(AuthContext);
     const route = useRoute<ActivactionCodeRouteProp>();
     const { email } = route.params;
 
@@ -34,40 +35,25 @@ export function ActivationCode(): React.JSX.Element  {
     };
 
     const handlePress = async () => {
-        try {
-            setLoading(true);
-
-            const { nextStep, userId } = await confirmSignUp({
-              username: email,
-              confirmationCode: codigoActivacion,
-            });
-            console.log('Estado del usuario: ', nextStep);
-            
-            navigation.navigate("Login", { userId: userId || '' });
-        } catch (error) {
-            console.debug("Error confirmando el código:", error);
-            Alert.alert("Error", "Error confirmando el código");
-        } finally {
-            setLoading(false);
-        }
+        setLoading(true);
+        await confirmSignUp(email, codigoActivacion);
+        navigation.navigate('Login');
+        setLoading(false);
     }
 
     return (
-        <View>
-            <AuthHeader />
-            <View style={{...styles.activationCodeContainer}} testID={screen}>
-                <View style={styles.activationCodeInnerContainer}>
-                    <View style={{height: 244}}>
-                        <Text style={styles.activationCodeMessageTitle}>Se envió correo de confirmación al correo {maskEmail()} con el código de activación. Por favor verificalo en tu bandeja de entrada y registralo aquí abajo.</Text>
-                    </View>
-                    <View style={{height: 161}}>
-                        <InputText label='Código de Activación' required value={codigoActivacion} onInputChange={(text: string) => setCodigoActivacion(text)} testID={`${screen}.CodigoActivacion`}/>
-                    </View>
-                    <View style={{height: 92}}>
-                        <TouchableOpacity style={styles.activationCodeButton} onPress={handlePress} aria-label='activationCodeButton' testID={`${screen}.Button`}>
-                            <Text style={styles.activationCodeButtonText}>{loading ? 'Cargando...' : 'Continuar'}</Text>
-                        </TouchableOpacity>
-                    </View>
+        <View style={{...styles.activationCodeContainer}} testID={screen}>
+            <View style={styles.activationCodeInnerContainer}>
+                <View style={{height: 244}}>
+                    <Text style={styles.activationCodeMessageTitle}>Se envió correo de confirmación al correo {maskEmail()} con el código de activación. Por favor verificalo en tu bandeja de entrada y registralo aquí abajo.</Text>
+                </View>
+                <View style={{height: 161}}>
+                    <InputText label='Código de Activación' required value={codigoActivacion} onInputChange={(text: string) => setCodigoActivacion(text)} testID={`${screen}.CodigoActivacion`}/>
+                </View>
+                <View style={{height: 92}}>
+                    <TouchableOpacity style={styles.activationCodeButton} onPress={handlePress} aria-label='activationCodeButton' testID={`${screen}.Button`}>
+                        <Text style={styles.activationCodeButtonText}>{loading ? 'Cargando...' : 'Continuar'}</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </View>

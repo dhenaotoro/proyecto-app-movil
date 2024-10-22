@@ -1,11 +1,13 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import MainHeader from '../../components/Header/MainHeader';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/RootNavigator";
 import { fetchPqrs } from '../../services/Api';
-import { signOut, type SignOutInput} from "aws-amplify/auth";
+import colors from '../../styles/colors';
+import typography from '../../styles/typography';
+import { AuthContext } from '../../context/AuthContext';
 
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'CrearPQRs'>;
 type ListarPQRsRouteProp = RouteProp<RootStackParamList, 'ListarPQRs'>;
@@ -13,8 +15,9 @@ type ListarPQRsRouteProp = RouteProp<RootStackParamList, 'ListarPQRs'>;
 export default function ListarPQRs(): React.JSX.Element {
   const screen = 'ListarPQRs';
   const navigation = useNavigation<NavigationProps>();
+  const { signOut } = useContext(AuthContext);
   const route = useRoute<ListarPQRsRouteProp>();
-  const { userUuid, name } = route.params;
+  const { userUuid, userName } = route.params;
 
   const [pqrData, setPqrData] = useState<{ id: string, status: string, channel: string }[]>([]);
 
@@ -41,18 +44,13 @@ export default function ListarPQRs(): React.JSX.Element {
     }
   };
 
-  fetchData(); // Call fetchData when userUuid changes
+  fetchData();
 
-  const handleRegisterPress = () => navigation.navigate('CrearPQRs', { userUuid, name });
+  const handleRegisterPress = () => navigation.navigate('CrearPQRs', { userUuid, userName });
 
   const handleSignOut = async () => {
-    try {
-      await signOut({ global: true } as SignOutInput);
-      console.log('Se realizó sign out exitosamente');
-      navigation.navigate('Login', { userId: userUuid });
-    } catch (error) {
-      console.log('Error signing out: ', error);
-    }
+      signOut();
+      navigation.navigate('Login');
   }
 
   const PQRRow = React.memo(({ pqr }) => (
@@ -75,37 +73,46 @@ export default function ListarPQRs(): React.JSX.Element {
   ));
 
   return (
-    <View style={styles.container} testID={screen}>
-      <MainHeader />
+    <View style={{...styles.listarPqrsContainer}} testID={screen}>
       <Text style={styles.welcomeText}>Bienvenido</Text>
       <Text style={styles.username} onPress={() => handleSignOut()}>{name}</Text>
       <Text style={styles.pqrText} testID={`${screen}.MainTitle`}>PQRs</Text>
 
-      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-      {pqrData.length === 0 ? (
-        <Text>No hay PQR solicitados, por favor crear tu primer PQR usando la opción de Registra tu PQR</Text>
-      ) : (
-        <View style={styles.table}>     
-          {pqrData.map((pqr, index) => (
-            <PQRRow key={index} pqr={pqr} />
-          ))}
-        </View>
-      )}
+      <ScrollView showsVerticalScrollIndicator={true} contentContainerStyle={styles.scrollContainer}>
+        { true /*pqrData.length === 0*/ ? (
+          <Text style={styles.listarPqrsEmptyText}>No hay PQR solicitados, por favor crear tu primer PQR usando la opción de Registra tu PQR</Text>
+        ) : (
+          <View style={styles.table}>     
+            {pqrData.map((pqr, index) => (
+              <PQRRow key={index} pqr={pqr} />
+            ))}
+          </View>
+        )}
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.registerButton} onPress={handleRegisterPress} testID="CrearPQRs.Button">
-          <Text style={styles.registerButtonText}>Registra tu PQR</Text>
-        </TouchableOpacity>
-      </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.registerButton} onPress={handleRegisterPress} testID="CrearPQRs.Button">
+            <Text style={styles.registerButtonText}>Registra tu PQR</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  listarPqrsContainer: {
     flex: 1,
     padding: 20,
+  },
+  scrollContainer: {
+    paddingVertical: 0,
+  },
+  listarPqrsEmptyText: {
+    fontFamily: typography.nunitoSanzRegular,
+    fontSize: typography.fontSizeSmall,
+    letterSpacing: typography.letterSpacingMedium,
+    lineHeight: typography.lineHeightSmall,
+    color: colors.black
   },
   title: {
     color: '#CC430A',

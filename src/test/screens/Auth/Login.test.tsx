@@ -7,17 +7,11 @@ import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { Alert } from "react-native";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigation/RootNavigator';
+import { MockAuthProvider, mockFetchUserAttributes, mockSignIn } from '../../context/MockProvider';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'), // Esto mantiene el resto del módulo intacto
     useNavigation: jest.fn()
-}));
-jest.mock('aws-amplify/auth', () => ({
-    Amplify: {
-        configure: jest.fn()
-    },
-    signIn: jest.fn(),
-    fetchUserAttributes: jest.fn()
 }));
 
 describe('Login', () => {
@@ -31,9 +25,11 @@ describe('Login', () => {
     const renderComponent = () => {
         return render(
             <NavigationContainer>
-                <Stack.Navigator initialRouteName="Login">
-                    <Stack.Screen name="Login" component={Login} initialParams={{ userId: '' }}/>
-                </Stack.Navigator>
+                <MockAuthProvider>
+                    <Stack.Navigator initialRouteName="Login">
+                        <Stack.Screen name="Login" component={Login}/>
+                    </Stack.Navigator>
+                </MockAuthProvider>
             </NavigationContainer>
         );
     };
@@ -94,13 +90,10 @@ describe('Login', () => {
             navigate: mockNavigate,
             goBack: jest.fn()
         });
-        (signIn as jest.Mock).mockReturnValue({
-            isSignedIn: true,
-            nextStep: 'COMPLETED'
-        });
-        (fetchUserAttributes as jest.Mock).mockReturnValue({
-            sub: 'ffff-ffff-ffff',
-            given_name: 'User'
+        mockSignIn.mockResolvedValue(undefined);
+        mockFetchUserAttributes.mockResolvedValue({
+            uuidUser: 'ffff-ffff-ffff',
+            userName: 'User',
         });
         renderComponent();
     
@@ -110,7 +103,8 @@ describe('Login', () => {
         await user.press(screen.getByLabelText('loginButton'));
 
         await waitFor(() => {
-            expect(signIn).toHaveBeenCalled();
+            expect(mockSignIn).toHaveBeenCalled();
+            expect(mockFetchUserAttributes).toHaveBeenCalled();
             expect(mockNavigate).toHaveBeenCalledWith('ListarPQRs', {'userUuid': 'ffff-ffff-ffff', 'name': 'User'});
         });
     });
@@ -137,7 +131,7 @@ describe('Login', () => {
     it('should show navigate to the list of PQRs when user is already signed', async () => {
         const user = userEvent.setup();
 
-        (signIn as jest.Mock).mockRejectedValue(Object.assign(new Error("There is already a signed in user."), { name: "UserAlreadyAuthenticatedException" }));
+        (signIn as jest.Mock).mockRejectedValue(Object.assign(new Error(), { name: "UserAlreadyAuthenticatedException", message: "There is already a signed in user." }));
         const mockNavigate = jest.fn();
         (useNavigation as jest.Mock).mockReturnValue({
             navigate: mockNavigate,
