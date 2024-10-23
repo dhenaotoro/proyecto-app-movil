@@ -22,7 +22,7 @@ const CrearPQRs = () => {
   const [impactoSolucion, setImpactoSolucion] = useState('');
   const [aceptoDatos, setAceptoDatos] = useState(false);
   const route = useRoute<CrearPQRssRouteProp>();
-  const { userUuid, name } = route.params;
+  const { userUuid, userName } = route.params;
   const navigation = useNavigation<NavigationProps>();
 
   const handleGuardar = async () => {
@@ -44,7 +44,7 @@ const CrearPQRs = () => {
     try {
       const response = await registerPqr(pqrData);
       Alert.alert('Guardado', response.message);
-      navigation.navigate('ListarPQRs', { userUuid, name });
+      navigation.navigate('ListarPQRs', { userUuid, userName });
     } catch (error) {
       Alert.alert('Error', 'Hubo un problema al guardar el PQR');
     }

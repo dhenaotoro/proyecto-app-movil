@@ -17,7 +17,7 @@ jest.mock('../../../services/Api', () => ({
 describe('ListarPQRs', () => {
   const Stack = createNativeStackNavigator();
 
-  const renderComponent = (initialParams = { userUuid: '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45', name: 'Ivan Dario' }) => {
+  const renderComponent = (initialParams = { userUuid: '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45', userName: 'Ivan Dario' }) => {
     return render(
       <NavigationContainer>
         <Stack.Navigator initialRouteName="ListarPQRs">
@@ -32,7 +32,7 @@ describe('ListarPQRs', () => {
   });
 
   it('should render the welcome message and username', async () => {
-    fetchPqrs.mockResolvedValueOnce({ code: 200, data: [], message: 'Success' });
+    (fetchPqrs as jest.Mock).mockResolvedValueOnce({ code: 200, data: [], message: 'Success' });
     renderComponent();
 
     await waitFor(() => {
@@ -46,7 +46,7 @@ describe('ListarPQRs', () => {
       { id: '1', status: 'Abierto', channel: 'App móvil' },
       { id: '2', status: 'Cerrado', channel: 'App web' },
     ];
-    fetchPqrs.mockResolvedValueOnce({ code: 200, data: mockData, message: 'Success' });
+    (fetchPqrs as jest.Mock).mockResolvedValueOnce({ code: 200, data: mockData, message: 'Success' });
 
     renderComponent();
 
@@ -64,7 +64,7 @@ describe('ListarPQRs', () => {
   });
 
   it('should show a message when no PQRs are found', async () => {
-    fetchPqrs.mockResolvedValueOnce({ code: 200, data: [], message: 'Success' });
+    (fetchPqrs as jest.Mock).mockResolvedValueOnce({ code: 200, data: [], message: 'Success' });
 
     renderComponent();
 
@@ -77,9 +77,9 @@ describe('ListarPQRs', () => {
 
   it('should navigate to CrearPQRs when the register button is pressed', async () => {
     const mockNavigate = jest.fn();
-    useNavigation.mockReturnValue({ navigate: mockNavigate });
+    (useNavigation as jest.Mock).mockReturnValue({ navigate: mockNavigate });
 
-    fetchPqrs.mockResolvedValueOnce({ code: 200, data: [], message: 'Success' });
+    (fetchPqrs as jest.Mock).mockResolvedValueOnce({ code: 200, data: [], message: 'Success' });
 
     renderComponent();
 
@@ -87,7 +87,7 @@ describe('ListarPQRs', () => {
     fireEvent.press(registerButton);
 
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith('CrearPQRs', { userUuid: '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45', name: 'Ivan Dario' });
+      expect(mockNavigate).toHaveBeenCalledWith('CrearPQRs', { userUuid: '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45', userName: 'Ivan Dario' });
     });
   });
 

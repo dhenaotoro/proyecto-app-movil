@@ -7,11 +7,12 @@ type InputTextProps = PropsWithRef<{
     label: string,
     required: boolean,
     value: string,
-    onInputChange: Function,
-    testID: string
+    onInputChange: (text: string) => void,
+    testID: string,
+    secureTextEntry?: boolean
 }>;
 
-export function InputText({label, required, value, onInputChange, testID}: InputTextProps): React.JSX.Element  {
+export function InputText({label, required, value, onInputChange, testID, secureTextEntry = false}: InputTextProps): React.JSX.Element  {
     const defineLabel = () => {
         return `${label}${required ? '*': ''}`
     };
@@ -24,6 +25,7 @@ export function InputText({label, required, value, onInputChange, testID}: Input
                 onChangeText={nexText => onInputChange(nexText)}
                 testID={testID}
                 aria-label={label}
+                secureTextEntry={secureTextEntry}
             />
         </View>
     );
