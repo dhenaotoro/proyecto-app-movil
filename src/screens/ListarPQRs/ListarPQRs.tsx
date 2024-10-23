@@ -75,11 +75,11 @@ export default function ListarPQRs(): React.JSX.Element {
   return (
     <View style={{...styles.listarPqrsContainer}} testID={screen}>
       <Text style={styles.welcomeText}>Bienvenido</Text>
-      <Text style={styles.username} onPress={() => handleSignOut()}>{name}</Text>
+      <Text style={styles.username} onPress={() => handleSignOut()}>{userName}</Text>
       <Text style={styles.pqrText} testID={`${screen}.MainTitle`}>PQRs</Text>
 
       <ScrollView showsVerticalScrollIndicator={true} contentContainerStyle={styles.scrollContainer}>
-        { true /*pqrData.length === 0*/ ? (
+        { pqrData.length === 0 ? (
           <Text style={styles.listarPqrsEmptyText}>No hay PQR solicitados, por favor crear tu primer PQR usando la opción de Registra tu PQR</Text>
         ) : (
           <View style={styles.table}>     
