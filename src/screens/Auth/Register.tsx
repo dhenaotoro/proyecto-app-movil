@@ -9,7 +9,6 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/RootNavigator";
 import { useNavigation } from "@react-navigation/native";
 import { registerUser } from "../../services/Api";
-import AuthHeader from "../../components/Header/AuthHeader";
 import { AuthContext } from "../../context/AuthContext";
 
 export function Register(): React.JSX.Element  {

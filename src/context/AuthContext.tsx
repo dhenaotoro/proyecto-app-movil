@@ -4,6 +4,7 @@ import {
   fetchUserAttributes as amplifyFetchUserAttributes,
   signUp as amplifySignUp,
   confirmSignUp as amplifyConfirmSignUp,
+  signOut as amplifySignOut,
   type SignInInput 
 } from 'aws-amplify/auth';
 import { Amplify } from 'aws-amplify';
@@ -36,7 +37,6 @@ Amplify.configure(awsconfig);
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const authProps = useMemo(() => ({ isAuthenticated, signIn, signUp, confirmSignUp, signOut, fetchUserAttributes }), []); 
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -95,7 +95,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       console.log('Estado del registro del usuario: ', nextStep);
     } catch (error) {
       console.debug("Error confirmando el código:", error);
-      Alert.alert("Error", "Error confirmando el código");
+      Alert.alert("Error", "Error confirmando el código.");
     }
   };
 
@@ -114,13 +114,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signOut = async () : Promise<void> => {
     try {
-      await signOut();
+      await amplifySignOut();
       console.log('Se realizó sign out exitosamente');
       setIsAuthenticated(false);
     } catch (error) {
       console.log('Error al cerrar la sesión: ', error);
     }
   };
+
+  const authProps = useMemo(() => ({ isAuthenticated, signIn, signUp, confirmSignUp, signOut, fetchUserAttributes }), [isAuthenticated]);
 
   return (
     <AuthContext.Provider value={authProps}>

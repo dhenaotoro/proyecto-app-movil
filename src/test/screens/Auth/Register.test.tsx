@@ -3,54 +3,68 @@ import React from 'react';
 import { it, describe } from '@jest/globals';
 import { Register } from '../../../screens/Auth/Register';
 import { signUp } from 'aws-amplify/auth';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { Alert } from "react-native";
 import { registerUser } from "../../../services/Api";
+import { MockAuthProvider, mockSignUp } from '../../context/MockProvider';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../../navigation/RootNavigator';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'), // Esto mantiene el resto del módulo intacto
     useNavigation: jest.fn()
-}));
-jest.mock('aws-amplify/auth', () => ({
-    signUp: jest.fn()
 }));
 jest.mock('../../../services/Api', () => ({
     registerUser: jest.fn()
 }));
 
 describe('Register', () => {
+    const Stack = createNativeStackNavigator<RootStackParamList>();
+    
     afterEach(() => {
         cleanup();
         jest.clearAllMocks();
     });
 
+    const renderComponent = () => {
+        return render(
+            <NavigationContainer>
+                <MockAuthProvider>
+                    <Stack.Navigator initialRouteName="Register">
+                        <Stack.Screen name="Register" component={Register}/>
+                    </Stack.Navigator>
+                </MockAuthProvider>
+            </NavigationContainer>
+        );
+    };
+
     it('should show an introductory text ', () => {
-        render(<Register />);
+        renderComponent();
     
         expect(screen.getByRole('text', { name: 'Gestiona tus PQRs rápidamente, registrate ya!'})).toBeDefined();
     });
 
     it('should show input forms', () => {
-        render(<Register />);
+        renderComponent();
     
         expect(screen.getByTestId('Register.Documento')).toBeDefined();
     });
 
     it('should show a text link to see the privacy politic', () => {
-        render(<Register />);
+        renderComponent();
     
         expect(screen.getByTestId('Register.PoliticsLink')).toBeDefined();
         expect(screen.getByTestId('Register.PrivacyLink')).toBeDefined();
     });
 
     it('should show a button to Register', () => {
-        render(<Register />);
+        renderComponent();
     
         expect(screen.getByTestId('Register.Button')).toBeDefined();
     });
 
     it('should show a text link to go back to Login page', () => {
-        render(<Register />);
+        renderComponent();
     
         expect(screen.getByRole('text', { name: 'Cancelar'})).toBeDefined();
     });
@@ -62,23 +76,23 @@ describe('Register', () => {
             goBack: jest.fn()
         });
 
-        render(<Register />);
+        renderComponent();
 
         await userEvent.press(screen.getByRole('text', { name: 'Cancelar'}));
 
         await waitFor(() => {
-            expect(mockNavigate).toHaveBeenCalledWith('Login', { userId: '' });
+            expect(mockNavigate).toHaveBeenCalledWith('Login');
         });
     });
 
-    it(`should go to the Policits section when clicking on 'política de privacidad' link`, async () => {
+    it(`should go to the Politics section when clicking on 'política de privacidad' link`, async () => {
         const mockNavigate = jest.fn();
         (useNavigation as jest.Mock).mockReturnValue({
             navigate: mockNavigate,
             goBack: jest.fn()
         });
 
-        render(<Register />);
+        renderComponent();
 
         await userEvent.press(screen.getByTestId('Register.PoliticsLink'));
 
@@ -87,14 +101,14 @@ describe('Register', () => {
         });
     });
 
-    it(`should go to the Policits section when clicking on 'aviso de privacidad de datos' link`, async () => {
+    it(`should go to the Politics section when clicking on 'aviso de privacidad de datos' link`, async () => {
         const mockNavigate = jest.fn();
         (useNavigation as jest.Mock).mockReturnValue({
             navigate: mockNavigate,
             goBack: jest.fn()
         });
 
-        render(<Register />);
+        renderComponent();
 
         await userEvent.press(screen.getByTestId('Register.PrivacyLink'));
 
@@ -110,16 +124,12 @@ describe('Register', () => {
             navigate: mockNavigate,
             goBack: jest.fn()
         });
-        (signUp as jest.Mock).mockReturnValue({
-            isSignUpComplete: true,
-            userId: "ffff-ffff-fffff-ffff-ffff",
-            nextStep: 'CONFIRMATION_CODE'
-        });
+        mockSignUp.mockResolvedValue('ffff-ffff-fffff-ffff-ffff');
         (registerUser as jest.Mock).mockReturnValue({
             code: 201,
             message: 'Usuario creado correctamente'
         });
-        render(<Register />);
+        renderComponent();
     
         await user.type(screen.getByTestId('Register.Documento'), '1088245679');
         await user.type(screen.getByTestId('Register.Nombres'), 'Nombres');
@@ -135,7 +145,7 @@ describe('Register', () => {
         });
         
         await waitFor(() => {
-            expect(signUp).toHaveBeenCalled();
+            expect(mockSignUp).toHaveBeenCalled();
 
             expect(registerUser).toHaveBeenCalledWith({
                 uuid: 'ffff-ffff-fffff-ffff-ffff',
@@ -156,17 +166,18 @@ describe('Register', () => {
         expect(screen.getByRole('text', { name: 'Confirmar' })).toBeDefined();
     });
 
-    it('should show an Alert when signIn fails', async () => {
+    it('should show an Alert when registerUser endpoint fails', async () => {
         const user = userEvent.setup();
         const mockNavigate = jest.fn();
         (useNavigation as jest.Mock).mockReturnValue({
             navigate: mockNavigate,
             goBack: jest.fn()
         });
-        (signUp as jest.Mock).mockRejectedValue({});
+        mockSignUp.mockResolvedValue('ffff-ffff-ffff-ffff');
+        (registerUser as jest.Mock).mockRejectedValue({});
         const alertFn = jest.spyOn(Alert, 'alert');
 
-        render(<Register />);
+        renderComponent();
     
         await user.type(screen.getByTestId('Register.Documento'), '1088245679');
         await user.type(screen.getByTestId('Register.Nombres'), 'Nombres');
@@ -182,7 +193,8 @@ describe('Register', () => {
         });
 
         await waitFor(() => {
-            expect(signUp).toHaveBeenCalled();
+            expect(mockSignUp).toHaveBeenCalled();
+            expect(registerUser).toHaveBeenCalled();
             expect(alertFn).toHaveBeenCalled();
         });
     });
@@ -191,7 +203,7 @@ describe('Register', () => {
         const user = userEvent.setup();
 
         const alertFn = jest.spyOn(Alert, 'alert');
-        render(<Register />);
+        renderComponent();
         
         await user.type(screen.getByTestId('Register.Documento'), '1088245679');
         await user.type(screen.getByTestId('Register.Nombres'), 'Nombres');
