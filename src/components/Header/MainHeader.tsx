@@ -1,28 +1,41 @@
 import React from 'react';
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import colors from '../../styles/colors';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import typography from '../../styles/typography';
+import { useMenuModal } from '../../context/MenuModalContext';
 
 export default function MainHeader(): React.JSX.Element  {
+    const { openMenu } = useMenuModal();
+
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>ABCall</Text>
+        <View style={styles.mainHeaderContainer}>
+          <Text style={styles.titleMainHeader}>ABCall</Text>
+          <TouchableOpacity onPress={openMenu} style={styles.menuMainHeaderButton}>
+            <Icon name="menu" size={30} color={colors.brand_brown} />
+          </TouchableOpacity>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
+    mainHeaderContainer: {
       backgroundColor: colors.white,
-      paddingTop: 31,
-      paddingLeft: 18,
-      justifyContent: 'center'
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: 48,
+      paddingHorizontal: 15,
     },
-    title: {
+    titleMainHeader: {
       color: colors.brand_brown,
       fontFamily: typography.nunitoSanzBold,
       fontSize: typography.fontSizeLarge,
       letterSpacing: typography.letterSpacingMedium,
-      lineHeight: typography.lineHeightLarge
-    }
+      lineHeight: typography.lineHeightLarge,
+    },
+    menuMainHeaderButton: {
+      position: 'absolute',
+      top: 10,
+      right: 15,
+    },
 });

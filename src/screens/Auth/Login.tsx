@@ -15,17 +15,14 @@ export function Login(): React.JSX.Element  {
     const screen = 'Login';
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(false); // Para manejar el estado de carga
     const navigation = useNavigation<NavigationProps>();
-    const { isAuthenticated, signIn, fetchUserAttributes } = useContext(AuthContext);
+    const { signIn, fetchUserAttributes } = useContext(AuthContext);
 
     const handlePress = async () => {
-        setLoading(true); // Mostrar el estado de carga en el texto del botón
-        await signIn(email, password);
-        if (isAuthenticated) {
-            setLoading(false); // Deja de mostrar el estado de carga en el texto del botón
+        const isSigned = await signIn(email, password);
+        if (isSigned) {
             const { userUuid, userName } = await fetchUserAttributes();
-            navigation.navigate("ListarPQRs", { userUuid, userName });
+            navigation.navigate("ListarPQRs", { userUuid, userName, executeList: true });
         }
     };
     
@@ -36,13 +33,13 @@ export function Login(): React.JSX.Element  {
                     <Text style={styles.loginMessageTitle}>Bienvenido(a), inicia sesión con tu correo y contraseña.</Text>
                 </View>
                 <View style={{height: 311}}>
-                    <InputText label='Correo' required value={email} onInputChange={(text: string) => setEmail(text)} testID={`${screen}.Correo`}/>
+                    <InputText label='Correo' required keyboardType="email-address" value={email} onInputChange={(text: string) => setEmail(text)} testID={`${screen}.Correo`}/>
                     <InputText label='Contraseña' required secureTextEntry value={password} onInputChange={(text: string) => setPassword(text)} testID={`${screen}.Password`}/>
                     <Text style={styles.loginLink}>Olvidaste tu contraseña?</Text>
                 </View>
                 <View style={{height: 92}}>
                     <TouchableOpacity style={styles.loginButton} onPress={handlePress} aria-label='loginButton' testID={`${screen}.Button`}>
-                        <Text style={styles.loginButtonText}>{loading ? 'Cargando...' : 'Ingresar'}</Text>
+                        <Text style={styles.loginButtonText}>Ingresar</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -55,7 +52,6 @@ export function Login(): React.JSX.Element  {
 
 const styles = StyleSheet.create({
     loginContainer: {
-        backgroundColor: colors.white,
         paddingTop: 0,
         paddingHorizontal: 15,
         height: 'auto'
@@ -68,7 +64,7 @@ const styles = StyleSheet.create({
         elevation: 2,
         borderColor: colors.white,
         borderWidth: 1,
-        borderRadius: 4,
+        borderRadius: 8,
         borderStyle: 'solid',
     },
     loginMessageTitle: {

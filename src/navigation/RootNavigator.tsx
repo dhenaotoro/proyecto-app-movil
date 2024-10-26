@@ -10,12 +10,13 @@ import ListarPQRs from '../screens/ListarPQRs/ListarPQRs';
 import CrearPQRs from '../screens/CrearPQRs/CrearPQRs';
 import { ActivationCode } from '../screens/Auth/ActivationCode';
 import { Politics } from '../screens/Auth/Politics';
+import { MenuModalProvider } from '../context/MenuModalContext';
 
 export type RootStackParamList = { 
   Login: undefined,
   Register: undefined,
   ActivationCode: { email: string },
-  ListarPQRs: { userUuid: string, userName: string},
+  ListarPQRs: { userUuid: string, userName: string, executeList: boolean },
   CrearPQRs: { userUuid: string, userName: string },
   Politics: undefined
 };
@@ -26,14 +27,16 @@ export default function RootNavigator(): React.JSX.Element {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login" screenOptions={{ header: isAuthenticated? AuthHeader : MainHeader }}>
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Register" component={Register} />
-        <Stack.Screen name="ActivationCode" component={ActivationCode} />
-        <Stack.Screen name="ListarPQRs" component={ListarPQRs} />
-        <Stack.Screen name="CrearPQRs" component={CrearPQRs} />
-        <Stack.Screen name="Politics" component={Politics} />
-      </Stack.Navigator>
+      <MenuModalProvider>
+        <Stack.Navigator initialRouteName="Login" screenOptions={{ header: isAuthenticated? MainHeader : AuthHeader }}>
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Register" component={Register} />
+          <Stack.Screen name="ActivationCode" component={ActivationCode} />
+          <Stack.Screen name="ListarPQRs" component={ListarPQRs} />
+          <Stack.Screen name="CrearPQRs" component={CrearPQRs} />
+          <Stack.Screen name="Politics" component={Politics} />
+        </Stack.Navigator>
+      </MenuModalProvider>
     </NavigationContainer>
   );
 }

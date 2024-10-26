@@ -3,7 +3,7 @@ import { REACT_NATIVE_APP_BACKEND_URL } from '@env';
 //The env var is remapped to another const or let variable in order to properly load the value from .env file when launching unit tests with Jest and they are transformed by Babel-jest
 const expectedEnv = REACT_NATIVE_APP_BACKEND_URL;
 const urlUserBase = `${expectedEnv}/api/user`;
-const urlPqrBase = `${expectedEnv}/api/pqr`;
+const urlPqrBase = `http://10.0.2.2:5000/api/pqr`;
 
 export async function registerUser(userData: { 
   uuid: string | undefined,
@@ -72,6 +72,7 @@ export async function registerPqr(pqrData: {
 }): Promise<{ code: number, data: any, message: string }> {
   const url = `${urlPqrBase}/create`;
   console.log('Url to connect: ', url);
+  console.log('Data to send: ', pqrData);
 
   try {
     const response = await fetch(url, {
@@ -82,6 +83,7 @@ export async function registerPqr(pqrData: {
       body: JSON.stringify(pqrData),
     });
     
+    console.log('response', response);
     if (!response.ok) {
       throw new Error("Error al crear el pqr en el backend");
     }
