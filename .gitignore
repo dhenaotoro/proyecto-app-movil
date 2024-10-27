@@ -41,6 +41,7 @@ local.properties
 *release.apk
 output-metadata.json
 app-realease.dm
+index.android.bundle
 
 # node.js
 #

@@ -1,21 +1,20 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import AuthHeader from '../../components/Header/AuthHeader';
 import colors from '../../styles/colors';
 import typography from '../../styles/typography';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/RootNavigator';
 
-export function Politicas(): React.JSX.Element {
+export function Politics(): React.JSX.Element {
+    const screen = 'Politics';
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
     return (
         <View style={styles.container}>
-            <AuthHeader />
             <ScrollView contentContainerStyle={styles.scrollContent}>
                 <Text style={styles.title}>Política y aviso de privacidad</Text>
-                <Text style={styles.text}>
+                <Text testID={`${screen}.Introduction`} style={styles.text}>
                     En ABCall, nos comprometemos a proteger su privacidad y garantizar la seguridad de sus datos personales.
                     Este documento describe cómo recopilamos, utilizamos, y protegemos su información.
                     {"\n\n"}
@@ -44,7 +43,7 @@ export function Politicas(): React.JSX.Element {
                     {"\n\n"}
                     5. Sus Derechos: Usted tiene el derecho a acceder, corregir, o eliminar sus datos personales. También puede solicitar la limitación o el cese del procesamiento de sus datos para ciertos fines, como el marketing. Para ejercer estos derechos, puede contactarnos a través de abcall@gmail.com.
                 </Text>
-                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Register')}>
+                <TouchableOpacity testID={`${screen}.Button`} style={styles.button} onPress={() => navigation.navigate('Register')}>
                     <Text style={styles.buttonText}>Regresar</Text>
                 </TouchableOpacity>
             </ScrollView>

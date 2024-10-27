@@ -1,206 +1,303 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import MainHeader from '../../components/Header/MainHeader';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { RouteProp, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/RootNavigator";
 import { fetchPqrs } from '../../services/Api';
-import { signOut, type SignOutInput} from "aws-amplify/auth";
+import colors from '../../styles/colors';
+import typography from '../../styles/typography';
 
-type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'CrearPQRs'>;
+type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'CrearPQRs' | 'ListarPQRs'>;
 type ListarPQRsRouteProp = RouteProp<RootStackParamList, 'ListarPQRs'>;
 
 export default function ListarPQRs(): React.JSX.Element {
   const screen = 'ListarPQRs';
   const navigation = useNavigation<NavigationProps>();
   const route = useRoute<ListarPQRsRouteProp>();
-  const { userUuid, name } = route.params;
+  const { userUuid, userName, executeList } = route.params;
+  const [pqrData, setPqrData] = useState<{ id: string; status: string; channel: string; }[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [pqrData, setPqrData] = useState<{ id: string, status: string, channel: string }[]>([]);
-
-  const fetchData = async () => {
+  const fetchData = async () : Promise<void> => {
     try {
       console.log("UUID", userUuid);
+      setIsLoading(true);
       const response = await fetchPqrs(userUuid);
       console.log("Response from fetchPqrs:", response);
   
       // Check if response code is 200 and data is an array
-      if (response.code === 200) {
+      if (response.code === 200 || response.code === 202) {
         if (Array.isArray(response.data) && response.data.length > 0) {
           console.log("Fetched PQR data:", response.data);
           setPqrData(response.data);
         } else {
-          console.warn("No PQR data found for this UUID");
-          setPqrData([]); // Optionally set to an empty array or handle accordingly
+          console.info("There is no PQR data");
+          setPqrData([]);
         }
       } else {
-        console.error("Failed to fetch PQR data:", response.message || "No data available");
+        console.info("Failed to fetch PQR data:", response.message || "No data available");
       }
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching PQR data:", error);
+      setIsLoading(false);
     }
   };
 
-  fetchData(); // Call fetchData when userUuid changes
+  useFocusEffect(
+    useCallback(() => {
+      if (executeList) {
+        fetchData();
+        navigation.setParams({ executeList: false }); // Resetea para evitar nuevas ejecuciones automáticas
+      }
+    }, [executeList])
+  );
 
-  const handleRegisterPress = () => navigation.navigate('CrearPQRs', { userUuid, name });
+  const handleRegisterPress = () => navigation.navigate('CrearPQRs', { userUuid, userName });
 
-  const handleSignOut = async () => {
-    try {
-      await signOut({ global: true } as SignOutInput);
-      console.log('Se realizó sign out exitosamente');
-      navigation.navigate('Login', { userId: userUuid });
-    } catch (error) {
-      console.log('Error signing out: ', error);
-    }
-  }
-
-  const PQRRow = React.memo(({ pqr }) => (
-    <View style={styles.row}>
-      <View style={styles.cell}>
-        <TouchableOpacity style={styles.openButton} onPress={() => {}}>
-          <View style={styles.rowContainer}>
-            <Text style={pqr.status === 'Abierto' ? styles.openBulletPoint : styles.closedBulletPoint}>•</Text>
-            <Text style={pqr.status === 'Abierto' ? styles.openButtonText : styles.closedButtonText}>
-              {pqr.status}
+  const PQRRow = React.memo((pqrRow: {
+    key: string;
+    value: { id: string; status: string; channel: string; }
+  }) : React.JSX.Element => (
+    <View style={styles.pqrListRow}>
+      <View style={styles.pqrListCell}>
+        <TouchableOpacity style={styles.pqrListOpenButton} onPress={() => {}}>
+          <View style={styles.pqrListRowContainer}>
+            <Text style={pqrRow.value.status === 'Abierto' ? styles.openBulletPoint : styles.closedBulletPoint}>•</Text>
+            <Text style={pqrRow.value.status === 'Abierto' ? styles.openButtonText : styles.closedButtonText}>
+              {pqrRow.value.status}
             </Text>
           </View>
-          <Text style={styles.openCode}>{pqr.id}</Text>
+          <Text style={styles.pqrListOpenCode}>{pqrRow.value.id}</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.cell}>
-        <Text style={styles.appText}>{pqr.channel}</Text>
+      <View style={styles.pqrListCell}>
+        <View style={styles.pqrListRowContainer}>
+          <Text style={styles.pqrListAppText}>{pqrRow.value.channel}</Text>
+        </View>
       </View>
     </View>
   ));
 
   return (
-    <View style={styles.container} testID={screen}>
-      <MainHeader />
-      <Text style={styles.welcomeText}>Bienvenido</Text>
-      <Text style={styles.username} onPress={() => handleSignOut()}>{name}</Text>
-      <Text style={styles.pqrText} testID={`${screen}.MainTitle`}>PQRs</Text>
+    <View style={{...styles.listarPqrsContainer}} testID={screen}>
+      <Text style={styles.pqrListWelcomeText}>Bienvenido</Text>
+      <Text style={styles.pqrListUsername}>{userName.toUpperCase()}</Text>
+      <ScrollView showsVerticalScrollIndicator={true} contentContainerStyle={styles.listarPqrsScrollContainer}>
+        <View style={styles.listarPqrsInnerContainer}>
+          <Text style={styles.pqrText} testID={`${screen}.MainTitle`}>PQRs</Text>
+            { pqrData.length === 0 
+              ? (<Text style={styles.listarPqrsEmptyText}>{ isLoading 
+                  ? 'Cargando datos...' 
+                  : 'No hay PQR solicitados, por favor crear tu primer PQR usando la opción de Registra tu PQR.' }
+                </Text>)
+              : (
+                <View style={styles.pqrListTable}>     
+                  {pqrData.map((pqr: { id: string; status: string; channel: string; }, _) => ( <PQRRow key={pqr.id} value={pqr} /> ))}
+                </View>)
+            }
 
-      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-      {pqrData.length === 0 ? (
-        <Text>No hay PQR solicitados, por favor crear tu primer PQR usando la opción de Registra tu PQR</Text>
-      ) : (
-        <View style={styles.table}>     
-          {pqrData.map((pqr, index) => (
-            <PQRRow key={index} pqr={pqr} />
-          ))}
+            <View style={styles.listarPqrsEmptyButtonContainer}>
+              {<TouchableOpacity style={styles.listarPqrsButton} onPress={handleRegisterPress} testID="CrearPQRs.Button">
+                <Text style={styles.listarPqrButtonText}>Registra tu PQR</Text>
+              </TouchableOpacity>}
+            </View>
         </View>
-      )}
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.registerButton} onPress={handleRegisterPress} testID="CrearPQRs.Button">
-          <Text style={styles.registerButtonText}>Registra tu PQR</Text>
-        </TouchableOpacity>
-      </View>
+        <View style={{height: 182, flexDirection: 'row', justifyContent: 'space-between'}}>
+          <View style={{justifyContent: 'center'}}>
+            <Text style={styles.seePollsLink}>Ver encuestas</Text>
+          </View>
+          <View>
+            {<TouchableOpacity style={styles.listarPqrChatbot} testID="CrearPQRs.ChatbotButton">
+              <Text style={styles.listarPqrBotText}>BOT</Text>
+            </TouchableOpacity>}
+          </View>
+        </View>
       </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  listarPqrsContainer: {
     flex: 1,
     padding: 20,
   },
-  title: {
-    color: '#CC430A',
-    fontSize: 34,
-    fontWeight: 'bold',
-    textAlign: 'center',
+  listarPqrsScrollContainer: {
+    padding: 15
   },
-  welcomeText: {
-    color: 'black',
-    fontSize: 18,
+  listarPqrsEmptyText: {
+    marginTop: 88,
+    width: 216,
+    fontFamily: typography.nunitoSanzRegular,
+    fontSize: typography.fontSizeSmall,
+    letterSpacing: typography.letterSpacingMedium,
+    lineHeight: typography.lineHeightSmall,
+    color: colors.black
   },
-  username: {
-    fontWeight: 'bold',
-    fontSize: 20,
-    color: '#000000',
-    paddingVertical: 20,
+  listarPqrsInnerContainer: {
+    marginTop: 38,
+    paddingHorizontal: 10,
+    height: 'auto',
+    elevation: 2,
+    backgroundColor: colors.white,
+    borderColor: colors.white,
+    borderWidth: 0.2,
+    borderRadius: 4,
+    borderStyle: 'solid',
+    alignItems: 'center',
+  },
+  pqrListWelcomeText: {
+    marginTop: 0,
+    letterSpacing: typography.letterSpacingMedium,
+    lineHeight: typography.lineHeightSmall,
+    fontFamily: typography.nunitoSanzRegular,
+    fontSize: typography.fontSizeSmall,
+    color: colors.black,
+  },
+  pqrListUsername: {
+    marginTop: 0,
+    letterSpacing: typography.letterSpacingMedium,
+    lineHeight: typography.lineHeightXYZSmall,
+    fontFamily: typography.nunitoSanzBold,
+    fontSize: typography.fontSizeXYZSmall,
+    color: colors.black,
   },
   pqrText: {
-    fontWeight: 'bold',
-    fontSize: 20,
-    color: '#000000',
+    marginLeft: -255,
+    marginTop: 13,
+    letterSpacing: typography.letterSpacingMedium,
+    lineHeight: typography.lineHeightXYZSmall,
+    fontFamily: typography.nunitoSanzBold,
+    fontSize: typography.fontSizeXYZSmall,
+    color: colors.black,
   },
-  table: {
+  pqrListTable: {
     marginTop: 20,
-    borderWidth: 1,
-    borderColor: '#000000',
-    borderRadius: 5,
-    overflow: 'hidden',
+    width: '100%'
   },
-  row: {
+  pqrListRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10,
+    width: '100%',
     borderBottomWidth: 1,
-    borderBottomColor: '#000000',
-    paddingVertical: 10,
+    borderBottomColor: colors.black,
+    paddingVertical: 5,
   },
-  cell: {
+  pqrListCell: {
+    padding: 5,
     flex: 1,
     alignItems: 'center',
   },
-  openButton: {
-    padding: 10,
+  pqrListOpenButton: {
     flexDirection: 'column',
     alignItems: 'flex-start',
   },
-  rowContainer: {
+  pqrListRowContainer: {
     flexDirection: 'row', 
     alignItems: 'center',
   },
-  openButtonText: {
-    color: '#CC430A',
-    fontWeight: 'bold',
-  },
   openBulletPoint: {
-    color: '#CC430A',
-    fontSize: 24,
+    color: colors.brand_brown,
+    letterSpacing: typography.letterSpacingNothing,
+    lineHeight: typography.lineHeightSmall,
+    fontFamily: typography.nunitoSanzRegular,
+    fontSize: typography.fontSizeSmall,
     marginRight: 5,
   },
+  openButtonText: {
+    color: colors.brand_brown,
+    letterSpacing: typography.letterSpacingNothing,
+    lineHeight: typography.lineHeightSmall,
+    fontFamily: typography.nunitoSanzRegular,
+    fontSize: typography.fontSizeSmall,
+  },
   closedBulletPoint: {
-    color: '#4DCC0A',
-    fontSize: 24,
+    color: colors.brand_green,
+    lineHeight: typography.lineHeightSmall,
+    fontFamily: typography.nunitoSanzRegular,
+    fontSize: typography.fontSizeSmall,
     marginRight: 5,
   },
   closedButton: {
-    backgroundColor: '#4DCC0A',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
+    color: colors.brand_green,
+    letterSpacing: typography.letterSpacingNothing,
+    lineHeight: typography.lineHeightSmall,
+    fontFamily: typography.nunitoSanzRegular,
+    fontSize: typography.fontSizeSmall,
   },
   closedButtonText: {
-    color: '#4DCC0A',
-    fontWeight: 'bold',
+    color: colors.brand_green,
+    letterSpacing: typography.letterSpacingNothing,
+    lineHeight: typography.lineHeightSmall,
+    fontFamily: typography.nunitoSanzRegular,
+    fontSize: typography.fontSizeSmall,
   },
-  openCode: {
-    color: 'black',
+  pqrListOpenCode: {
+    color: colors.black,
+    letterSpacing: typography.letterSpacingNothing,
+    lineHeight: typography.lineHeightSmall,
+    fontFamily: typography.nunitoSanzRegular,
+    fontSize: typography.fontSizeSmall,
     marginTop: 5,
   },
-  appText: {
-    fontWeight: 'bold',
-    color: 'black',
+  pqrListAppText: {
+    color: colors.black,
+    letterSpacing: typography.letterSpacingNothing,
+    lineHeight: typography.lineHeightSmall,
+    fontFamily: typography.nunitoSanzRegular,
+    fontSize: typography.fontSizeSmall,
+    top: 0
   },
-  buttonContainer: {
-    marginTop: 40,
+  listarPqrsEmptyButtonContainer: {
+    marginTop: 75,
+    width: 228,
+    height: 150
   },
-  registerButton: {
-    borderWidth: 2,
-    borderColor: '#4DCC0A',
-    backgroundColor: 'white',
-    borderRadius: 5,
-    padding: 10,
+  listarPqrsButton: {
+    marginTop: 0,
+    height: 36,
+    backgroundColor: colors.white,
+    borderColor: colors.brand_green,
+    borderWidth: 1,
+    borderRadius: 4,
+    borderStyle: 'solid',
     alignItems: 'center',
   },
-  registerButtonText: {
-    color: 'black',
-    fontWeight: 'bold',
+  listarPqrButtonText: {
+    fontFamily: typography.nunitoSanzBold,
+    fontSize: typography.fontSizeMedium,
+    letterSpacing: typography.letterSpacingMedium,
+    lineHeight: typography.lineHeightXMedium,
+    color: colors.black,
   },
+  seePollsLink: {
+    fontFamily: typography.nunitoSanzBold,
+    fontSize: typography.fontSizeSmall,
+    letterSpacing: typography.letterSpacingMedium,
+    lineHeight: typography.lineHeightXYSmall,
+    color: colors.black,
+    textDecorationLine: 'underline',
+    marginLeft: 122
+  },
+  listarPqrChatbot: {
+    marginTop: 66,
+    width: 60,
+    backgroundColor: colors.brand_brown,
+    borderColor: colors.brand_brown,
+    height: 50,
+    borderWidth: 1,
+    borderRadius: 100,
+    borderStyle: 'solid',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  listarPqrBotText: {
+    fontFamily: typography.nunitoSanzBold,
+    fontSize: typography.fontSizeSmall,
+    letterSpacing: typography.letterSpacingMedium,
+    lineHeight: typography.lineHeightXXMedium,
+    color: colors.white,
+  }
 });

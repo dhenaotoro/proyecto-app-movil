@@ -1,28 +1,47 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ScrollView } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import { registerPqr } from '../../services/Api';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation/RootNavigator';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import colors from '../../styles/colors';
+import typography from '../../styles/typography';
+import { DropdownText } from '../../components/FormFields/DropdownText';
+import { InputText } from '../../components/FormFields/InputText';
+import { InputDate } from '../../components/FormFields/InputDate';
 
-type CrearPQRssRouteProp = RouteProp<RootStackParamList, 'CrearPQRs'>;
+type CrearPQRssRouteProp = RouteProp<RootStackParamList, 'CrearPQRs' | 'ListarPQRs'>;
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'ListarPQRs'>;
 
-const CrearPQRs = () => {
+const CrearPQRs = (): React.JSX.Element => {
   const screen = 'CrearPQRs';
-  const [tipoSolicitud, setTipoSolicitud] = useState('');
+  const [tipoSolicitud, setTipoSolicitud] = useState('Petición');
   const [descripcion, setDescripcion] = useState('');
-  const [fechaAdquisicion, setFechaAdquisicion] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [fechaAdquisicion, setFechaAdquisicion] = useState<Date | undefined>(new Date());
   const [numeroTransaccion, setNumeroTransaccion] = useState('');
-  const [impactoProblema, setImpactoProblema] = useState('');
-  const [impactoSolucion, setImpactoSolucion] = useState('');
+  const [impactoProblema, setImpactoProblema] = useState('Bajo');
+  const [impactoSolucion, setImpactoSolucion] = useState('Compensación de dinero');
   const [aceptoDatos, setAceptoDatos] = useState(false);
+  const tiposSolicitud: { [key: string]: string } = {
+    'Petición': 'Petición',
+    'Queja': 'Queja',
+    'Reclamo': 'Reclamo'
+  };
+  const impactosProblema: { [key: string]: string } = {
+    'Bajo': 'Bajo',
+    'Moderado': 'Moderado',
+    'Alto': 'Alto',
+    'Crítico': 'Crítico',
+  };
+  const impactosSolucion: { [key: string]: string } = {
+    'Compensación de dinero': 'Compensación de dinero',
+    'Cambio de producto': 'Cambio de producto',
+    'Aclaración del servicio': 'Aclaración del servicio',
+    'Modificación de una cita': 'Modificación de una cita',
+  };
   const route = useRoute<CrearPQRssRouteProp>();
-  const { userUuid, name } = route.params;
+  const { userUuid, userName } = route.params;
   const navigation = useNavigation<NavigationProps>();
 
   const handleGuardar = async () => {
@@ -44,176 +63,100 @@ const CrearPQRs = () => {
     try {
       const response = await registerPqr(pqrData);
       Alert.alert('Guardado', response.message);
-      navigation.navigate('ListarPQRs', { userUuid, name });
+      navigation.navigate('ListarPQRs', { userUuid, userName, executeList: true });
     } catch (error) {
+      console.debug('error', error);
       Alert.alert('Error', 'Hubo un problema al guardar el PQR');
     }
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container} testID={screen}>
-      <Text style={styles.title}>ABCall</Text>
-      <Text style={styles.subtitle} testID={`${screen}.MainTitle`}>Gestiona tus PQRs rápidamente, regístrate ya!</Text>
-
-      <Text style={styles.label}>Tipo de solicitud *</Text>
-      <Picker testID="request-type-dropdown"
-        selectedValue={tipoSolicitud}
-        onValueChange={(value) => setTipoSolicitud(value)}
-        style={styles.picker}>
-        <Picker.Item label="Seleccione..." value="" />
-        <Picker.Item label="Petición" value="Petición" />
-        <Picker.Item label="Queja" value="Queja" />
-        <Picker.Item label="Reclamo" value="Reclamo" />
-      </Picker>
-
-      <Text style={styles.label}>Descripción *</Text>
-      <TextInput testID="description-textarea"
-        style={styles.textArea}
-        multiline
-        maxLength={150}
-        value={descripcion}
-        onChangeText={setDescripcion}
-      />
-
-      <Text style={styles.label}>Fecha de adquisición *</Text>
-      <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.datePickerButton} testID="date-picker-button">
-        <Text style={styles.dateText}>{fechaAdquisicion.toISOString().split('T')[0]}</Text>
-      </TouchableOpacity>
-      {showDatePicker && (
-        <DateTimePicker
-          testID="date-picker"
-          value={fechaAdquisicion}
-          mode="date"
-          display="default"
-          onChange={(event, date) => {
-            setShowDatePicker(false);
-            if (date) setFechaAdquisicion(date);
-          }}
-        />
-      )}
-
-      <Text style={styles.label}>Número de transacción *</Text>
-      <TextInput testID="transaction-input"
-        style={styles.input}
-        keyboardType="numeric"
-        value={numeroTransaccion}
-        onChangeText={setNumeroTransaccion}
-      />
-
-      <Text style={styles.label}>Impacto del problema</Text>
-      <Picker testID="problem-impact-dropdown"
-        selectedValue={impactoProblema}
-        onValueChange={(value) => setImpactoProblema(value)}
-        style={styles.picker}>
-        <Picker.Item label="Seleccione..." value="" />
-        <Picker.Item label="Bajo" value="Bajo" />
-        <Picker.Item label="Moderado" value="Moderado" />
-        <Picker.Item label="Alto" value="Alto" />
-        <Picker.Item label="Crítico" value="Crítico" />
-      </Picker>
-
-      <Text style={styles.label}>Impacto de solución</Text>
-      <Picker testID="solution-impact-dropdown"
-        selectedValue={impactoSolucion}
-        onValueChange={(value) => setImpactoSolucion(value)}
-        style={styles.picker}>
-        <Picker.Item label="Seleccione..." value="" />
-        <Picker.Item label="Compensación de dinero" value="Compensación de dinero" />
-        <Picker.Item label="Cambio de producto" value="Cambio de producto" />
-        <Picker.Item label="Aclaración del servicio" value="Aclaración del servicio" />
-        <Picker.Item label="Modificación de una cita" value="Modificación de una cita" />
-      </Picker>
-
-      <View style={styles.checkboxContainer}>
-        <CheckBox value={aceptoDatos} onValueChange={setAceptoDatos} />
-        <Text style={styles.checkboxLabel}>Acepto el uso de datos personales</Text>
-      </View>
-
-      <TouchableOpacity style={styles.button} onPress={handleGuardar}>
-        <Text style={styles.buttonText}>Guardar</Text>
-      </TouchableOpacity>
-    </ScrollView>
+    <View style={{...styles.creatPqrContainer}} testID={screen}>
+      <ScrollView contentContainerStyle={styles.crearPqrScrollcontainer}>
+        <View style={styles.crearPqrInnerContainer}>
+            <Text style={styles.crearPqrSubtitle} testID={`${screen}.MainTitle`}>Gestiona tus PQRs rápidamente, regístrate ya!</Text>
+            <DropdownText label='Tipo de solicitud' required value={tipoSolicitud} valuesToShow={tiposSolicitud} onChange={(selectedValue: string) => setTipoSolicitud(selectedValue)} testID={`${screen}.TipoSolicitud`}/>
+            <InputText label='Descripción' required multiline maxLength={150} value={descripcion} onInputChange={(text: string) => setDescripcion(text)} testID={`${screen}.Descripcion`}/>
+            <InputDate label='Fecha Adquisición' required value={fechaAdquisicion || new Date()} onInputChange={(date: Date | undefined) => setFechaAdquisicion(date)} testID={`${screen}.FechaAdquisicion`}/>
+            <InputText label='Número de transacción' required keyboardType='numeric' value={numeroTransaccion} onInputChange={(text: string) => setNumeroTransaccion(text)} testID={`${screen}.NumeroTransaccion`}/>
+            <DropdownText label='Impacto del problema' required value={impactoProblema} valuesToShow={impactosProblema} onChange={(selectedValue: string) => setImpactoProblema(selectedValue)} testID={`${screen}.ImpactoProblema`}/>
+            <DropdownText label='Impacto de solución' required value={impactoSolucion} valuesToShow={impactosSolucion} onChange={(selectedValue: string) => setImpactoSolucion(selectedValue)} testID={`${screen}.ImpactoSolucion`}/>
+            <View style={styles.crearPqrCheckboxContainer}>
+              <CheckBox value={aceptoDatos} style={styles.crearPqrCheckbox} onValueChange={setAceptoDatos} testID={`${screen}.Checkbox`}/>
+              <Text style={styles.crearPqrCheckboxLabel}>Acepto el uso de datos personales.</Text>
+            </View>
+            <View style={{height: 92, paddingTop: 16}}>
+              <TouchableOpacity style={styles.crearPqrButton} onPress={handleGuardar} testID={`${screen}.Button`}>
+                <Text style={styles.crearPqrButtonText}>Guardar</Text>
+              </TouchableOpacity>
+            </View>
+        </View>
+        <View style={{height: 182}} />
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  creatPqrContainer: {
     flexGrow: 1,
-    padding: 20,
-    backgroundColor: '#f0f0f0',
   },
-  title: {
-    color: '#CC430A',
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  subtitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'black',
-    marginVertical: 10,
-  },
-  label: {
-    fontSize: 16,
-    color: 'black',
-    marginVertical: 5,
-  },
-  picker: {
-    backgroundColor: 'white',
-    borderColor: '#ccc',
+  crearPqrInnerContainer: {
+    backgroundColor: colors.white,
+    top: 0,
+    marginHorizontal: 15,
+    paddingHorizontal: 15,
+    height: 'auto',
+    elevation: 2,
+    borderStyle: 'solid',
     borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 10,
+    borderColor: colors.white,
+    borderRadius: 8,
   },
-  textArea: {
-    backgroundColor: 'white',
-    height: 100,
-    textAlignVertical: 'top',
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
+  crearPqrScrollcontainer: {
+    paddingVertical: 0,
   },
-  datePickerButton: {
-    backgroundColor: 'white',
-    padding: 10,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 10,
+  crearPqrSubtitle: {
+    fontFamily: typography.nunitoSanzBold,
+    fontSize: typography.fontSizeMedium,
+    letterSpacing: typography.letterSpacingMedium,
+    lineHeight: typography.lineHeightMedium,
+    color: colors.black,
   },
-  dateText: {
-    color: 'black',
-  },
-  input: {
-    backgroundColor: 'white',
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-  },
-  checkboxContainer: {
+  crearPqrCheckboxContainer: {
+    paddingTop: 18,
+    width: 280,
     flexDirection: 'row',
+    marginBottom: 20
+  },
+  crearPqrCheckbox: {
+    alignSelf: 'center'
+  },
+  crearPqrCheckboxLabel: {
+    marginTop: 5,
+    fontFamily: typography.nunitoSanzRegular,
+    fontSize: typography.fontSizeSmall,
+    letterSpacing: typography.letterSpacingMedium,
+    lineHeight: typography.lineHeightXYSmall,
+    color: colors.black,
+  },
+  crearPqrButton: {
+    marginTop: 29,
+    height: 36,
+    backgroundColor: colors.white,
+    borderColor: colors.brand_green,
+    borderWidth: 1,
+    borderRadius: 4,
+    borderStyle: 'solid',
     alignItems: 'center',
-    marginVertical: 10,
+    color: colors.black
   },
-  checkboxLabel: {
-    marginLeft: 8,
-    color: 'black',
-  },
-  button: {
-    borderWidth: 2,
-    borderColor: '#4DCC0A',
-    backgroundColor: 'white',
-    borderRadius: 5,
-    padding: 10,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: 'black',
-    fontWeight: 'bold',
+  crearPqrButtonText: {
+    marginTop: -5,
+    fontFamily: typography.nunitoSanzBold,
+    fontSize: typography.fontSizeLarge,
+    letterSpacing: typography.letterSpacingMedium,
+    color: colors.black,
   },
 });
 
