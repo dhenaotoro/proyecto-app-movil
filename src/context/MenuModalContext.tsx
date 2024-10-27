@@ -26,6 +26,7 @@ export const useMenuModal = () => {
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
 export const MenuModalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const screen = 'Modal';
   const navigation = useNavigation<NavigationProps>();
   const { signOut } = useContext(AuthContext);
   const [menuVisible, setMenuVisible] = useState(false);
@@ -49,21 +50,22 @@ export const MenuModalProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         animationType="slide"
         transparent={true}
         onRequestClose={closeMenu}
+        testID={`${screen}.Container`}
       >
         <View style={styles.modalContainer}>
-          <TouchableOpacity onPress={closeMenu} style={styles.modalCloseButton}>
+          <TouchableOpacity onPress={closeMenu} style={styles.modalCloseButton} testID={`${screen}.CloseButton`}>
             <Icon name="window-close" size={20} color={colors.brand_brown} />
           </TouchableOpacity>
           <View style={styles.modalMenuContent}>
-            <TouchableOpacity style={styles.modalMenuButton}>
+            <TouchableOpacity style={styles.modalMenuButton} testID={`${screen}.DatosPersonales`}>
               <Icon name="account" size={24} color={colors.brand_brown} />
               <Text style={styles.modalMenuButtonText}>Tus datos personales</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.modalMenuButton}>
+            <TouchableOpacity style={styles.modalMenuButton} testID={`${screen}.Alertas`}>
               <Icon name="cog" size={24} color={colors.brand_brown} />
               <Text style={styles.modalMenuButtonText}>Alertas</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.modalMenuButton} onPress={() => handleSignOut()}>
+            <TouchableOpacity style={styles.modalMenuButton} onPress={handleSignOut} testID={`${screen}.CierreSesion`}>
               <Icon name="logout" size={24} color={colors.brand_brown} />
               <Text style={styles.modalMenuButtonText}>Cierre sesión</Text>
             </TouchableOpacity>

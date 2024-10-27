@@ -88,7 +88,9 @@ describe('Login', () => {
             navigate: mockNavigate,
             goBack: jest.fn()
         });
-        mockSignIn.mockResolvedValue(undefined);
+        mockSignIn.mockResolvedValue({
+            isSigned: true
+        });
         mockFetchUserAttributes.mockResolvedValue({
             userUuid: 'ffff-ffff-ffff',
             userName: 'User',
@@ -103,7 +105,7 @@ describe('Login', () => {
         await waitFor(() => {
             expect(mockSignIn).toHaveBeenCalled();
             expect(mockFetchUserAttributes).toHaveBeenCalled();
-            expect(mockNavigate).toHaveBeenCalledWith('ListarPQRs', {'userUuid': 'ffff-ffff-ffff', 'userName': 'User'});
+            expect(mockNavigate).toHaveBeenCalledWith('ListarPQRs', {'userUuid': 'ffff-ffff-ffff', 'userName': 'User', executeList: true });
         });
     });
 });

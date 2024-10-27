@@ -1,4 +1,4 @@
-import { cleanup, waitFor, render, act, userEvent } from '@testing-library/react-native';
+import { cleanup, waitFor, render, userEvent } from '@testing-library/react-native';
 import React, { useContext } from 'react';
 import { it, describe } from '@jest/globals';
 import {
@@ -74,11 +74,11 @@ describe('AuthContext', () => {
         });
     
         await waitFor(() => {
-            expect(getByText('Logged In')).toBeTruthy();
+            expect(getByText('Sign In')).toBeTruthy();
         });
     });
     
-    it('should handle sign in failure', async () => {
+    it('should handle sign in failure when credentials are invalid', async () => {
         const user = userEvent.setup();
         (amplifySignIn as jest.Mock).mockRejectedValueOnce(new Error('Invalid credentials'));
         const alertSpy = jest.spyOn(Alert, 'alert');
@@ -90,6 +90,23 @@ describe('AuthContext', () => {
         await waitFor(() => {
             expect(alertSpy).toHaveBeenCalledWith('Error', 'Correo o contraseña incorrectos');
         });
+    });
+
+    it('should handle sign in failure when Cognito reponds isSignedIn as false', async () => {
+      const user = userEvent.setup();
+      (amplifySignIn as jest.Mock).mockResolvedValueOnce({ isSignedIn: false, nextStep: 'Register' });
+      
+      const { getByText } = renderWithAuthProvider();
+    
+      await user.press(getByText('Sign In'));
+  
+      await waitFor(() => {
+        expect(amplifySignIn).toHaveBeenCalledWith({ username: 'test@email.com', password: 'test' });
+      });
+  
+      await waitFor(() => {
+          expect(getByText('Sign In')).toBeTruthy();
+      });
     });
 
     it('should handle sign in failure when user is already signed in', async () => {

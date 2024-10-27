@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react-native';
+import { render, screen, userEvent, waitFor, fireEvent } from '@testing-library/react-native';
 import 'react-native';
 import React from 'react';
 import {it, describe} from '@jest/globals';
@@ -26,5 +26,19 @@ describe('DropdownText', () => {
         render(<DropdownText label='Text' value='value1' valuesToShow={valuesToShow} onChange={jest.fn()} required={false} testID='DropdownText.Picker'/>);
     
         expect(screen.getByTestId('DropdownText.Picker')).toBeTruthy();
+    });
+
+    it('should call the onValueChange when choosing an option', async () => {
+        const user = userEvent.setup();
+        const onInputChange = jest.fn();
+        const { getByTestId } = render(<DropdownText label='Text' value='value1' valuesToShow={valuesToShow} onChange={onInputChange} required={false} testID='DropdownText.Picker'/>);
+    
+        await user.press(getByTestId('DropdownText.Picker'));
+
+        await waitFor(() => 
+            fireEvent(getByTestId('DropdownText.Picker'), 'onValueChange', 'value2') // Simula seleccionar una nueva opcion
+        );
+
+        expect(onInputChange).toHaveBeenCalled();
     });
 });

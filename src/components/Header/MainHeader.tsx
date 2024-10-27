@@ -6,12 +6,13 @@ import typography from '../../styles/typography';
 import { useMenuModal } from '../../context/MenuModalContext';
 
 export default function MainHeader(): React.JSX.Element  {
+    const screen = 'MainHeader'
     const { openMenu } = useMenuModal();
 
     return (
         <View style={styles.mainHeaderContainer}>
           <Text style={styles.titleMainHeader}>ABCall</Text>
-          <TouchableOpacity onPress={openMenu} style={styles.menuMainHeaderButton}>
+          <TouchableOpacity onPress={openMenu} style={styles.menuMainHeaderButton} testID={`${screen}.Button`}>
             <Icon name="menu" size={30} color={colors.brand_brown} />
           </TouchableOpacity>
         </View>

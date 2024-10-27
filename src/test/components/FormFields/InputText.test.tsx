@@ -15,13 +15,13 @@ describe('InputText', () => {
     it('should show a required label', () => {
         render(<InputText label='Text' value='' onInputChange={jest.fn()} required={true} testID='TextInput.Text'/>);
     
-        expect(screen.getByRole('text', { name: 'Text*'})).toBeDefined();
+        expect(screen.getByRole('text', { name: 'Text*'})).toBeTruthy();
     });
 
     it('should show a non-required label', () => {
         render(<InputText label='Text' value='' onInputChange={jest.fn()} required={false} testID='TextInput.Text'/>);
     
-        expect(screen.getByRole('text', { name: 'Text'})).toBeDefined();
+        expect(screen.getByRole('text', { name: 'Text'})).toBeTruthy();
     });
 
     it('should load a value defined', () => {
@@ -37,5 +37,11 @@ describe('InputText', () => {
         await user.type(screen.getByTestId('TextInput.Text'), 'Text');
 
         expect(onInputChange).toHaveBeenLastCalledWith('t');
+    });
+
+    it('should show render a multiline text input', () => {
+        render(<InputText label='Text' value='' multiline onInputChange={jest.fn()} required={true} testID='TextInput.Text'/>);
+    
+        expect(screen.getByRole('text', { name: 'Text*'})).toBeTruthy();
     });
 });

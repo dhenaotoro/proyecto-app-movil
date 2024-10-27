@@ -30,7 +30,7 @@ export function InputDate({label, required, value, onInputChange, testID}: Input
             </TouchableOpacity>
             {showDatePicker && (
                 <DateTimePicker
-                    testID="date-picker"
+                    testID={`${testID}-Date-Picker`}
                     value={value}
                     mode="date"
                     display="default"
