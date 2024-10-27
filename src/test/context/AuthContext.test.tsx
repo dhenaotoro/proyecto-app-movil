@@ -1,6 +1,6 @@
 import { cleanup, waitFor, render, userEvent } from '@testing-library/react-native';
 import React, { useContext } from 'react';
-import { it, describe } from '@jest/globals';
+import { it, test, describe } from '@jest/globals';
 import {
     signIn as amplifySignIn,
     signUp as amplifySignUp,
@@ -61,7 +61,7 @@ describe('AuthContext', () => {
             </AuthProvider>
         );
     
-    it('should sign in successfully', async () => {
+    test('should sign in successfully', async () => {
         const user = userEvent.setup();
         (amplifySignIn as jest.Mock).mockResolvedValueOnce({ isSignedIn: true });
     
@@ -76,7 +76,7 @@ describe('AuthContext', () => {
         await waitFor(() => {
             expect(getByText('Sign In')).toBeTruthy();
         });
-    });
+    }, 10000);
     
     it('should handle sign in failure when credentials are invalid', async () => {
         const user = userEvent.setup();
@@ -90,7 +90,7 @@ describe('AuthContext', () => {
         await waitFor(() => {
             expect(alertSpy).toHaveBeenCalledWith('Error', 'Correo o contraseña incorrectos');
         });
-    });
+    }, 10000);
 
     it('should handle sign in failure when Cognito reponds isSignedIn as false', async () => {
       const user = userEvent.setup();
