@@ -9,9 +9,9 @@ type InputTextProps = PropsWithRef<{
     value: string;
     onInputChange: (text: string) => void;
     testID: string;
-    maxLength?: number | undefined;
+    maxLength: number | undefined;
     secureTextEntry?: boolean;
-    keyboardType?: KeyboardTypeOptions | undefined;
+    keyboardType?: KeyboardTypeOptions;
     multiline?: boolean;
 }>;
 

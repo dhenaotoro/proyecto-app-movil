@@ -36,11 +36,11 @@ describe('AuthContext', () => {
             <>
                 {isAuthenticated ? <Text>Logged In</Text> : <Text>Logged Out</Text>}
                 {/* Botones ficticios para pruebas */}
-                <Button title="Sign In" onPress={async () => signIn('test@email.com', 'test')} />
+                <Button title="Sign In" onPress={async () => signIn('test@email.com', '')} />
                 <Button title="Sign Up" onPress={() =>
                     signUp({
                         correo: 'test@email.com',
-                        password: 'password',
+                        password: '',
                         nombres: 'Test',
                         apellidos: 'User',
                         telefono: '123456789',
@@ -70,7 +70,7 @@ describe('AuthContext', () => {
         await user.press(getByText('Sign In'));
     
         await waitFor(() => {
-          expect(amplifySignIn).toHaveBeenCalledWith({ username: 'test@email.com', password: 'test' });
+          expect(amplifySignIn).toHaveBeenCalledWith({ username: 'test@email.com', password: '' });
         });
     
         await waitFor(() => {
@@ -101,7 +101,7 @@ describe('AuthContext', () => {
       await user.press(getByText('Sign In'));
   
       await waitFor(() => {
-        expect(amplifySignIn).toHaveBeenCalledWith({ username: 'test@email.com', password: 'test' });
+        expect(amplifySignIn).toHaveBeenCalledWith({ username: 'test@email.com', password: '' });
       });
   
       await waitFor(() => {
@@ -133,7 +133,7 @@ describe('AuthContext', () => {
         await waitFor(() => {
           expect(amplifySignUp).toHaveBeenCalledWith({
             username: 'test@email.com',
-            password: 'password',
+            password: '',
             options: {
               userAttributes: {
                 email: 'test@email.com',
@@ -157,7 +157,7 @@ describe('AuthContext', () => {
         await waitFor(() => {
           expect(amplifySignUp).toHaveBeenCalledWith({
             username: 'test@email.com',
-            password: 'password',
+            password: '',
             options: {
               userAttributes: {
                 email: 'test@email.com',

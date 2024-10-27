@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useMemo, useState } from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import colors from '../styles/colors';
@@ -33,6 +33,7 @@ export const MenuModalProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const openMenu = () => setMenuVisible(true);
   const closeMenu = () => setMenuVisible(false);
+  const modalActions = useMemo(() => ({ openMenu, closeMenu }), []);
 
   const handleSignOut = async () => {
     await signOut();
@@ -41,7 +42,7 @@ export const MenuModalProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   }
 
   return (
-    <MenuModalContext.Provider value={{ openMenu, closeMenu }}>
+    <MenuModalContext.Provider value={modalActions}>
       {children}
 
       {/* Modal de pantalla completa */}

@@ -2,7 +2,6 @@ import { cleanup, waitFor, render, screen, userEvent } from '@testing-library/re
 import React from 'react';
 import { it, describe } from '@jest/globals';
 import { Register } from '../../../screens/Auth/Register';
-import { signUp } from 'aws-amplify/auth';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { Alert } from "react-native";
 import { registerUser } from "../../../services/Api";

@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import AuthHeader from '../../components/Header/AuthHeader';
 import colors from '../../styles/colors';
 import typography from '../../styles/typography';
 import { useNavigation } from '@react-navigation/native';

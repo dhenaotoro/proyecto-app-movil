@@ -1,5 +1,4 @@
 import { fireEvent, render, screen, userEvent, waitFor } from '@testing-library/react-native';
-import 'react-native';
 import React from 'react';
 import { it, describe, beforeEach } from '@jest/globals';
 import CrearPQRs from '../../../screens/CrearPQRs/CrearPQRs';

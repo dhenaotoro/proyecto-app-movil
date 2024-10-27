@@ -92,7 +92,7 @@ describe('MenuModalContext', () => {
     mockSignOut.mockResolvedValue({
         isSigned: true
     });
-    const { getByTestId, getByText } = renderWithProviders(<TestComponent />);
+    const { getByTestId } = renderWithProviders(<TestComponent />);
 
     // Abre el menú y presiona el botón de cierre de sesión
     const openButton = getByTestId('open-menu-button');

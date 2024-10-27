@@ -56,7 +56,7 @@ export default function ListarPQRs(): React.JSX.Element {
   const handleRegisterPress = () => navigation.navigate('CrearPQRs', { userUuid, userName });
 
   const PQRRow = React.memo((pqrRow: {
-    key: number;
+    key: string;
     value: { id: string; status: string; channel: string; }
   }) : React.JSX.Element => (
     <View style={styles.pqrListRow}>
@@ -93,11 +93,11 @@ export default function ListarPQRs(): React.JSX.Element {
                 </Text>)
               : (
                 <View style={styles.pqrListTable}>     
-                  {pqrData.map((pqr: { id: string; status: string; channel: string; }, index: number) => ( <PQRRow key={index} value={pqr} /> ))}
+                  {pqrData.map((pqr: { id: string; status: string; channel: string; }, _) => ( <PQRRow key={pqr.id} value={pqr} /> ))}
                 </View>)
             }
 
-            <View style={pqrData.length === 0 ? styles.listarPqrsEmptyButtonContainer : styles.listarPqrsEmptyButtonContainer}>
+            <View style={styles.listarPqrsEmptyButtonContainer}>
               {<TouchableOpacity style={styles.listarPqrsButton} onPress={handleRegisterPress} testID="CrearPQRs.Button">
                 <Text style={styles.listarPqrButtonText}>Registra tu PQR</Text>
               </TouchableOpacity>}

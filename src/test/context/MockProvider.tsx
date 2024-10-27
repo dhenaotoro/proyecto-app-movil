@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 
 export const mockSignIn = jest.fn().mockReturnValue({
@@ -15,16 +15,16 @@ export const mockConfirmSignUp = jest.fn();
 
 
 export const MockAuthProvider = ({ children, isAuthenticated = true }: { children: React.ReactNode, isAuthenticated?: boolean}) => {
-    const [authState, setAuthState] = useState(isAuthenticated);
+    const [authState, _] = useState(isAuthenticated);
     
-    const mockValue = {
+    const mockValue = useMemo(() => ({
         isAuthenticated: authState,
         signIn: mockSignIn,
         signUp: mockSignUp,
         signOut: mockSignOut,
         fetchUserAttributes: mockFetchUserAttributes,
         confirmSignUp: mockConfirmSignUp
-    };
+    }), []);
 
     return <AuthContext.Provider value={mockValue}>{children}</AuthContext.Provider>;
 };

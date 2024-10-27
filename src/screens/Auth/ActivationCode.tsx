@@ -6,7 +6,6 @@ import React, { useContext, useState } from "react";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/RootNavigator";
-import AuthHeader from "../../components/Header/AuthHeader";
 import { AuthContext } from "../../context/AuthContext";
 
 type ActivactionCodeRouteProp = RouteProp<RootStackParamList, 'ActivationCode'>;
@@ -48,7 +47,7 @@ export function ActivationCode(): React.JSX.Element  {
                     <Text style={styles.activationCodeMessageTitle}>Se envió correo de confirmación al correo {maskEmail()} con el código de activación. Por favor verificalo en tu bandeja de entrada y registralo aquí abajo.</Text>
                 </View>
                 <View style={{height: 161}}>
-                    <InputText label='Código de Activación' required value={codigoActivacion} onInputChange={(text: string) => setCodigoActivacion(text)} testID={`${screen}.CodigoActivacion`}/>
+                    <InputText label='Código de Activación' maxLength={10} required value={codigoActivacion} onInputChange={(text: string) => setCodigoActivacion(text)} testID={`${screen}.CodigoActivacion`}/>
                 </View>
                 <View style={{height: 92}}>
                     <TouchableOpacity style={styles.activationCodeButton} onPress={handlePress} aria-label='activationCodeButton' testID={`${screen}.Button`}>
