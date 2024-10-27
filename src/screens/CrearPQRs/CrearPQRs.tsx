@@ -45,11 +45,6 @@ const CrearPQRs = (): React.JSX.Element => {
   const navigation = useNavigation<NavigationProps>();
 
   const handleGuardar = async () => {
-    console.log('tipoSolicitud', tipoSolicitud);
-    console.log('descripcion', descripcion);
-    console.log('numeroTransaccion', numeroTransaccion);
-    console.log('impactoProblema', impactoProblema);
-    console.log('aceptoDatos', aceptoDatos);
     if (!tipoSolicitud || !descripcion || !numeroTransaccion || !impactoProblema || !aceptoDatos) {
       Alert.alert('Error', 'Por favor, completa todos los campos obligatorios marcados con *');
       return;
@@ -87,11 +82,11 @@ const CrearPQRs = (): React.JSX.Element => {
             <DropdownText label='Impacto del problema' required value={impactoProblema} valuesToShow={impactosProblema} onChange={(selectedValue: string) => setImpactoProblema(selectedValue)} testID={`${screen}.ImpactoProblema`}/>
             <DropdownText label='Impacto de solución' required value={impactoSolucion} valuesToShow={impactosSolucion} onChange={(selectedValue: string) => setImpactoSolucion(selectedValue)} testID={`${screen}.ImpactoSolucion`}/>
             <View style={styles.crearPqrCheckboxContainer}>
-              <CheckBox value={aceptoDatos} style={styles.crearPqrCheckbox} onValueChange={setAceptoDatos} />
+              <CheckBox value={aceptoDatos} style={styles.crearPqrCheckbox} onValueChange={setAceptoDatos} testID={`${screen}.Checkbox`}/>
               <Text style={styles.crearPqrCheckboxLabel}>Acepto el uso de datos personales.</Text>
             </View>
             <View style={{height: 92, paddingTop: 16}}>
-              <TouchableOpacity style={styles.crearPqrButton} onPress={handleGuardar}>
+              <TouchableOpacity style={styles.crearPqrButton} onPress={handleGuardar} testID={`${screen}.Button`}>
                 <Text style={styles.crearPqrButtonText}>Guardar</Text>
               </TouchableOpacity>
             </View>
