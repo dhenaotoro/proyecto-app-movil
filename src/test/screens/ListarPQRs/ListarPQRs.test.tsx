@@ -17,7 +17,7 @@ jest.mock('../../../services/Api', () => ({
 describe('ListarPQRs', () => {
   const Stack = createNativeStackNavigator();
 
-  const renderComponent = (initialParams = { userUuid: '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45', userName: 'Ivan Dario' }) => {
+  const renderComponent = (initialParams = { userUuid: '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45', userName: 'Ivan Dario', executeList: true }) => {
     return render(
       <NavigationContainer>
         <Stack.Navigator initialRouteName="ListarPQRs">
@@ -32,12 +32,16 @@ describe('ListarPQRs', () => {
   });
 
   it('should render the welcome message and username', async () => {
+    const mockNavigate = jest.fn();
+    const mockSetParams = jest.fn();
+    (useNavigation as jest.Mock).mockReturnValue({ navigate: mockNavigate, setParams: mockSetParams });
+
     (fetchPqrs as jest.Mock).mockResolvedValueOnce({ code: 200, data: [], message: 'Success' });
     renderComponent();
 
     await waitFor(() => {
       expect(screen.getByText('Bienvenido')).toBeTruthy();
-      expect(screen.getByText('Ivan Dario')).toBeTruthy();
+      expect(screen.getByText('IVAN DARIO')).toBeTruthy();
     });
   });
 
@@ -66,18 +70,19 @@ describe('ListarPQRs', () => {
   it('should show a message when no PQRs are found', async () => {
     (fetchPqrs as jest.Mock).mockResolvedValueOnce({ code: 200, data: [], message: 'Success' });
 
-    renderComponent();
+    renderComponent({ userUuid: '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45', userName: 'Ivan Dario', executeList: false });
 
     await waitFor(() => {
       expect(
-        screen.getByText('No hay PQR solicitados, por favor crear tu primer PQR usando la opción de Registra tu PQR')
+        screen.getByText('No hay PQR solicitados, por favor crear tu primer PQR usando la opción de Registra tu PQR.')
       ).toBeTruthy();
     });
   });
 
   it('should navigate to CrearPQRs when the register button is pressed', async () => {
     const mockNavigate = jest.fn();
-    (useNavigation as jest.Mock).mockReturnValue({ navigate: mockNavigate });
+    const mockSetParams = jest.fn();
+    (useNavigation as jest.Mock).mockReturnValue({ navigate: mockNavigate, setParams: mockSetParams });
 
     (fetchPqrs as jest.Mock).mockResolvedValueOnce({ code: 200, data: [], message: 'Success' });
 
@@ -91,4 +96,49 @@ describe('ListarPQRs', () => {
     });
   });
 
+  it('should show a message when fetchPqrs returns an http code 400', async () => {
+    (fetchPqrs as jest.Mock).mockResolvedValueOnce({ code: 400, data: [], message: 'Failure' });
+
+    renderComponent();
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('No hay PQR solicitados, por favor crear tu primer PQR usando la opción de Registra tu PQR.')
+      ).toBeTruthy();
+    });
+  });
+
+  it('should show a message when fetchPqrs returns an http code 500 without message', async () => {
+    (fetchPqrs as jest.Mock).mockResolvedValueOnce({ code: 500, data: [], message: undefined });
+
+    renderComponent();
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('No hay PQR solicitados, por favor crear tu primer PQR usando la opción de Registra tu PQR.')
+      ).toBeTruthy();
+    });
+  });
+
+  it('should show a message when fetchPqrs is not called because executeList is false', async () => {
+    renderComponent();
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('No hay PQR solicitados, por favor crear tu primer PQR usando la opción de Registra tu PQR.')
+      ).toBeTruthy();
+    });
+  });
+
+  it('should show a message when fetchPqrs throws an exception', async () => {
+    (fetchPqrs as jest.Mock).mockRejectedValueOnce(new Error('Error en la solicitud al backend'));
+
+    renderComponent();
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('No hay PQR solicitados, por favor crear tu primer PQR usando la opción de Registra tu PQR.')
+      ).toBeTruthy();
+    });
+  });
 });

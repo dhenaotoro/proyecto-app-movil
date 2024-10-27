@@ -29,18 +29,18 @@ export default function ListarPQRs(): React.JSX.Element {
       if (response.code === 200 || response.code === 202) {
         if (Array.isArray(response.data) && response.data.length > 0) {
           console.log("Fetched PQR data:", response.data);
-          setIsLoading(false);
           setPqrData(response.data);
         } else {
           console.info("There is no PQR data");
-          setIsLoading(false);
           setPqrData([]);
         }
       } else {
         console.info("Failed to fetch PQR data:", response.message || "No data available");
       }
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching PQR data:", error);
+      setIsLoading(false);
     }
   };
 
@@ -82,7 +82,7 @@ export default function ListarPQRs(): React.JSX.Element {
   return (
     <View style={{...styles.listarPqrsContainer}} testID={screen}>
       <Text style={styles.pqrListWelcomeText}>Bienvenido</Text>
-      <Text style={styles.pqrListUsername}>{userName?.toUpperCase() || 'Usuario'}</Text>
+      <Text style={styles.pqrListUsername}>{userName.toUpperCase()}</Text>
       <ScrollView showsVerticalScrollIndicator={true} contentContainerStyle={styles.listarPqrsScrollContainer}>
         <View style={styles.listarPqrsInnerContainer}>
           <Text style={styles.pqrText} testID={`${screen}.MainTitle`}>PQRs</Text>
