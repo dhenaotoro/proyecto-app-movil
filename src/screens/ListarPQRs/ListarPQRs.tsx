@@ -55,6 +55,8 @@ export default function ListarPQRs(): React.JSX.Element {
 
   const handleRegisterPress = () => navigation.navigate('CrearPQRs', { userUuid, userName });
 
+  const openChatbot = () => navigation.navigate('Chatbot', { userUuid, userName });
+
   const PQRRow = React.memo((pqrRow: {
     key: string;
     value: { id: string; status: string; channel: string; }
@@ -108,7 +110,7 @@ export default function ListarPQRs(): React.JSX.Element {
             <Text style={styles.seePollsLink}>Ver encuestas</Text>
           </View>
           <View>
-            {<TouchableOpacity style={styles.listarPqrChatbot} testID="CrearPQRs.ChatbotButton">
+            {<TouchableOpacity style={styles.listarPqrChatbot} onPress={openChatbot} testID="CrearPQRs.ChatbotButton">
               <Text style={styles.listarPqrBotText}>BOT</Text>
             </TouchableOpacity>}
           </View>

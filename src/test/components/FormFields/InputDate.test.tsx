@@ -25,10 +25,10 @@ describe('InputDate', () => {
         expect(screen.getByRole('text', { name: 'Date'})).toBeTruthy();
     });
 
-    it('should load a value defined', () => {
+    it('should load a value defined', async () => {
         render(<InputDate label='Date' value={initialDate} onInputChange={jest.fn()} required={false} testID='InputDate.Text'/>);
     
-        expect(screen.getByRole('text', { name: initialDate.toISOString().split('T')[0]}));
+        await waitFor(() => expect(screen.getByRole('text', { name: initialDate.toISOString().split('T')[0]})));
     });
 
     it('should call the onInputChange when choosing a date', async () => {
@@ -42,6 +42,6 @@ describe('InputDate', () => {
             fireEvent(getByTestId('InputDate.Text-Date-Picker'), 'onChange', { nativeEvent: { timestamp: newDate.getTime() }, }) // Simula seleccionar nueva fecha
         );
 
-        expect(onInputChange).toHaveBeenCalled();
+        await waitFor(() => expect(onInputChange).toHaveBeenCalled());
     });
 });

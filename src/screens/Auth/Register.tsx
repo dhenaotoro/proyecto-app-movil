@@ -93,14 +93,14 @@ export function Register(): React.JSX.Element  {
                     </View>
                     <View style={{height: 821}}>
                         <DropdownText label='Tipo documento' required value={tipoDocumento} valuesToShow={tiposDocumentos} onChange={(selectedValue: string) => setTipoDocumento(selectedValue)} testID={`${screen}.TipoDocumento`}/>
-                        <InputText label='Documento' required keyboardType='numeric' value={documento} onInputChange={(text: string) => setDocumento(text)} testID={`${screen}.Documento`}/>
-                        <InputText label='Nombres' required value={nombres} onInputChange={(text: string) => setNombres(text)} testID={`${screen}.Nombres`}/>
-                        <InputText label='Apellidos' required value={apellidos} onInputChange={(text: string) => setApellidos(text)} testID={`${screen}.Apellidos`}/>
+                        <InputText label='Documento' required maxLength={255} value={documento} onInputChange={(text: string) => setDocumento(text)} testID={`${screen}.Documento`}/>
+                        <InputText label='Nombres' required maxLength={255} value={nombres} onInputChange={(text: string) => setNombres(text)} testID={`${screen}.Nombres`}/>
+                        <InputText label='Apellidos' required maxLength={255} value={apellidos} onInputChange={(text: string) => setApellidos(text)} testID={`${screen}.Apellidos`}/>
                         <InputText label='Teléfono' required keyboardType='numeric' maxLength={10} value={telefono} onInputChange={(text: string) => setTelefono(text)} testID={`${screen}.Telefono`}/>
-                        <InputText label='Dirección' required value={direccion} onInputChange={(text: string) => setDireccion(text)} testID={`${screen}.Direccion`}/>
-                        <InputText label='Correo' required keyboardType="email-address" value={correo} onInputChange={(text: string) => setCorreo(text)} testID={`${screen}.Correo`}/>
-                        <InputText label='Contraseña' secureTextEntry required value={password} onInputChange={(text: string) => setPassword(text)} testID={`${screen}.Password`}/>
-                        <InputText label='Repite tu contraseña' secureTextEntry required value={repeatedPassword} onInputChange={(text: string) => setRepeatedPassword(text)} testID={`${screen}.PasswordRepeated`}/>
+                        <InputText label='Dirección' required maxLength={255} value={direccion} onInputChange={(text: string) => setDireccion(text)} testID={`${screen}.Direccion`}/>
+                        <InputText label='Correo' required keyboardType="email-address" maxLength={255} value={correo} onInputChange={(text: string) => setCorreo(text)} testID={`${screen}.Correo`}/>
+                        <InputText label='Contraseña' secureTextEntry required value={password} maxLength={255} onInputChange={(text: string) => setPassword(text)} testID={`${screen}.Password`}/>
+                        <InputText label='Repite tu contraseña' secureTextEntry required maxLength={255} value={repeatedPassword} onInputChange={(text: string) => setRepeatedPassword(text)} testID={`${screen}.PasswordRepeated`}/>
                         <View style={styles.avisoPrivacidadContainer}>
                             <CheckBox testID={`${screen}.PoliticaPrivacidad`} style={styles.registroCheckbox} value={aceptadaPoliticaYAvisoPrivacidad} onValueChange={setAceptadaPoliticaYAvisoPrivacidad}/>
                             <Text style={styles.avisoPrivacidadTexto}>

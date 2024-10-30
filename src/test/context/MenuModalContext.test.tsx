@@ -51,8 +51,7 @@ describe('MenuModalContext', () => {
     const user = userEvent.setup();
     const { getByTestId, queryByTestId } = renderWithProviders(<TestComponent />);
 
-    const openButton = getByTestId('open-menu-button');
-    await user.press(openButton);
+    await waitFor(() => user.press(getByTestId('open-menu-button')));
 
     await waitFor(() => {
         expect(queryByTestId('Modal.Container')).toBeTruthy();
@@ -66,16 +65,14 @@ describe('MenuModalContext', () => {
   it('shoud close the modal when pressing Close Menu button', async () => {
     const user = userEvent.setup();
     const { getByTestId, queryByTestId } = renderWithProviders(<TestComponent />);
-
-    const openButton = getByTestId('open-menu-button');
-    await user.press(openButton);
+    
+    await waitFor(() => user.press(getByTestId('open-menu-button')));
 
     await waitFor(() => {
         expect(queryByTestId('Modal.Container')).toBeTruthy();
     });
-
-    const closeButton = getByTestId('Modal.CloseButton');
-    await user.press(closeButton);
+    
+    await waitFor(() => user.press(getByTestId('Modal.CloseButton')));
 
     await waitFor(() => {
       expect(queryByTestId('Modal.Container')).toBeNull();
@@ -95,15 +92,13 @@ describe('MenuModalContext', () => {
     const { getByTestId } = renderWithProviders(<TestComponent />);
 
     // Abre el menú y presiona el botón de cierre de sesión
-    const openButton = getByTestId('open-menu-button');
-    await user.press(openButton);
+    await waitFor(() => user.press(getByTestId('open-menu-button')));
 
     await waitFor(() => {
         expect(getByTestId('Modal.Container')).toBeTruthy();
     });
 
-    const signOutButton = getByTestId('Modal.CierreSesion');
-    await user.press(signOutButton);
+    await waitFor(() => user.press(getByTestId('Modal.CierreSesion')));
 
     await waitFor(() => {
       expect(mockSignOut).toHaveBeenCalled();
