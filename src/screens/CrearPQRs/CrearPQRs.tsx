@@ -11,7 +11,7 @@ import { DropdownText } from '../../components/FormFields/DropdownText';
 import { InputText } from '../../components/FormFields/InputText';
 import { InputDate } from '../../components/FormFields/InputDate';
 
-type CrearPQRsRouteProp = RouteProp<RootStackParamList, 'CrearPQRs' | 'ListarPQRs'>;
+type CrearPQRssRouteProp = RouteProp<RootStackParamList, 'CrearPQRs' | 'ListarPQRs'>;
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'ListarPQRs'>;
 
 const CrearPQRs = (): React.JSX.Element => {
@@ -40,7 +40,7 @@ const CrearPQRs = (): React.JSX.Element => {
     'Aclaración del servicio': 'Aclaración del servicio',
     'Modificación de una cita': 'Modificación de una cita',
   };
-  const route = useRoute<CrearPQRsRouteProp>();
+  const route = useRoute<CrearPQRssRouteProp>();
   const { userUuid, userName } = route.params;
   const navigation = useNavigation<NavigationProps>();
 
@@ -78,7 +78,7 @@ const CrearPQRs = (): React.JSX.Element => {
             <DropdownText label='Tipo de solicitud' required value={tipoSolicitud} valuesToShow={tiposSolicitud} onChange={(selectedValue: string) => setTipoSolicitud(selectedValue)} testID={`${screen}.TipoSolicitud`}/>
             <InputText label='Descripción' required multiline maxLength={150} value={descripcion} onInputChange={(text: string) => setDescripcion(text)} testID={`${screen}.Descripcion`}/>
             <InputDate label='Fecha Adquisición' required value={fechaAdquisicion || new Date()} onInputChange={(date: Date | undefined) => setFechaAdquisicion(date)} testID={`${screen}.FechaAdquisicion`}/>
-            <InputText label='Número de transacción' required maxLength={255} keyboardType='numeric' value={numeroTransaccion} onInputChange={(text: string) => setNumeroTransaccion(text)} testID={`${screen}.NumeroTransaccion`}/>
+            <InputText label='Número de transacción' required keyboardType='numeric' value={numeroTransaccion} onInputChange={(text: string) => setNumeroTransaccion(text)} testID={`${screen}.NumeroTransaccion`}/>
             <DropdownText label='Impacto del problema' required value={impactoProblema} valuesToShow={impactosProblema} onChange={(selectedValue: string) => setImpactoProblema(selectedValue)} testID={`${screen}.ImpactoProblema`}/>
             <DropdownText label='Impacto de solución' required value={impactoSolucion} valuesToShow={impactosSolucion} onChange={(selectedValue: string) => setImpactoSolucion(selectedValue)} testID={`${screen}.ImpactoSolucion`}/>
             <View style={styles.crearPqrCheckboxContainer}>

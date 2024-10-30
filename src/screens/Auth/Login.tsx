@@ -8,6 +8,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/RootNavigator";
 import { AuthContext } from "../../context/AuthContext";
 
+//, borderStyle: 'solid', borderWidth: 1, borderColor: 'blue'
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'ListarPQRs'>;
 
 export function Login(): React.JSX.Element  {
@@ -32,8 +33,8 @@ export function Login(): React.JSX.Element  {
                     <Text style={styles.loginMessageTitle}>Bienvenido(a), inicia sesión con tu correo y contraseña.</Text>
                 </View>
                 <View style={{height: 311}}>
-                    <InputText label='Correo' required maxLength={255} keyboardType="email-address" value={email} onInputChange={(text: string) => setEmail(text)} testID={`${screen}.Correo`}/>
-                    <InputText label='Contraseña' maxLength={255} required secureTextEntry value={password} onInputChange={(text: string) => setPassword(text)} testID={`${screen}.Password`}/>
+                    <InputText label='Correo' required keyboardType="email-address" value={email} onInputChange={(text: string) => setEmail(text)} testID={`${screen}.Correo`}/>
+                    <InputText label='Contraseña' required secureTextEntry value={password} onInputChange={(text: string) => setPassword(text)} testID={`${screen}.Password`}/>
                     <Text style={styles.loginLink}>Olvidaste tu contraseña?</Text>
                 </View>
                 <View style={{height: 92}}>

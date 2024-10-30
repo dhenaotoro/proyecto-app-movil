@@ -3,7 +3,6 @@ import { REACT_NATIVE_APP_BACKEND_URL } from '@env';
 //The env var is remapped to another const or let variable in order to properly load the value from .env file when launching unit tests with Jest and they are transformed by Babel-jest
 const expectedEnv = REACT_NATIVE_APP_BACKEND_URL;
 const urlUserBase = `${expectedEnv}/api/user`;
-//const urlPqrBase = `http://10.0.2.2:5000/api/pqr`;
 const urlPqrBase = `${expectedEnv}/api/pqr`;
 
 export async function registerUser(userData: { 

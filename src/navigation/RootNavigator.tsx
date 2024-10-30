@@ -11,7 +11,6 @@ import CrearPQRs from '../screens/CrearPQRs/CrearPQRs';
 import { ActivationCode } from '../screens/Auth/ActivationCode';
 import { Politics } from '../screens/Auth/Politics';
 import { MenuModalProvider } from '../context/MenuModalContext';
-import { Chatbot } from '../screens/Chatbot/Chatbot';
 
 export type RootStackParamList = { 
   Login: undefined,
@@ -19,8 +18,7 @@ export type RootStackParamList = {
   ActivationCode: { email: string },
   ListarPQRs: { userUuid: string, userName: string, executeList: boolean },
   CrearPQRs: { userUuid: string, userName: string },
-  Politics: undefined,
-  Chatbot: { userUuid: string }
+  Politics: undefined
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -30,26 +28,13 @@ export default function RootNavigator(): React.JSX.Element {
   return (
     <NavigationContainer>
       <MenuModalProvider>
-        <Stack.Navigator initialRouteName="Login" screenOptions={({ route, navigation }) => ({
-          header: () => (
-            isAuthenticated ? (
-              <MainHeader
-                showBackButton={route.name !== 'ListarPQRs'}
-                showMenu={route.name !== 'Chatbot'}
-                onBackPress={() => navigation.goBack()}
-              />
-            ) : (
-              <AuthHeader />
-            )
-          )
-        })}>
+        <Stack.Navigator initialRouteName="Login" screenOptions={{ header: isAuthenticated? MainHeader : AuthHeader }}>
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Register" component={Register} />
           <Stack.Screen name="ActivationCode" component={ActivationCode} />
           <Stack.Screen name="ListarPQRs" component={ListarPQRs} />
           <Stack.Screen name="CrearPQRs" component={CrearPQRs} />
           <Stack.Screen name="Politics" component={Politics} />
-          <Stack.Screen name="Chatbot" component={Chatbot} />
         </Stack.Navigator>
       </MenuModalProvider>
     </NavigationContainer>

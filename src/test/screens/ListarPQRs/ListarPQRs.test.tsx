@@ -96,22 +96,6 @@ describe('ListarPQRs', () => {
     });
   });
 
-  it('should navigate to Chatbot when the BOT button is pressed', async () => {
-    const mockNavigate = jest.fn();
-    const mockSetParams = jest.fn();
-    (useNavigation as jest.Mock).mockReturnValue({ navigate: mockNavigate, setParams: mockSetParams });
-    (fetchPqrs as jest.Mock).mockResolvedValueOnce({ code: 200, data: [], message: 'Success' });
-
-    renderComponent();
-
-    const chatbotButton = await screen.findByText('BOT');
-    fireEvent.press(chatbotButton);
-
-    await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith('Chatbot', { userUuid: '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45', userName: 'Ivan Dario' });
-    });
-  });
-
   it('should show a message when fetchPqrs returns an http code 400', async () => {
     (fetchPqrs as jest.Mock).mockResolvedValueOnce({ code: 400, data: [], message: 'Failure' });
 
