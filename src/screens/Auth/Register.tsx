@@ -93,6 +93,7 @@ export function Register(): React.JSX.Element  {
                     </View>
                     <View style={{height: 821}}>
                         <DropdownText label='Tipo documento' required value={tipoDocumento} valuesToShow={tiposDocumentos} onChange={(selectedValue: string) => setTipoDocumento(selectedValue)} testID={`${screen}.TipoDocumento`}/>
+                        <InputText label='Documento' required maxLength={255} value={documento} onInputChange={(text: string) => setDocumento(text)} testID={`${screen}.Documento`}/>
                         <InputText label='Nombres' required maxLength={255} value={nombres} onInputChange={(text: string) => setNombres(text)} testID={`${screen}.Nombres`}/>
                         <InputText label='Apellidos' required maxLength={255} value={apellidos} onInputChange={(text: string) => setApellidos(text)} testID={`${screen}.Apellidos`}/>
                         <InputText label='Teléfono' required keyboardType='numeric' maxLength={10} value={telefono} onInputChange={(text: string) => setTelefono(text)} testID={`${screen}.Telefono`}/>
