@@ -36,6 +36,10 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=dhenaotoro_proyecto-app-movil
+            -Dsonar.organization=proyectos-dhenao
 
       # Opción para guardar los resultados de las pruebas como artefacto (opcional)
       - name: Actualizar resultado de pruebas como artefacto
