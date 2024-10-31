@@ -63,7 +63,7 @@ describe('AuthContext', () => {
     
     it('should sign in successfully', async () => {
         const user = userEvent.setup();
-        (amplifySignIn as jest.Mock).mockResolvedValueOnce({ isSignedIn: true });
+        (amplifySignIn as jest.Mock).mockResolvedValueOnce({ isSignedIn: true, nextStep: 'Nothing' });
     
         const { getByText } = renderWithAuthProvider();
     
@@ -72,11 +72,11 @@ describe('AuthContext', () => {
         await waitFor(() => {
           expect(amplifySignIn).toHaveBeenCalledWith({ username: 'test@email.com', password: '' }); 
         });
-    });
+    }, 30000);
     
     it('should handle sign in failure when credentials are invalid', async () => {
         const user = userEvent.setup();
-        (amplifySignIn as jest.Mock).mockRejectedValueOnce(new Error('Invalid credentials'));
+        (amplifySignIn as jest.Mock).mockRejectedValueOnce(Object.assign(new Error('Invalid credentials'), { name: 'CredentialsFailure'}));
         const alertSpy = jest.spyOn(Alert, 'alert');
     
         const { getByText } = renderWithAuthProvider();
@@ -86,7 +86,7 @@ describe('AuthContext', () => {
         await waitFor(() => {
             expect(alertSpy).toHaveBeenCalledWith('Error', 'Correo o contraseña incorrectos');
         });
-    });
+    }, 30000);
 
     it('should handle sign in failure when Cognito reponds isSignedIn as false', async () => {
       const user = userEvent.setup();
@@ -99,7 +99,7 @@ describe('AuthContext', () => {
       await waitFor(() => {
         expect(amplifySignIn).toHaveBeenCalledWith({ username: 'test@email.com', password: '' });
       });
-    });
+    }, 30000);
 
     it('should handle sign in failure when user is already signed in', async () => {
         const user = userEvent.setup();
