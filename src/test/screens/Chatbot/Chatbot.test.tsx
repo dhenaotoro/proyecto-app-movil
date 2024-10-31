@@ -80,6 +80,29 @@ describe('Chatbot', () => {
             await user.press(screen.getByTestId('Chatbot.EnviarMensaje.IconButton'));
 
             expect(screen.getByRole('text', { name: '2024-09-11' })).toBeTruthy();
+            expect(screen.getByRole('text', { name: 'Si lo recuerdas, digita el número de orden de la transacción.' })).toBeTruthy();
+        });
+
+        it('should display the fifth step when choosing Petición as first option', async () => {
+            renderComponent();
+            await user.press(screen.getByTestId('Chatbot.Option.Petición'));
+
+            await user.type(screen.getByTestId('Chatbot.EnviarMensaje'), 'Se reporta un producto en mal estado');
+            await user.press(screen.getByTestId('Chatbot.EnviarMensaje.IconButton'));
+
+            expect(screen.getByRole('text', { name: 'Se reporta un producto en mal estado' })).toBeTruthy();
+            expect(screen.getByRole('text', { name: 'Por favor define una fecha de adquisición en formato YYYY-MM-DD.' })).toBeTruthy();
+
+            await user.type(screen.getByTestId('Chatbot.EnviarMensaje'), '2024-09-11');
+            await user.press(screen.getByTestId('Chatbot.EnviarMensaje.IconButton'));
+
+            expect(screen.getByRole('text', { name: '2024-09-11' })).toBeTruthy();
+            expect(screen.getByRole('text', { name: 'Si lo recuerdas, digita el número de orden de la transacción.' })).toBeTruthy();
+
+            await user.type(screen.getByTestId('Chatbot.EnviarMensaje'), '123456789');
+            await user.press(screen.getByTestId('Chatbot.EnviarMensaje.IconButton'));
+
+            expect(screen.getByRole('text', { name: '123456789' })).toBeTruthy();
         });
     });
 
