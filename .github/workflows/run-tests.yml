@@ -44,6 +44,9 @@ jobs:
             -Dsonar.c.file.suffixes=-
             -Dsonar.cpp.file.suffixes=-
             -Dsonar.objc.file.suffixes=-
+            -Dsonar.java.file.suffixes=-
+            -Dsonar.inclusions=**/*.tsx
+            -Dsonar.exclusions=**/*.test.tsx
 
       # Opción para guardar los resultados de las pruebas como artefacto (opcional)
       - name: Actualizar resultado de pruebas como artefacto
