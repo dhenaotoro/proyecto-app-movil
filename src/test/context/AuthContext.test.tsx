@@ -61,7 +61,7 @@ describe('AuthContext', () => {
             </AuthProvider>
         );
     
-    it.skip('should sign in successfully', async () => {
+    it('should sign in successfully', async () => {
         const user = userEvent.setup();
         (amplifySignIn as jest.Mock).mockResolvedValueOnce({ isSignedIn: true });
     
@@ -78,7 +78,7 @@ describe('AuthContext', () => {
         });
     });
     
-    it.skip('should handle sign in failure when credentials are invalid', async () => {
+    it('should handle sign in failure when credentials are invalid', async () => {
         const user = userEvent.setup();
         (amplifySignIn as jest.Mock).mockRejectedValueOnce(new Error('Invalid credentials'));
         const alertSpy = jest.spyOn(Alert, 'alert');

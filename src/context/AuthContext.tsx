@@ -41,6 +41,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const signIn = async (email: string, password: string) : Promise<boolean> => {
     try {
       // Llamada al método de AWS Cognito para iniciar sesión
+      console.log('AQUI amplifySignIn', amplifySignIn);
       const { isSignedIn, nextStep }  = await amplifySignIn({ username: email, password} as SignInInput);
       console.log('Inicio de sesión exitoso:', isSignedIn);
       console.log('El siguiente paso es', nextStep);
