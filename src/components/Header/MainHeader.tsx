@@ -6,9 +6,9 @@ import typography from '../../styles/typography';
 import { useMenuModal } from '../../context/MenuModalContext';
 
 interface MainHeaderProps {
-  showBackButton: boolean;
-  showMenu: boolean;
-  onBackPress?: () => void;
+  readonly showBackButton: boolean;
+  readonly showMenu: boolean;
+  readonly onBackPress?: () => void;
 }
 
 export default function MainHeader({ showBackButton, showMenu, onBackPress }: MainHeaderProps): React.JSX.Element  {

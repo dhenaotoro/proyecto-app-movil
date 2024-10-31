@@ -65,6 +65,22 @@ describe('Chatbot', () => {
             expect(screen.getByRole('text', { name: 'Se reporta un producto en mal estado' })).toBeTruthy();
             expect(screen.getByRole('text', { name: 'Por favor define una fecha de adquisición en formato YYYY-MM-DD.' })).toBeTruthy();
         });
+
+        it('should display the fourth step when choosing Petición as first option', async () => {
+            renderComponent();
+            await user.press(screen.getByTestId('Chatbot.Option.Petición'));
+
+            await user.type(screen.getByTestId('Chatbot.EnviarMensaje'), 'Se reporta un producto en mal estado');
+            await user.press(screen.getByTestId('Chatbot.EnviarMensaje.IconButton'));
+
+            expect(screen.getByRole('text', { name: 'Se reporta un producto en mal estado' })).toBeTruthy();
+            expect(screen.getByRole('text', { name: 'Por favor define una fecha de adquisición en formato YYYY-MM-DD.' })).toBeTruthy();
+
+            await user.type(screen.getByTestId('Chatbot.EnviarMensaje'), '2024-09-11');
+            await user.press(screen.getByTestId('Chatbot.EnviarMensaje.IconButton'));
+
+            expect(screen.getByRole('text', { name: '2024-09-11' })).toBeTruthy();
+        });
     });
 
     /*it('should show an alert when checkbox for accepting Acepto el uso de datos personales clause is not checked', async () => {
