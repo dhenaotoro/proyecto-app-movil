@@ -41,6 +41,9 @@ jobs:
           args: >
             -Dsonar.projectKey=dhenaotoro_proyecto-app-movil
             -Dsonar.organization=proyectos-dhenao
+            -Dsonar.c.file.suffixes=-
+            -Dsonar.cpp.file.suffixes=-
+            -Dsonar.objc.file.suffixes=-
 
       # Opción para guardar los resultados de las pruebas como artefacto (opcional)
       - name: Actualizar resultado de pruebas como artefacto
