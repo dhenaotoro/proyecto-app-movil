@@ -31,6 +31,7 @@ jobs:
       - name: Ejecutar pruebas usando Jest y generando los reportes finales
         run: npm run test-report
 
+      # Ejecutar Sonar Cloud Scan para cobertura de pruebas
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
