@@ -47,6 +47,7 @@ jobs:
             -Dsonar.java.file.suffixes=-
             -Dsonar.inclusions=**/*.tsx
             -Dsonar.exclusions=**/*.test.tsx
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
 
       # Opción para guardar los resultados de las pruebas como artefacto (opcional)
       - name: Actualizar resultado de pruebas como artefacto
