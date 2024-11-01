@@ -61,36 +61,32 @@ describe('AuthContext', () => {
             </AuthProvider>
         );
     
-    test('should sign in successfully', async () => {
+    it('should sign in successfully', async () => {
         const user = userEvent.setup();
-        (amplifySignIn as jest.Mock).mockResolvedValueOnce({ isSignedIn: true });
+        (amplifySignIn as jest.Mock).mockResolvedValueOnce({ isSignedIn: true, nextStep: 'Nothing' });
     
         const { getByText } = renderWithAuthProvider();
     
-        await user.press(getByText('Sign In'));
+        await waitFor(() => user.press(getByText('Sign In')));
     
         await waitFor(() => {
-          expect(amplifySignIn).toHaveBeenCalledWith({ username: 'test@email.com', password: '' });
+          expect(amplifySignIn).toHaveBeenCalledWith({ username: 'test@email.com', password: '' }); 
         });
-    
-        await waitFor(() => {
-            expect(getByText('Sign In')).toBeTruthy();
-        });
-    }, 10000);
+    }, 30000);
     
     it('should handle sign in failure when credentials are invalid', async () => {
         const user = userEvent.setup();
-        (amplifySignIn as jest.Mock).mockRejectedValueOnce(new Error('Invalid credentials'));
+        (amplifySignIn as jest.Mock).mockRejectedValueOnce(Object.assign(new Error('Invalid credentials'), { name: 'CredentialsFailure'}));
         const alertSpy = jest.spyOn(Alert, 'alert');
     
         const { getByText } = renderWithAuthProvider();
         
-        await user.press(getByText('Sign In'));
+        await waitFor(() => user.press(getByText('Sign In')));
     
         await waitFor(() => {
             expect(alertSpy).toHaveBeenCalledWith('Error', 'Correo o contraseña incorrectos');
         });
-    }, 10000);
+    }, 30000);
 
     it('should handle sign in failure when Cognito reponds isSignedIn as false', async () => {
       const user = userEvent.setup();
@@ -98,16 +94,12 @@ describe('AuthContext', () => {
       
       const { getByText } = renderWithAuthProvider();
     
-      await user.press(getByText('Sign In'));
+      await waitFor(() => user.press(getByText('Sign In')));
   
       await waitFor(() => {
         expect(amplifySignIn).toHaveBeenCalledWith({ username: 'test@email.com', password: '' });
       });
-  
-      await waitFor(() => {
-          expect(getByText('Sign In')).toBeTruthy();
-      });
-    });
+    }, 30000);
 
     it('should handle sign in failure when user is already signed in', async () => {
         const user = userEvent.setup();

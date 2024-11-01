@@ -30,15 +30,17 @@ function PrivacyOptions({ onSelect }: { onSelect: (value: string) => void }): Re
     };
 
     return (<View>
-        <Text style={styles.chatbotCommonMessage}>Aceptas el consentimiento informado para uso de datos personales</Text>
+        <Text style={styles.chatbotCommonMessage}>Aceptas el consentimiento informado para uso de datos personales.</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
             <RadioButton
+                testID={`Chatbot.Option.Si`}
                 value='Si'
                 status={selectedValue === 'Si' ? 'checked' : 'unchecked'}
                 onPress={() => handleSelect('Si')}
             />
             <Text style={styles.optionText}>Sí</Text>
             <RadioButton
+                testID={`Chatbot.Option.No`}
                 value='No'
                 status={selectedValue === 'No' ? 'checked' : 'unchecked'}
                 onPress={() => handleSelect('No')}
@@ -68,6 +70,7 @@ function ChoosingDisclosureType({ onSelect }: { onSelect: (value: string) => voi
             {options?.map((option) => (
                 <View key={option.value} style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
                     <RadioButton
+                        testID={`Chatbot.Option.${option.value}`}
                         value={option.value}
                         status={selectedValue === option.value ? 'checked' : 'unchecked'}
                         onPress={() => handleSelect(option.value)}
@@ -224,8 +227,6 @@ export function Chatbot(): React.JSX.Element {
                 default:
                     return <></>;
             }
-        } else {
-            return <></>;
         }
     };
 

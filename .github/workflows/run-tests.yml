@@ -31,6 +31,24 @@ jobs:
       - name: Ejecutar pruebas usando Jest y generando los reportes finales
         run: npm run test-report
 
+      # Ejecutar Sonar Cloud Scan para cobertura de pruebas
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=dhenaotoro_proyecto-app-movil
+            -Dsonar.organization=proyectos-dhenao
+            -Dsonar.c.file.suffixes=-
+            -Dsonar.cpp.file.suffixes=-
+            -Dsonar.objc.file.suffixes=-
+            -Dsonar.java.file.suffixes=-
+            -Dsonar.inclusions=**/*.tsx
+            -Dsonar.exclusions=**/*.test.tsx
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+
       # Opción para guardar los resultados de las pruebas como artefacto (opcional)
       - name: Actualizar resultado de pruebas como artefacto
         if: always()

@@ -2,7 +2,6 @@ import React, { PropsWithRef } from 'react';
 import { View, Text, TextInput, StyleSheet, KeyboardTypeOptions, TouchableOpacity } from "react-native";
 import colors from "../../styles/colors";
 import typography from "../../styles/typography";
-import { screen } from '@testing-library/react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type InputTextProps = PropsWithRef<{
