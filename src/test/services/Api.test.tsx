@@ -90,7 +90,7 @@ describe('Api', () => {
 
       const result = await fetchPqrs('ffff-fffff-fffff-ffff');
 
-      expect(fetchMock).toHaveBeenCalledWith(`${expectedEnv}/api/pqr/findAll?uuid=ffff-fffff-fffff-ffff`, {
+      expect(fetchMock).toHaveBeenCalledWith(`${expectedEnv}/api/pqr/findByUuid?uuid=ffff-fffff-fffff-ffff`, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
       });

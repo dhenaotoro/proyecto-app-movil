@@ -43,7 +43,7 @@ export async function registerUser(userData: {
 };
 
 export const fetchPqrs = async (username: string) : Promise<{ code: number, data: any, message: string }> => {
-  const url = `${urlPqrBase}/findAll?uuid=${username}`;
+  const url = `${urlPqrBase}/findByUuid?uuid=${username}`;
   console.log('Url to connect: ', url);
 
   try {
