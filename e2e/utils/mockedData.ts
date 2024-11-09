@@ -1,4 +1,4 @@
 export const USER_LOGIN={
-    "email": "ids.calderon@gmail.com",
-    "password":"Password1!"
+    "email": "danielfelipehenaotoro@gmail.com",
+    "password":"C@rr3456"
 }

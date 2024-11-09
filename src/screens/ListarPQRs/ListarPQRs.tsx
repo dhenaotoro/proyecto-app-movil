@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { RouteProp, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -55,7 +55,7 @@ export default function ListarPQRs(): React.JSX.Element {
 
   const handleRegisterPress = () => navigation.navigate('CrearPQRs', { userUuid, userName });
 
-  const openChatbot = () => navigation.navigate('Chatbot', { userUuid, userName });
+  const openChatbot = () => navigation.navigate('Chatbot', { userUuid });
 
   const PQRRow = React.memo((pqrRow: {
     key: string;
@@ -70,7 +70,7 @@ export default function ListarPQRs(): React.JSX.Element {
               {pqrRow.value.status}
             </Text>
           </View>
-          <Text style={styles.pqrListOpenCode}>{pqrRow.value.id}</Text>
+          <Text style={styles.pqrListOpenCode} testID={`${pqrRow.value.id}`}>{pqrRow.value.id}</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.pqrListCell}>
@@ -85,7 +85,7 @@ export default function ListarPQRs(): React.JSX.Element {
     <View style={{...styles.listarPqrsContainer}} testID={screen}>
       <Text style={styles.pqrListWelcomeText}>Bienvenido</Text>
       <Text style={styles.pqrListUsername}>{userName.toUpperCase()}</Text>
-      <ScrollView showsVerticalScrollIndicator={true} contentContainerStyle={styles.listarPqrsScrollContainer}>
+      <ScrollView showsVerticalScrollIndicator={true} contentContainerStyle={styles.listarPqrsScrollContainer} testID={`${screen}.ScrollView`}>
         <View style={styles.listarPqrsInnerContainer}>
           <Text style={styles.pqrText} testID={`${screen}.MainTitle`}>PQRs</Text>
             { pqrData.length === 0 
@@ -100,7 +100,7 @@ export default function ListarPQRs(): React.JSX.Element {
             }
 
             <View style={styles.listarPqrsEmptyButtonContainer}>
-              {<TouchableOpacity style={styles.listarPqrsButton} onPress={handleRegisterPress} testID="CrearPQRs.Button">
+              {<TouchableOpacity style={styles.listarPqrsButton} onPress={handleRegisterPress} testID={`${screen}.CrearPQRsButton`}>
                 <Text style={styles.listarPqrButtonText}>Registra tu PQR</Text>
               </TouchableOpacity>}
             </View>
@@ -110,7 +110,7 @@ export default function ListarPQRs(): React.JSX.Element {
             <Text style={styles.seePollsLink}>Ver encuestas</Text>
           </View>
           <View>
-            {<TouchableOpacity style={styles.listarPqrChatbot} onPress={openChatbot} testID="CrearPQRs.ChatbotButton">
+            {<TouchableOpacity style={styles.listarPqrChatbot} onPress={openChatbot} testID={`${screen}.ChatbotButton`}>
               <Text style={styles.listarPqrBotText}>BOT</Text>
             </TouchableOpacity>}
           </View>

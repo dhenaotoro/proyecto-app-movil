@@ -11,7 +11,7 @@ export function Politics(): React.JSX.Element {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
     return (
-        <View style={styles.container}>
+        <View style={styles.container} testID={screen}>
             <ScrollView contentContainerStyle={styles.scrollContent}>
                 <Text style={styles.title}>Política y aviso de privacidad</Text>
                 <Text testID={`${screen}.Introduction`} style={styles.text}>
