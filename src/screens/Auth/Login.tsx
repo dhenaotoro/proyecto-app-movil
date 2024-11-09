@@ -43,7 +43,7 @@ export function Login(): React.JSX.Element  {
                 </View>
             </View>
             <View style={{height: 189, paddingTop: 48}}>
-                <Text style={{...styles.loginLink}} onPress={() => navigation.navigate('Register')}>No tienes cuenta? <Text style={{...styles.loginLink, fontFamily: typography.nunitoSanzBold, textDecorationLine: 'underline'}}>Regístrate</Text></Text>
+                <Text style={{...styles.loginLink}} onPress={() => navigation.navigate('Register')} testID={`${screen}.Register`}>No tienes cuenta? <Text style={{...styles.loginLink, fontFamily: typography.nunitoSanzBold, textDecorationLine: 'underline'}}>Regístrate</Text></Text>
             </View>
         </View>
     );

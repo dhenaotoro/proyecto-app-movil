@@ -11,7 +11,7 @@ describe('Login Component', () => {
     await device.reloadReactNative();
   });
 
-  it('should filter properties based on input (positive case)', async () => {
+  it('should log in until see ListarPQRs screen', async () => {
     await isScreenShown('Login');
 
     await element(by.id('Login.Correo')).typeText(USER_LOGIN.email);

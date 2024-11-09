@@ -1,8 +1,8 @@
 import { isScreenShown } from "./utils/isScreenShown";
-import { by, element, expect } from 'detox';
+import { by, element, expect, waitFor } from 'detox';
 import { USER_LOGIN } from "./utils/mockedData";
 
-describe('Login Component', () => {
+describe('ListarPQRs Component', () => {
   beforeAll(async () => {
     await device.launchApp();
   });
@@ -11,7 +11,7 @@ describe('Login Component', () => {
     await device.reloadReactNative();
   });
 
-  it('should successfully log in and navigate to CrearPQRs when valid user credentials are provided', async () => {
+  it('should successfully log in and see the Crear PQRs and Chatbot buttons when valid user credentials are provided', async () => {
     await isScreenShown('Login');
 
     await element(by.id('Login.Correo')).typeText(USER_LOGIN.email);
@@ -21,13 +21,13 @@ describe('Login Component', () => {
     await element(by.id('Login.Button')).tap();
 
     await isScreenShown('ListarPQRs');
-    await element(by.id('CrearPQRs.Button')).tap();
 
-    await isScreenShown('CrearPQRs');
+    await expect(element(by.id('ListarPQRs.MainTitle'))).toBeVisible(100);
 
-    // Optionally, you can check if a specific element in CrearPQRs is visible
-    await expect(element(by.id('CrearPQRs.MainTitle'))).toBeVisible(100);
+    await waitFor(element(by.id('ListarPQRs.ChatbotButton'))).toBeVisible().whileElement(by.id('ListarPQRs.ScrollView')).scroll(4000, 'down');
 
+    await expect(element(by.id('ListarPQRs.CrearPQRsButton'))).toBeVisible(100);
+    await expect(element(by.id('ListarPQRs.ChatbotButton'))).toBeVisible(100);
   });
   
 });

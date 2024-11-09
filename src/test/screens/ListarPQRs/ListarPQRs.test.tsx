@@ -108,7 +108,7 @@ describe('ListarPQRs', () => {
     fireEvent.press(chatbotButton);
 
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith('Chatbot', { userUuid: '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45', userName: 'Ivan Dario' });
+      expect(mockNavigate).toHaveBeenCalledWith('Chatbot', { userUuid: '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45' });
     });
   });
 

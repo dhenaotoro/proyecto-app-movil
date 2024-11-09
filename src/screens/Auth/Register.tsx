@@ -86,7 +86,7 @@ export function Register(): React.JSX.Element  {
 
     return ( 
         <View style={{...styles.registerContainer}} testID={screen}>
-            <ScrollView showsVerticalScrollIndicator={true} style={styles.scrollContainer}>
+            <ScrollView showsVerticalScrollIndicator={true} style={styles.scrollContainer} testID={`${screen}.ScrollView`}>
                 <View style={{...styles.registerInnerContainer}}>
                     <View style={{height: 64}}>
                         <Text style={styles.registerMessageTitle}>Gestiona tus PQRs rápidamente, registrate ya!</Text>
@@ -103,7 +103,7 @@ export function Register(): React.JSX.Element  {
                         <InputText label='Repite tu contraseña' secureTextEntry required maxLength={255} value={repeatedPassword} onInputChange={(text: string) => setRepeatedPassword(text)} testID={`${screen}.PasswordRepeated`}/>
                         <View style={styles.avisoPrivacidadContainer}>
                             <CheckBox testID={`${screen}.PoliticaPrivacidad`} style={styles.registroCheckbox} value={aceptadaPoliticaYAvisoPrivacidad} onValueChange={setAceptadaPoliticaYAvisoPrivacidad}/>
-                            <Text style={styles.avisoPrivacidadTexto}>
+                            <Text style={styles.avisoPrivacidadTexto} testID={`${screen}.PoliticsAndPrivacyLink`} onPress={() => navigation.navigate('Politics')}>
                                 Acepto la <Text style={styles.avisoPrivacidadTextoNegrita} testID={`${screen}.PoliticsLink`} onPress={() => navigation.navigate('Politics')}>política de privacidad </Text>y
                                 <Text style={styles.avisoPrivacidadTextoNegrita} testID={`${screen}.PrivacyLink`} onPress={() => navigation.navigate('Politics')}>aviso de privacidad de datos</Text>
                             </Text>
