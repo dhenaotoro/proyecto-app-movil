@@ -5,18 +5,18 @@ import typography from "../../styles/typography";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type InputTextProps = PropsWithRef<{
-    label: string;
-    required: boolean;
-    value: string;
-    onInputChange: (text: string) => void;
-    testID: string;
-    maxLength: number | undefined;
-    secureTextEntry?: boolean;
-    keyboardType?: KeyboardTypeOptions;
-    multiline?: boolean;
-    showIcon?: boolean;
-    iconToShow?: string;
-    onIconClick?: () => void;
+    readonly label: string;
+    readonly required: boolean;
+    readonly value: string;
+    readonly onInputChange: (text: string) => void;
+    readonly testID: string;
+    readonly maxLength: number | undefined;
+    readonly secureTextEntry?: boolean;
+    readonly keyboardType?: KeyboardTypeOptions;
+    readonly multiline?: boolean;
+    readonly showIcon?: boolean;
+    readonly iconToShow?: string;
+    readonly onIconClick?: () => void;
 }>;
 
 export function InputText({label, required, value, onInputChange, testID, maxLength, secureTextEntry = false, keyboardType = 'default', multiline = false, showIcon = false, iconToShow = 'send', onIconClick = () => {}}: InputTextProps): React.JSX.Element  {
