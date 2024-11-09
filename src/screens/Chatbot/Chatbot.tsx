@@ -16,9 +16,33 @@ interface ChatbotRenderProps {
     children: ReactNode;
 }
 
+interface RadioButtonsProps {
+    readonly options: RadioButtonOptions[],
+    readonly selectedValue: string,
+    readonly handleSelect: (value: string) => void
+}
+
 interface RadioButtonOptions {
     label: string;
     value: string;
+}
+
+function RadioButtons({ options, selectedValue, handleSelect }: RadioButtonsProps): React.JSX.Element {
+    return (
+        <View>
+            {options?.map((option) => (
+                <View key={option.value} style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
+                    <RadioButton
+                        testID={`Chatbot.Option.${option.value}`}
+                        value={option.value}
+                        status={selectedValue === option.value ? 'checked' : 'unchecked'}
+                        onPress={() => handleSelect(option.value)}
+                    />
+                    <Text style={styles.optionText}>{option.label}</Text>
+                </View>
+            ))}
+        </View>
+    );
 }
 
 function PrivacyOptions({ onSelect }: { onSelect: (value: string) => void }): React.JSX.Element {
@@ -48,29 +72,6 @@ function PrivacyOptions({ onSelect }: { onSelect: (value: string) => void }): Re
             <Text style={styles.optionText}>No</Text>
         </View>
     </View>);
-}
-
-function RadioButtons({ 
-    options,
-    selectedValue,
-    handleSelect 
-}: { options: RadioButtonOptions[], selectedValue: string, handleSelect: (value: string) => void }
-): React.JSX.Element {
-    return (
-        <View>
-            {options?.map((option) => (
-                <View key={option.value} style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
-                    <RadioButton
-                        testID={`Chatbot.Option.${option.value}`}
-                        value={option.value}
-                        status={selectedValue === option.value ? 'checked' : 'unchecked'}
-                        onPress={() => handleSelect(option.value)}
-                    />
-                    <Text style={styles.optionText}>{option.label}</Text>
-                </View>
-            ))}
-        </View>
-    );
 }
 
 function ChoosingDisclosureType({ onSelect }: { onSelect: (value: string) => void }): React.JSX.Element {
