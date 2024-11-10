@@ -14,6 +14,7 @@ import { MenuModalProvider } from '../context/MenuModalContext';
 import { Chatbot } from '../screens/Chatbot/Chatbot';
 import { Encuestas } from '../screens/Encuestas/Encuestas';
 import { EncuestaBot } from '../screens/Encuestas/EncuestaBot';
+import DatosPersonales from '../screens/Settings/DatosPersonales';
 
 export type RootStackParamList = { 
   Login: undefined,
@@ -25,6 +26,7 @@ export type RootStackParamList = {
   Chatbot: { userUuid: string },
   Encuestas: { userUuid: string },
   EncuestaBot: { userUuid: string }
+  DatosPersonales: { userUuid: string, email: string, telefono: string, direccion: string }
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -56,6 +58,7 @@ export default function RootNavigator(): React.JSX.Element {
           <Stack.Screen name="Chatbot" component={Chatbot} />
           <Stack.Screen name="Encuestas" component={Encuestas} />
           <Stack.Screen name="EncuestaBot" component={EncuestaBot} />
+          <Stack.Screen name="DatosPersonales" component={DatosPersonales} />
         </Stack.Navigator>
       </MenuModalProvider>
     </NavigationContainer>

@@ -3,12 +3,17 @@ import { render, waitFor, userEvent } from '@testing-library/react-native';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { TouchableOpacity, Text } from 'react-native';
 import { useMenuModal, MenuModalProvider } from '../../context/MenuModalContext';
-import { MockAuthProvider, mockSignOut } from './MockProvider';
+import { MockAuthProvider, mockSignOut, mockFetchUserAttributes } from './MockProvider';
 import { it, describe } from '@jest/globals';
+import { getUserById } from '../../services/Api';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'), // Esto mantiene el resto del módulo intacto
     useNavigation: jest.fn()
+}));
+
+jest.mock('../../services/Api', () => ({
+  getUserById: jest.fn(),
 }));
 
 describe('MenuModalContext', () => {
@@ -103,6 +108,34 @@ describe('MenuModalContext', () => {
     await waitFor(() => {
       expect(mockSignOut).toHaveBeenCalled();
       expect(mockNavigate).toHaveBeenCalledWith('Login');
+    });
+  });
+
+  test('should navigate to the DatosPersonales screen', async () => {
+    const user = userEvent.setup();
+    const mockNavigate = jest.fn();
+    (useNavigation as jest.Mock).mockReturnValue({
+        navigate: mockNavigate,
+        goBack: jest.fn()
+    });
+    mockFetchUserAttributes.mockResolvedValue({ userUuid: 'ffff-fffff-fffff-ffff' });
+    (getUserById as jest.Mock).mockReturnValue({ code: 200, data: { uuid: 'ffff-fffff-fffff-ffff', nombre: 'John', apellido: 'Doe', email: 'john.doe@example.com', telefono: '123456789', front: 'cliente', aceptada_politica_aviso_privacidad: true, direccion: 'Transversal' }, message: 'ok', ok: true});
+
+    const { getByTestId } = renderWithProviders(<TestComponent />);
+
+    // Abre el menú y presiona el botón de cierre de sesión
+    await waitFor(() => user.press(getByTestId('open-menu-button')));
+
+    await waitFor(() => {
+        expect(getByTestId('Modal.Container')).toBeTruthy();
+    });
+
+    await waitFor(() => user.press(getByTestId('Modal.DatosPersonales')));
+
+    await waitFor(() => {
+      expect(mockFetchUserAttributes).toHaveBeenCalled();
+      expect(getUserById).toHaveBeenCalledWith('ffff-fffff-fffff-ffff');
+      expect(mockNavigate).toHaveBeenCalledWith('DatosPersonales', { userUuid: 'ffff-fffff-fffff-ffff', email: 'john.doe@example.com', telefono: '123456789', direccion: 'Transversal' });
     });
   });
 });

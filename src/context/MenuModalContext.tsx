@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from './AuthContext';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
+import { getUserById } from '../services/Api';
 
 interface MenuModalContextProps {
   openMenu: () => void;
@@ -23,12 +24,12 @@ export const useMenuModal = () => {
   return context;
 };
 
-type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'Login'>;
+type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'Login' | 'DatosPersonales'>;
 
 export const MenuModalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const screen = 'Modal';
   const navigation = useNavigation<NavigationProps>();
-  const { signOut } = useContext(AuthContext);
+  const { signOut, fetchUserAttributes } = useContext(AuthContext);
   const [menuVisible, setMenuVisible] = useState(false);
 
   const openMenu = () => setMenuVisible(true);
@@ -38,6 +39,13 @@ export const MenuModalProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const handleSignOut = async () => {
     await signOut();
     navigation.navigate('Login');
+    closeMenu();
+  }
+
+  const goPersonalData = async () => {
+    const { userUuid } = await fetchUserAttributes();
+    const { data } = await getUserById(userUuid);
+    navigation.navigate('DatosPersonales', { userUuid, email: data.email, telefono: data.telefono, direccion: data.direccion });
     closeMenu();
   }
 
@@ -58,7 +66,7 @@ export const MenuModalProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             <Icon name="window-close" size={20} color={colors.brand_brown} />
           </TouchableOpacity>
           <View style={styles.modalMenuContent}>
-            <TouchableOpacity style={styles.modalMenuButton} testID={`${screen}.DatosPersonales`}>
+            <TouchableOpacity style={styles.modalMenuButton} onPress={goPersonalData} testID={`${screen}.DatosPersonales`}>
               <Icon name="account" size={24} color={colors.brand_brown} />
               <Text style={styles.modalMenuButtonText}>Tus datos personales</Text>
             </TouchableOpacity>

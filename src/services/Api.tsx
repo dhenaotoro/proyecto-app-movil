@@ -95,3 +95,48 @@ export async function registerPqr(pqrData: {
     throw error;
   }
 };
+
+export const getUserById = async (uuidUsuario: string): Promise<{ code: number, data: any, message: string }> => {
+  const url = `${urlUserBase}/getUserById?uuid=${uuidUsuario}`;
+  console.log('Url to connect: ', url);
+
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    });
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.debug("Error en la solicitud al backend:", error);
+    throw error;
+  }
+}
+
+export async function updateUser(uuidUsuario: string, userData: { telefono: string, direccion: string }): Promise<{ code: number, data: any, message: string }> {
+  const url = `${urlUserBase}/update?uuid=${uuidUsuario}`;
+  console.log('Url to connect: ', url);
+
+  try {
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    });
+    
+    if (!response.ok) {
+      throw new Error("Error al actualizar el usuario en el backend");
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.debug("Error en la solicitud al backend:", error);
+    throw error;
+  }
+};
