@@ -25,7 +25,7 @@ export function Encuestas(): React.JSX.Element {
   const SurveyRow = React.memo((survey: { key: string; value: { description: string; channel: string; } }) => (
     <View style={styles.surveyListRow}>
       <View style={styles.surveyListCell}>
-        <TouchableOpacity onPress={openEncuestaBot} testID={`${screen}.EncuestaBot`}>
+        <TouchableOpacity onPress={openEncuestaBot} testID={`${screen}.EncuestaBot.${survey.value.description}`}>
           <Text style={styles.surveyDescription}>{survey.value.description}</Text>
         </TouchableOpacity>
       </View>
