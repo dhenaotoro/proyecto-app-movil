@@ -56,6 +56,7 @@ export default function ListarPQRs(): React.JSX.Element {
   const handleRegisterPress = () => navigation.navigate('CrearPQRs', { userUuid, userName });
 
   const openChatbot = () => navigation.navigate('Chatbot', { userUuid });
+  const openEncuestas = () => navigation.navigate('Encuestas', { userUuid });
 
   const PQRRow = React.memo((pqrRow: {
     key: string;
@@ -105,10 +106,12 @@ export default function ListarPQRs(): React.JSX.Element {
               </TouchableOpacity>}
             </View>
         </View>
-        <View style={{height: 182, flexDirection: 'row', justifyContent: 'space-between'}}>
-          <View style={{justifyContent: 'center'}}>
-            <Text style={styles.seePollsLink}>Ver encuestas</Text>
-          </View>
+        <View style={{ height: 182, flexDirection: 'row', justifyContent: 'space-between' }}>
+      <View style={{ justifyContent: 'center' }}>
+        <TouchableOpacity onPress={openEncuestas} testID={`${screen}.EncuestasButton`}>
+          <Text style={styles.seePollsLink}>Ver Encuestas</Text>
+        </TouchableOpacity>
+      </View>
           <View>
             {<TouchableOpacity style={styles.listarPqrChatbot} onPress={openChatbot} testID={`${screen}.ChatbotButton`}>
               <Text style={styles.listarPqrBotText}>BOT</Text>
