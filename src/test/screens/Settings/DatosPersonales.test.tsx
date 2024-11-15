@@ -32,7 +32,18 @@ describe('DatosPersonales', () => {
     it('should display Correo Text Input', () => {
         renderComponent();
         
-        const requestTypeDropdown = screen.getByTestId('DatosPersonales.Correo'); 
-        expect(requestTypeDropdown).toBeTruthy();
+        expect(screen.getByTestId('DatosPersonales.Correo')).toBeTruthy();
+    });
+
+    it('should display Telefono Text Input', () => {
+      renderComponent();
+      
+      expect(screen.getByTestId('DatosPersonales.Telefono')).toBeTruthy();
+    });
+
+    it('should display Direccion Text Input', () => {
+      renderComponent();
+      
+      expect(screen.getByTestId('DatosPersonales.Direccion')).toBeTruthy();
     });
 });
