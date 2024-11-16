@@ -9,7 +9,7 @@
     "clean": "jest --clearCache",
     "start": "react-native start --reset-cache",
     "test": "jest --no-cache --runInBand --detectOpenHandles --config jest.config.js",
-    "test-report": "jest --no-cache --reporters=default --reporters=jest-junit --coverage --config jest.config.js",
+    "test:report": "jest --no-cache --reporters=default --reporters=jest-junit --coverage --config jest.config.js",
     "android:clean": "cd android && ./gradlew clean && cd ..",
     "android:bundle": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
     "e2e:build-ios-debug": "detox build -c ios.sim.debug",
@@ -51,7 +51,8 @@
     "react-native-screens": "^3.34.0",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-vector-icons": "^10.2.0",
-    "ts-jest": "^29.2.5"
+    "ts-jest": "^29.2.5",
+    "uuid": "^11.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.7",

@@ -16,9 +16,33 @@ interface ChatbotRenderProps {
     children: ReactNode;
 }
 
+interface RadioButtonsProps {
+    readonly options: RadioButtonOptions[],
+    readonly selectedValue: string,
+    readonly handleSelect: (value: string) => void
+}
+
 interface RadioButtonOptions {
     label: string;
     value: string;
+}
+
+function RadioButtons({ options, selectedValue, handleSelect }: RadioButtonsProps): React.JSX.Element {
+    return (
+        <View>
+            {options?.map((option) => (
+                <View key={option.value} style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
+                    <RadioButton
+                        testID={`Chatbot.Option.${option.value}`}
+                        value={option.value}
+                        status={selectedValue === option.value ? 'checked' : 'unchecked'}
+                        onPress={() => handleSelect(option.value)}
+                    />
+                    <Text style={styles.optionText}>{option.label}</Text>
+                </View>
+            ))}
+        </View>
+    );
 }
 
 function PrivacyOptions({ onSelect }: { onSelect: (value: string) => void }): React.JSX.Element {
@@ -66,19 +90,7 @@ function ChoosingDisclosureType({ onSelect }: { onSelect: (value: string) => voi
 
     return (<View>
         <Text style={styles.chatbotCommonMessage}>Elige el tipo de reclamo a informar.</Text>
-        <View>
-            {options?.map((option) => (
-                <View key={option.value} style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
-                    <RadioButton
-                        testID={`Chatbot.Option.${option.value}`}
-                        value={option.value}
-                        status={selectedValue === option.value ? 'checked' : 'unchecked'}
-                        onPress={() => handleSelect(option.value)}
-                    />
-                    <Text style={styles.optionText}>{option.label}</Text>
-                </View>
-            ))}
-        </View>
+        <RadioButtons options={options} selectedValue={selectedValue} handleSelect={handleSelect}/>
     </View>);
 }
 
@@ -98,19 +110,7 @@ function ChoosingRequestType({ onSelect }: { onSelect: (value: string) => void }
     return (<View>
         <Text style={styles.chatbotTitle}>Agente ABCall</Text>
         <Text style={styles.chatbotCommonMessage}>Hola, bienvenido a nuestro servicio. ¿Qué tipo de ayuda necesitas?</Text>
-        <View>
-            {options?.map((option) => (
-                <View key={option.value} style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
-                    <RadioButton
-                        testID={`Chatbot.Option.${option.value}`}
-                        value={option.value}
-                        status={selectedValue === option.value ? 'checked' : 'unchecked'}
-                        onPress={() => handleSelect(option.value)}
-                    />
-                    <Text style={styles.optionText}>{option.label}</Text>
-                </View>
-            ))}
-        </View>
+        <RadioButtons options={options} selectedValue={selectedValue} handleSelect={handleSelect}/>
     </View>);
 }
 
@@ -250,7 +250,7 @@ export function Chatbot(): React.JSX.Element {
     }
 
     return (
-        <View style={styles.chatbotContainer} testID={screen}>
+        <View style={styles.chatbotContainer} testID={screen}> 
             <View style={styles.chatbotContent}>
                 <FlatList
                     testID={`${screen}.Content`}

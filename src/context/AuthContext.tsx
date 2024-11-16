@@ -84,7 +84,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       });
       console.log('Se creó el usuario', userId);
       console.log('El siguiente paso es', nextStep);
-      return Promise.resolve(userId || '');
+      return Promise.resolve(userId ?? '');
     } catch (error) {
       console.debug('Error al registrar el usuario:', error);
       return Promise.resolve('');
@@ -109,7 +109,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const userAttribute = await amplifyFetchUserAttributes();
       console.log('Los atributos del usuario son: ', userAttribute);
       setIsAuthenticated(true);
-      return Promise.resolve({...userAttributeToReturn, userUuid: userAttribute.sub || '', userName: userAttribute.given_name || ''});
+      return Promise.resolve({...userAttributeToReturn, userUuid: userAttribute.sub ?? '', userName: userAttribute.given_name ?? ''});
     } catch (error) {
       console.error('Error al obtener los atributos del usuario:', error);
       return Promise.resolve(userAttributeToReturn);
