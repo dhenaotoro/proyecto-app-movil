@@ -42,10 +42,21 @@ export const MenuModalProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     closeMenu();
   }
 
-  const goPersonalData = async () => {
+  const getUserInfo = async () => {
     const { userUuid, userName } = await fetchUserAttributes();
     const { data } = await getUserById(userUuid);
-    navigation.navigate('DatosPersonales', { userUuid, userName, email: data.email, telefono: data.telefono, direccion: data.direccion });
+    return { ...data, userUuid, userName };
+  }
+
+  const goPersonalData = async () => {
+    const data = await getUserInfo();
+    navigation.navigate('DatosPersonales', { userUuid: data.userUuid, userName: data.userName, email: data.email, telefono: data.telefono, direccion: data.direccion });
+    closeMenu();
+  }
+
+  const goAlertas = async () => {
+    const data = await getUserInfo();
+    navigation.navigate('Alertas', { userUuid: data.userUuid, userName: data.userName, enableSms: data.habilitar_sms, enableEmail: data.habilitar_correo, enableCalls: data.habilitar_llamada });
     closeMenu();
   }
 
@@ -70,7 +81,7 @@ export const MenuModalProvider: React.FC<{ children: React.ReactNode }> = ({ chi
               <Icon name="account" size={24} color={colors.brand_brown} />
               <Text style={styles.modalMenuButtonText}>Tus datos personales</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.modalMenuButton} testID={`${screen}.Alertas`}>
+            <TouchableOpacity style={styles.modalMenuButton} onPress={goAlertas} testID={`${screen}.Alertas`}>
               <Icon name="cog" size={24} color={colors.brand_brown} />
               <Text style={styles.modalMenuButtonText}>Alertas</Text>
             </TouchableOpacity>

@@ -13,7 +13,7 @@ export function Encuestas(): React.JSX.Element {
   const screen = 'Encuestas';
   const navigation = useNavigation<NavigationProps>();
   const route = useRoute<EncuestasRouteProp>();
-  const { userUuid, userName, executeList } = route.params;
+  const { userUuid } = route.params;
   const staticData = [
     { id: '1', description: 'Encuesta satisfacción', channel: 'Seguros Automóvil' },
     { id: '2', description: 'Encuesta atención al usuario', channel: 'Seguros Hogar' },

@@ -5,13 +5,16 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation/RootNavigator';
 import colors from '../../styles/colors';
 import typography from '../../styles/typography';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'Encuestas'>;
 type EncuestaBotRouteProp = RouteProp<RootStackParamList, 'EncuestaBot'>;
 
 export function EncuestaBot(): React.JSX.Element {
+    const screen = 'EncuestaBot';
     const route = useRoute<EncuestaBotRouteProp>();
     const { userUuid } = route.params;
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProps>();
 
     const [step, setStep] = useState(0);
     const [rating, setRating] = useState<number | null>(null);
@@ -87,7 +90,7 @@ export function EncuestaBot(): React.JSX.Element {
                                 <RadioButton
                                     value="Si"
                                     status={recommend === 'Si' ? 'checked' : 'unchecked'}
-                                    onPress={() => handleRecommendSelect('Si')}
+                                    onPress={() => handleRecommendSelect('Si')} 
                                     color={colors.brand_violet} // Set border color
                                 />
                                 <Text style={styles.optionText}>Sí</Text>
@@ -143,7 +146,7 @@ export function EncuestaBot(): React.JSX.Element {
     };
 
     return (
-        <View style={styles.container}>
+        <View testID={screen}>
             <FlatList
                 data={[renderSurveyStep()]}
                 renderItem={({ item }) => <View>{item}</View>}
@@ -227,9 +230,6 @@ const styles = StyleSheet.create({
   },
   customButtonActive: {
       backgroundColor: colors.brand_violet,
-  },
-  buttonTextActive: {
-      color: colors.white,
   },
   customButtonSmall: {
       paddingVertical: 2, // Smaller padding for smaller button

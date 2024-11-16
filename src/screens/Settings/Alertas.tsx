@@ -41,11 +41,11 @@ const Alertas = (): React.JSX.Element => {
                     <Text style={styles.checkboxText} testID={`${screen}.SmsText`}>Comunicar por SMS</Text>
                 </View>
                 <View style={styles.checkboxContainer}>
-                    <CheckBox testID={`${screen}.EmailCheckbox`} style={styles.checkbox} value={enableSmsToModify} onValueChange={setEnableEmailToModify}/>
+                    <CheckBox testID={`${screen}.EmailCheckbox`} style={styles.checkbox} value={enableEmailToModify} onValueChange={setEnableEmailToModify}/>
                     <Text style={styles.checkboxText} testID={`${screen}.EmailText`}>Comunicar por correo</Text>
                 </View>
                 <View style={styles.checkboxContainer}>
-                    <CheckBox testID={`${screen}.CallCheckbox`} style={styles.checkbox} value={enableSmsToModify} onValueChange={setEnableCallsToModify}/>
+                    <CheckBox testID={`${screen}.CallCheckbox`} style={styles.checkbox} value={enableCallsToModify} onValueChange={setEnableCallsToModify}/>
                     <Text style={styles.checkboxText} testID={`${screen}.CallText`}>Comunicar por llamada</Text>
                 </View>
             </View>
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     buttonContainer: {
       height: 92,
       paddingTop: 16,
-      width: '60%',
+      width: '80%',
       top: 24
     },
     alertasButton: {
@@ -101,17 +101,19 @@ const styles = StyleSheet.create({
     },
     checkboxContainer: {
         flexDirection: 'row',
-        marginBottom: 20
+        marginBottom: 20,
+        top: 20,
     },
     checkbox: {
         alignSelf: 'center'
     },
     checkboxText: {
-        marginTop: 19,
+        marginTop: 4,
+        marginLeft: 15,
         fontFamily: typography.nunitoSanzRegular,
-        fontSize: typography.fontSizeSmall,
+        fontSize: typography.fontSizeXYSmall,
         letterSpacing: typography.letterSpacingMedium,
-        lineHeight: typography.lineHeightXYSmall,
+        lineHeight: typography.lineHeightXYZSmall,
         color: colors.black,
     },
 });

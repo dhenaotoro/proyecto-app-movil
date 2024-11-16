@@ -155,4 +155,49 @@ describe('MenuModalContext', () => {
       expect(mockNavigate).toHaveBeenCalledWith('DatosPersonales', { userUuid: 'ffff-fffff-fffff-ffff', userName: 'Jhon Doe', email: 'john.doe@example.com', telefono: '123456789', direccion: 'Transversal' });
     });
   });
+
+  test('should navigate to the Alertas screen', async () => {
+    const data = {
+      uuid: 'ffff-fffff-fffff-ffff',
+      nombre: 'John',
+      apellido: 'Doe',
+      email: 'john.doe@example.com',
+      telefono: '123456789',
+      front: 'cliente',
+      aceptada_politica_aviso_privacidad: true,
+      direccion: 'Transversal',
+      habilitar_sms: true,
+      habilitar_correo: true,
+      habilitar_llamada: true
+    }
+    const user = userEvent.setup();
+    const mockNavigate = jest.fn();
+    (useNavigation as jest.Mock).mockReturnValue({
+        navigate: mockNavigate,
+        goBack: jest.fn()
+    });
+    mockFetchUserAttributes.mockResolvedValue({ userUuid: 'ffff-fffff-fffff-ffff', userName: 'Jhon Doe' });
+    (getUserById as jest.Mock).mockReturnValue({ code: 200, data, message: 'ok', ok: true});
+
+    const { getByTestId } = renderWithProviders(<TestComponent />);
+
+    // Abre el menú y presiona el botón de cierre de sesión
+    await waitFor(() => user.press(getByTestId('open-menu-button')));
+
+    await waitFor(() => {
+        expect(getByTestId('Modal.Container')).toBeTruthy();
+    });
+
+    await waitFor(() => user.press(getByTestId('Modal.Alertas')));
+
+    await waitFor(() => {
+      expect(mockFetchUserAttributes).toHaveBeenCalled();
+    });
+    await waitFor(() => {
+      expect(getUserById).toHaveBeenCalledWith('ffff-fffff-fffff-ffff');
+    });
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith('Alertas', { userUuid: 'ffff-fffff-fffff-ffff', userName: 'Jhon Doe', enableSms: true, enableEmail: true, enableCalls: true });
+    });
+  });
 });

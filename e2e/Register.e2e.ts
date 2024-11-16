@@ -11,7 +11,7 @@ describe('Register Component', () => {
     await device.reloadReactNative();
   });
 
-  it.skip('should register an iddle user', async () => {
+  it('should register an iddle user', async () => {
     await isScreenShown('Login');
 
     await element(by.id('Login.Register')).tap();

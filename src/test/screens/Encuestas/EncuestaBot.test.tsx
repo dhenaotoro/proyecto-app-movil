@@ -2,37 +2,29 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useRoute } from '@react-navigation/native';
 import { EncuestaBot } from '../../../screens/Encuestas/EncuestaBot';
 
 // Create a mock navigator
 const Stack = createNativeStackNavigator();
 
-// Mock the useRoute hook to provide the necessary params
 jest.mock('@react-navigation/native', () => ({
   ...jest.requireActual('@react-navigation/native'),
-  useRoute: jest.fn(),
+  useNavigation: jest.fn(),
 }));
 
-// Wrap the EncuestaBot component inside a navigator for testing
-const MockNavigation = () => (
-  <NavigationContainer>
-    <Stack.Navigator initialRouteName="EncuestaBot">
-      <Stack.Screen name="EncuestaBot" component={EncuestaBot} />
-    </Stack.Navigator>
-  </NavigationContainer>
-);
+const renderComponent = (initialParams = { userUuid: '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45' }) => {
+  return render(
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="EncuestaBot">
+        <Stack.Screen name="EncuestaBot" component={EncuestaBot} initialParams={initialParams}/>
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
 
-describe('EncuestaBot Component', () => {
+describe('EncuestaBot', () => {
   test('should render EncuestaBot with static content', () => {
-    // Mock the route params for testing
-    useRoute.mockReturnValue({
-      params: {
-        userUuid: '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45',
-      },
-    });
-
-    render(<MockNavigation />);
+    renderComponent();
 
     // Check if the EncuestaBot title is rendered
     const encuestaTitle = screen.getByText('Evalúanos');
@@ -45,13 +37,7 @@ describe('EncuestaBot Component', () => {
 
   test('should render rating buttons on the first step', () => {
     // Mock the route params for testing
-    useRoute.mockReturnValue({
-      params: {
-        userUuid: '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45',
-      },
-    });
-
-    render(<MockNavigation />);
+    renderComponent();
 
     // Check if rating buttons are displayed
     for (let i = 1; i <= 5; i++) {
@@ -62,13 +48,7 @@ describe('EncuestaBot Component', () => {
 
   test('should render and disable "Yes/No option" radio buttons when no opinion is provided', async () => {
     // Mock the route params for testing
-    useRoute.mockReturnValue({
-      params: {
-        userUuid: '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45',
-      },
-    });
-
-    render(<MockNavigation />);
+    renderComponent();
 
     const ratingButton = screen.getByText('1'); // Assuming this is one of the rating options
     fireEvent.press(ratingButton);
@@ -87,13 +67,7 @@ describe('EncuestaBot Component - Additional Tests', () => {
     // Test for state change after selecting a rating (go to step 1)
     test('should go to the next step after selecting a rating', async () => {
       // Mock the route params for testing
-      useRoute.mockReturnValue({
-        params: {
-          userUuid: '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45',
-        },
-      });
-  
-      render(<MockNavigation />);
+      renderComponent();
   
       // Click on a rating button
       const ratingButton = screen.getByText('3');
