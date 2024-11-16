@@ -250,7 +250,7 @@ export function Chatbot(): React.JSX.Element {
     }
 
     return (
-        <View style={styles.chatbotContainer} testID={screen}>
+        <View style={styles.chatbotContainer} testID={screen}> 
             <View style={styles.chatbotContent}>
                 <FlatList
                     testID={`${screen}.Content`}
