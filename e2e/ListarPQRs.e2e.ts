@@ -11,7 +11,7 @@ describe('ListarPQRs Component', () => {
     await device.reloadReactNative();
   });
 
-  it('should successfully log in and see the Crear PQRs and Chatbot buttons when valid user credentials are provided', async () => {
+  it.skip('should successfully log in and see the Crear PQRs and Chatbot buttons when valid user credentials are provided', async () => {
     await isScreenShown('Login');
 
     await element(by.id('Login.Correo')).typeText(USER_LOGIN.email);

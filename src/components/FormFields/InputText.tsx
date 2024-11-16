@@ -16,10 +16,11 @@ type InputTextProps = PropsWithRef<{
     readonly multiline?: boolean;
     readonly showIcon?: boolean;
     readonly iconToShow?: string;
+    readonly editable?: boolean;
     readonly onIconClick?: () => void;
 }>;
 
-export function InputText({label, required, value, onInputChange, testID, maxLength, secureTextEntry = false, keyboardType = 'default', multiline = false, showIcon = false, iconToShow = 'send', onIconClick = () => {}}: InputTextProps): React.JSX.Element  {
+export function InputText({label, required, value, onInputChange, testID, maxLength, secureTextEntry = false, keyboardType = 'default', multiline = false, showIcon = false, iconToShow = 'send', onIconClick = () => {}, editable = true}: InputTextProps): React.JSX.Element  {
     const defineLabel = () => {
         return `${label}${required ? '*': ''}`
     };
@@ -28,7 +29,7 @@ export function InputText({label, required, value, onInputChange, testID, maxLen
         <View style={styles.containerInput}>
             <Text style={styles.inputLabel}>{defineLabel()}</Text>
             <View>
-                <TextInput style={multiline ? styles.textArea : {...styles.textInput, width: showIcon ? '90%': '100%'}}
+                <TextInput style={multiline ? styles.textArea : {...styles.textInput, width: showIcon ? '90%': '100%', borderColor: editable ? colors.brand_violet : colors.brand_grey_light, backgroundColor: editable ? colors.white : colors.brand_grey_light }}
                     value={value}
                     onChangeText={nexText => onInputChange(nexText)}
                     testID={testID}
@@ -37,6 +38,7 @@ export function InputText({label, required, value, onInputChange, testID, maxLen
                     keyboardType={keyboardType}
                     maxLength={maxLength}
                     multiline={multiline}
+                    editable={editable}
                 />
                 { showIcon
                     ? (<TouchableOpacity onPress={onIconClick} style={styles.iconButton} testID={`${testID}.IconButton`}>
@@ -62,11 +64,11 @@ const styles = StyleSheet.create({
     },
     textInput: {
         height: 41,
-        borderColor: colors.brand_violet,
         borderWidth: 1,
         borderRadius: 5,
         borderStyle: 'solid',
         color: colors.black,
+        paddingLeft: 15,
     },
     textArea: {
         height: 100,

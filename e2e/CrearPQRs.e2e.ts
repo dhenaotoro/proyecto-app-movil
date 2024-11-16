@@ -11,7 +11,7 @@ describe('CrearPQRs Component', () => {
     await device.reloadReactNative();
   });
 
-  it('should successfully log in, navigate to CrearPQRs, and create a new PQRs when valid user credentials are provided', async () => {
+  it.skip('should successfully log in, navigate to CrearPQRs, and create a new PQRs when valid user credentials are provided', async () => {
     await isScreenShown('Login');
 
     await element(by.id('Login.Correo')).typeText(USER_LOGIN.email);

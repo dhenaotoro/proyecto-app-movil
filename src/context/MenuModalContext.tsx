@@ -43,9 +43,9 @@ export const MenuModalProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   }
 
   const goPersonalData = async () => {
-    const { userUuid } = await fetchUserAttributes();
+    const { userUuid, userName } = await fetchUserAttributes();
     const { data } = await getUserById(userUuid);
-    navigation.navigate('DatosPersonales', { userUuid, email: data.email, telefono: data.telefono, direccion: data.direccion });
+    navigation.navigate('DatosPersonales', { userUuid, userName, email: data.email, telefono: data.telefono, direccion: data.direccion });
     closeMenu();
   }
 
@@ -61,7 +61,7 @@ export const MenuModalProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         onRequestClose={closeMenu}
         testID={`${screen}.Container`}
       >
-        <View style={styles.modalContainer}>
+        <View style={styles.modalContainer} testID={`${screen}.ContainerInternal`}>
           <TouchableOpacity onPress={closeMenu} style={styles.modalCloseButton} testID={`${screen}.CloseButton`}>
             <Icon name="window-close" size={20} color={colors.brand_brown} />
           </TouchableOpacity>

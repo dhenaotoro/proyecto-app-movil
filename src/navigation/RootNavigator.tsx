@@ -26,7 +26,7 @@ export type RootStackParamList = {
   Chatbot: { userUuid: string },
   Encuestas: { userUuid: string },
   EncuestaBot: { userUuid: string }
-  DatosPersonales: { userUuid: string, email: string, telefono: string, direccion: string }
+  DatosPersonales: { userUuid: string, userName: string, email: string, telefono: string, direccion: string }
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

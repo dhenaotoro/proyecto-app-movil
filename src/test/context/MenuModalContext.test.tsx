@@ -112,14 +112,27 @@ describe('MenuModalContext', () => {
   });
 
   test('should navigate to the DatosPersonales screen', async () => {
+    const data = {
+      uuid: 'ffff-fffff-fffff-ffff',
+      nombre: 'John',
+      apellido: 'Doe',
+      email: 'john.doe@example.com',
+      telefono: '123456789',
+      front: 'cliente',
+      aceptada_politica_aviso_privacidad: true,
+      direccion: 'Transversal',
+      habilitar_sms: true,
+      habilitar_correo: true,
+      habilitar_llamada: true
+    }
     const user = userEvent.setup();
     const mockNavigate = jest.fn();
     (useNavigation as jest.Mock).mockReturnValue({
         navigate: mockNavigate,
         goBack: jest.fn()
     });
-    mockFetchUserAttributes.mockResolvedValue({ userUuid: 'ffff-fffff-fffff-ffff' });
-    (getUserById as jest.Mock).mockReturnValue({ code: 200, data: { uuid: 'ffff-fffff-fffff-ffff', nombre: 'John', apellido: 'Doe', email: 'john.doe@example.com', telefono: '123456789', front: 'cliente', aceptada_politica_aviso_privacidad: true, direccion: 'Transversal' }, message: 'ok', ok: true});
+    mockFetchUserAttributes.mockResolvedValue({ userUuid: 'ffff-fffff-fffff-ffff', userName: 'Jhon Doe' });
+    (getUserById as jest.Mock).mockReturnValue({ code: 200, data, message: 'ok', ok: true});
 
     const { getByTestId } = renderWithProviders(<TestComponent />);
 
@@ -134,8 +147,12 @@ describe('MenuModalContext', () => {
 
     await waitFor(() => {
       expect(mockFetchUserAttributes).toHaveBeenCalled();
+    });
+    await waitFor(() => {
       expect(getUserById).toHaveBeenCalledWith('ffff-fffff-fffff-ffff');
-      expect(mockNavigate).toHaveBeenCalledWith('DatosPersonales', { userUuid: 'ffff-fffff-fffff-ffff', email: 'john.doe@example.com', telefono: '123456789', direccion: 'Transversal' });
+    });
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith('DatosPersonales', { userUuid: 'ffff-fffff-fffff-ffff', userName: 'Jhon Doe', email: 'john.doe@example.com', telefono: '123456789', direccion: 'Transversal' });
     });
   });
 });

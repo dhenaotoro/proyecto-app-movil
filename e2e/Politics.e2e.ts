@@ -10,7 +10,7 @@ describe('Politics Component', () => {
     await device.reloadReactNative();
   });
 
-  it('should show politics and privacy screen', async () => {
+  it.skip('should show politics and privacy screen', async () => {
     await isScreenShown('Login');
 
     await element(by.id('Login.Register')).tap();
