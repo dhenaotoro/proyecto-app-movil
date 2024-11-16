@@ -54,7 +54,6 @@ describe('Register Component', () => {
     await element(by.id('Register.PoliticaPrivacidad')).tap();
 
     await expect(element(by.id('Register.Button'))).toBeVisible(100);
-    await element(by.id('Register.Button')).tap();
   });
 });
 

@@ -71,7 +71,7 @@ const CrearPQRs = (): React.JSX.Element => {
   };
 
   return (
-    <View style={{...styles.creatPqrContainer}} testID={screen}>
+    <View style={{...styles.crearPqrContainer}} testID={screen}>
       <ScrollView contentContainerStyle={styles.crearPqrScrollcontainer} testID={`${screen}.ScrollView`}>
         <View style={styles.crearPqrInnerContainer}>
             <Text style={styles.crearPqrSubtitle} testID={`${screen}.MainTitle`}>Gestiona tus PQRs rápidamente, regístrate ya!</Text>
@@ -98,7 +98,7 @@ const CrearPQRs = (): React.JSX.Element => {
 };
 
 const styles = StyleSheet.create({
-  creatPqrContainer: {
+  crearPqrContainer: {
     flexGrow: 1,
   },
   crearPqrInnerContainer: {
