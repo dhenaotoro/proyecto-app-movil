@@ -36,11 +36,17 @@ describe('DatosPersonales Component', () => {
 
     // Fill out the form fields
     await waitFor(element(by.id('DatosPersonales.Telefono'))).toBeVisible(100).withTimeout(1000);
-    await element(by.id('DatosPersonales.Telefono')).replaceText('3224566789');
+    await element(by.id('DatosPersonales.Telefono')).tap();
+    await element(by.id('DatosPersonales.Telefono')).clearText();
+    await element(by.id('DatosPersonales.Telefono')).replaceText('3546789022');
+    await element(by.id('DatosPersonales.Telefono')).tap();
 
     // Enter transaction number
     await waitFor(element(by.id('DatosPersonales.Direccion'))).toBeVisible(100).withTimeout(1000);
+    await element(by.id('DatosPersonales.Direccion')).tap();
+    await element(by.id('DatosPersonales.Direccion')).clearText();
     await element(by.id('DatosPersonales.Direccion')).replaceText('Diagonal 45 #45-101');
+    await element(by.id('DatosPersonales.Direccion')).tap();
 
     await expect(element(by.id('DatosPersonales.Button'))).toBeVisible(100);
     await element(by.id('DatosPersonales.Button')).tap();

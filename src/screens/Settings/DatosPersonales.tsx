@@ -21,14 +21,14 @@ const DatosPersonales = (): React.JSX.Element => {
     const [addressToModify, setAddressToModify] = useState<string | null>(null);
 
     const handleGuardar = async () => {
-      if (!cellphoneToModify || !addressToModify) {
+      if (!cellphoneToModify && !addressToModify) {
         Alert.alert('Error', 'Por favor, completa todos los campos obligatorios marcados con *.');
         return;
       }
       const telefono = `+57${cellphoneToModify}` 
     
       try {
-        const response = await updateUser(userUuid, { telefono, direccion: addressToModify });
+        const response = await updateUser(userUuid, { telefono, direccion: addressToModify ?? direccion });
         navigation.navigate('ListarPQRs', { userUuid, userName, executeList: false });
         Alert.alert('Guardado', response.message);
       } catch (error) {
@@ -43,7 +43,7 @@ const DatosPersonales = (): React.JSX.Element => {
             <View style={styles.formContent}>
               <InputText label='Correo' editable={false} required maxLength={255} value={email} onInputChange={() => {}} testID={`${screen}.Correo`}/>
               <InputText label='Telefono' required maxLength={10} keyboardType='numeric' value={cellphoneToModify ?? telefono.replace('+57', '')} onInputChange={(text: string) => setCellphoneToModify(text)} testID={`${screen}.Telefono`}/>
-              <InputText label='Direccion' required maxLength={255} value={addressToModify ?? direccion } onInputChange={(text: string) => setAddressToModify(text)} testID={`${screen}.Direccion`}/>
+              <InputText label='Direccion' required maxLength={255} value={ addressToModify ?? direccion } onInputChange={(text: string) => setAddressToModify(text)} testID={`${screen}.Direccion`}/>
             </View>
             <View style={styles.buttonContainer}>
               <TouchableOpacity style={styles.datosPersonalesButton} onPress={handleGuardar} testID={`${screen}.Button`}>
