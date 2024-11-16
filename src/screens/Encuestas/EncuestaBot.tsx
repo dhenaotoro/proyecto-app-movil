@@ -60,6 +60,7 @@ export function EncuestaBot(): React.JSX.Element {
                         <View style={styles.ratingButtonContainer}>
                             {[1, 2, 3, 4, 5].map((value) => (
                                 <TouchableOpacity
+                                    testID={`${screen}.Button.${value}`}
                                     key={value}
                                     style={[
                                         styles.customButton,

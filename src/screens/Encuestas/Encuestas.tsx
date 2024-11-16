@@ -41,7 +41,7 @@ export function Encuestas(): React.JSX.Element {
   ));
 
   return (
-    <View style={styles.encuestasContainer}>
+    <View style={styles.encuestasContainer} testID={screen}>
       <ScrollView
         showsVerticalScrollIndicator={true}
         contentContainerStyle={styles.encuestasScrollContainer}
