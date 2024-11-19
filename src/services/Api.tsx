@@ -165,3 +165,34 @@ export async function updateUserChannels(uuidUsuario: string, userData: { habili
     throw error;
   }
 };
+
+export async function saveSurvey(surveyData: { 
+  uuid: string,
+  nombre_encuesta: string,
+  nivel_percepcion: string,
+  recomendar_servicio: string,
+  opinion: string
+}): Promise<{ code: number, data: any, message: string }> {
+  const url = `${urlUserBase}/saveSurvey`; // Ensure this matches your backend endpoint
+  console.log('Url to connect: ', url);
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(surveyData),
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al guardar la encuesta en el backend");
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.debug("Error en la solicitud al backend:", error);
+    throw error;
+  }
+};

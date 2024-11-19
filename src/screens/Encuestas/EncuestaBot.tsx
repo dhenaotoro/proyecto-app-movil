@@ -7,6 +7,7 @@ import colors from '../../styles/colors';
 import typography from '../../styles/typography';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { InputText } from '../../components/FormFields/InputText';
+import { saveSurvey } from '../../services/Api';
 
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'Encuestas'>;
 type EncuestaBotRouteProp = RouteProp<RootStackParamList, 'EncuestaBot'>;
@@ -14,7 +15,7 @@ type EncuestaBotRouteProp = RouteProp<RootStackParamList, 'EncuestaBot'>;
 export function EncuestaBot(): React.JSX.Element {
     const screen = 'EncuestaBot';
     const route = useRoute<EncuestaBotRouteProp>();
-    const { userUuid } = route.params;
+    const { userUuid, nombreEncuesta } = route.params;
     const navigation = useNavigation<NavigationProps>();
 
     const [step, setStep] = useState(0);
@@ -36,16 +37,26 @@ export function EncuestaBot(): React.JSX.Element {
         setOpinion(value);
     };
 
-    const handleSubmitSurvey = () => {
-        // Mock storing the information
-        console.log('Survey submitted:', {
-            rating,
-            recommend,
+    const handleSubmitSurvey = async () => {
+        const surveyData = {
+            uuid: userUuid,
+            nombre_encuesta: nombreEncuesta,
+            nivel_percepcion: rating?.toString() || '',
+            recomendar_servicio: recommend,
             opinion,
-        });
-
-        // Navigate back to Encuestas component
-        navigation.navigate('Encuestas', { userUuid });
+        };
+    
+        try {
+            console.log('Sending survey data:', surveyData);
+            const response = await saveSurvey(surveyData);
+    
+            console.log('Survey successfully submitted:', response);
+    
+            // Navigate back to Encuestas component
+            navigation.navigate('Encuestas', { userUuid });
+        } catch (error) {
+            console.error('Error submitting survey:', error);
+        }
     };
 
     const renderSurveyStep = () => {
