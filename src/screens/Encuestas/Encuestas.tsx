@@ -20,14 +20,20 @@ export function Encuestas(): React.JSX.Element {
     { id: '3', description: 'Encuesta producto tecnología AVR', channel: 'Supermarket Ahorro' },
   ];
 
-  const openEncuestaBot = () => navigation.navigate('EncuestaBot', { userUuid });
+  const openEncuestaBot = (description: string) => 
+    navigation.navigate('EncuestaBot', { userUuid, nombreEncuesta: description });
+  
 
   const openChatbot = () => navigation.navigate('Chatbot', { userUuid });
 
   const SurveyRow = React.memo((survey: { key: string; value: { description: string; channel: string; } }) => (
     <View style={styles.surveyListRow}>
       <View style={styles.surveyListCell}>
-        <TouchableOpacity style={styles.surveyOpenButton} onPress={openEncuestaBot} testID={`${screen}.EncuestaBot.${survey.value.description}`}>
+        <TouchableOpacity 
+          style={styles.surveyOpenButton} 
+          onPress={() => openEncuestaBot(survey.value.description)} 
+          testID={`${screen}.EncuestaBot.${survey.value.description}`}
+        >
           <View style={styles.surveyRowContainer}>
             <Text style={styles.openBulletPoint}>•</Text>
           </View>
@@ -39,7 +45,7 @@ export function Encuestas(): React.JSX.Element {
       </View>
     </View>
   ));
-
+  
   return (
     <View style={styles.encuestasContainer} testID={screen}>
       <ScrollView

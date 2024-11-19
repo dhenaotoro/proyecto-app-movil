@@ -26,7 +26,7 @@ export type RootStackParamList = {
   Politics: undefined,
   Chatbot: { userUuid: string },
   Encuestas: { userUuid: string },
-  EncuestaBot: { userUuid: string },
+  EncuestaBot: { userUuid: string, nombreEncuesta: string },
   DatosPersonales: { userUuid: string, userName: string, email: string, telefono: string, direccion: string },
   Alertas: { userUuid: string, userName: string, enableSms: boolean, enableEmail: boolean, enableCalls: boolean },
 };
