@@ -18,7 +18,7 @@
     "e2e:test-ios-release": "detox test -c ios.sim.release",
     "e2e:build-android-debug": "npm run android:clean && detox build -c android.emu.debug",
     "e2e:build-android-release": "npm run android:clean && detox build -c android.emu.release",
-    "pipeline:build-release": "cd android && ./gradlew assembleRelease --stracktrace && cd ..",
+    "pipeline:build-release": "cd android && ./gradlew assembleRelease --stacktrace && cd ..",
     "e2e:test-android-debug": "detox test -c android.emu.debug",
     "e2e:test-android-release": "detox test -c android.emu.release"
   },
