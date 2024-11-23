@@ -23,10 +23,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      
-      - name: Find cacerts
-        run: |
-          find / -name cacerts 2>/dev/null
 
       # Configurar Node.js
       - name: Configuración de Node.js
