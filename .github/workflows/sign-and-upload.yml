@@ -74,20 +74,43 @@ jobs:
           VERSION=$(awk -F'=' '/^VERSION=/{print $2}' version.properties | xargs)
           sed -i "s/versionName \".*\"/versionName \"$VERSION\"/" android/app/build.gradle
 
+      - name: Generate temporary signing key
+        env:
+          KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          KEY_PASSWORD:  ${{ secrets.SIGNING_KEY_PASSWORD }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
+        run: |
+          keytool -genkeypair \
+            -alias "abc-call" \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -dname "CN=Temporary, OU=Actions, O=GitHub, L=Cloud, ST=DevOps, C=US" \
+            -keypass "abc-call" \
+            -keystore release-keystore.jks \
+            -storepass "abc-call"
+
       - name: Build release APK
         run: npm run pipeline:build-release
+
+      - name: Sign APK
+        env:
+          KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
+          UNSIGNED_APK: android/app/build/outputs/apk/release/app-release.apk
+          SIGNED_APK: android/app/build/outputs/apk/release/app-release-signed.apk
+        run: |
+          $ANDROID_HOME/build-tools/34.0.0/apksigner sign \
+            --ks release-keystore.jks \
+            --ks-key-alias "abc-call" \
+            --ks-pass pass:"abc-call" \
+            --key-pass pass:"abc-call" \
+            --out "$SIGNED_APK" \
+            "$UNSIGNED_APK"
       
-      #- name: Sign APK
-      #  uses: r0adkll/sign-android-release@v1
-      #  id: sign_app
-      #  with:
-      #    releaseDirectory: android/app/build/outputs/apk/release
-      #    signingKeyBase64: ${{ secrets.SIGNING_KEY_BASE64 }}
-      #    alias: ${{ secrets.SIGNING_KEY_ALIAS }}
-      #    keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-      #    keyPassword: ${{ secrets.SIGNING_KEY_PASSWORD }}
-      #  env:
-      #    BUILD_TOOLS_VERSION: "34.0.0"
+      - name: List apks
+        run: ls -ltha android/app/build/outputs/apk/release/
       
       - name: Upload APK artifact
         uses: actions/upload-artifact@v3
@@ -114,6 +137,10 @@ jobs:
       - name: Verificacion de directorios
         run: ls -ltha
 
-      - name: Upload to S3 Bucket
+      - name: Upload non-signed apk to S3 Bucket
         run: |
           aws s3 cp app-release.apk s3://${{ vars.S3_BUCKET_NAME }}/app-release.apk
+
+      - name: Upload signed apk to S3 Bucket
+        run: |
+          aws s3 cp app-release.apk s3://${{ vars.S3_BUCKET_NAME }}/app-release-signed.apk
