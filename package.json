@@ -18,7 +18,7 @@
     "e2e:test-ios-release": "detox test -c ios.sim.release",
     "e2e:build-android-debug": "npm run android:clean && detox build -c android.emu.debug",
     "e2e:build-android-release": "npm run android:clean && detox build -c android.emu.release",
-    "pipeline:build-release": "cd android && ./gradlew assembleRelease && cd ..",
+    "pipeline:build-release": "cd android && ./gradlew assembleRelease -Djavax.net.ssl.trustStore.password=changeit -Djavax.net.ssl.trustStore=/usr/lib/jvm/temurin-17-jdk-amd64/lib/security/cacerts --stacktrace && cd ..",
     "e2e:test-android-debug": "detox test -c android.emu.debug",
     "e2e:test-android-release": "detox test -c android.emu.release"
   },
