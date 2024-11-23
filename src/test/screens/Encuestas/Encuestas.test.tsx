@@ -13,7 +13,7 @@ jest.mock('@react-navigation/native', () => ({
   useNavigation: jest.fn(),
 }));
 
-describe('Encuestas', () => {
+describe('Encuestas Screen Navigation Tests', () => {
   const renderComponent = () => {
     return render(
       <NavigationContainer>
@@ -21,35 +21,45 @@ describe('Encuestas', () => {
           <Stack.Screen
             name="Encuestas"
             component={Encuestas}
-            initialParams={{ userUuid: '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45', userName: 'Ivan Dario' }}
+            initialParams={{
+              userUuid: '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45',
+              userName: 'Ivan Dario',
+            }}
           />
         </Stack.Navigator>
       </NavigationContainer>
     );
-  }
-  it('navigates to EncuestaBot when a survey is pressed', () => {
-    const mockNavigate = jest.fn(); // Define mockNavigate for this test
-    (useNavigation as jest.Mock).mockReturnValue({ navigate: mockNavigate }); // Mock useNavigation to return the mock function
+  };
+
+  it('navigates to EncuestaBot with correct parameters when "Encuesta satisfacción" is pressed', () => {
+    const mockNavigate = jest.fn();
+    (useNavigation as jest.Mock).mockReturnValue({ navigate: mockNavigate });
 
     renderComponent();
 
-    // Press on a survey description to navigate to EncuestaBot
+    // Simulate pressing "Encuesta satisfacción"
     fireEvent.press(screen.getByTestId('Encuestas.EncuestaBot.Encuesta satisfacción'));
 
-    // Verify that the mockNavigate function was called with the correct arguments
-    expect(mockNavigate).toHaveBeenCalledWith('EncuestaBot', { userUuid: '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45' });
+    // Verify navigation with correct arguments
+    expect(mockNavigate).toHaveBeenCalledWith('EncuestaBot', {
+      userUuid: '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45',
+      nombreEncuesta: 'Encuesta satisfacción',
+    });
   });
 
-  it('navigates to EncuestaBot when a survey is pressed', () => {
-    const mockNavigate = jest.fn(); // Define mockNavigate for this test
-    (useNavigation as jest.Mock).mockReturnValue({ navigate: mockNavigate }); // Mock useNavigation to return the mock function
-
+  it('navigates to Chatbot with correct parameters when "ChatbotButton" is pressed', () => {
+    const mockNavigate = jest.fn();
+    (useNavigation as jest.Mock).mockReturnValue({ navigate: mockNavigate });
+  
     renderComponent();
-
-    // Press on a survey description to navigate to EncuestaBot
+  
+    // Simulate pressing "ChatbotButton"
     fireEvent.press(screen.getByTestId('Encuestas.ChatbotButton'));
-
-    // Verify that the mockNavigate function was called with the correct arguments
-    expect(mockNavigate).toHaveBeenCalledWith('Chatbot', { userUuid: '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45' });
+  
+    // Verify navigation with only userUuid
+    expect(mockNavigate).toHaveBeenCalledWith('Chatbot', {
+      userUuid: '74a8d4c8-2071-7011-b1d9-f82e4e5b5b45',
+    });
   });
+  
 });
